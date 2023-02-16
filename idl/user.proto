@@ -1,0 +1,41 @@
+syntax = "proto3";
+package user; // 本身的模块名
+option go_package = "user"; // 生成代码时的上层目录
+
+// 用户信息
+message UserInfoRequest {
+  int64 user_id = 1; // 用户id
+  string token = 2; // 用户鉴权token
+}
+
+message UserInfoResponse {
+  int32 status_code = 1; // 状态码，0-成功，其他值-失败
+  string status_msg = 2; // 返回状态描述
+  User user = 3; // 用户信息
+}
+
+message User {
+  int64 id = 1; // 用户id
+  string name = 2; // 用户名称
+  int64 follow_count = 3; // 关注总数
+  int64 follower_count = 4; // 粉丝总数
+  bool is_follow = 5; // true-已关注，false-未关注
+}
+
+// 用户登录
+message UserLoginRequest {
+  string username = 1; // 登录用户名
+  string password = 2; // 登录密码
+}
+
+message UserLoginResponse {
+  int32 status_code = 1; // 状态码，0-成功，其他值-失败
+  string status_msg = 2; // 返回状态描述
+  int64 user_id = 3; // 用户id
+  string token = 4; // 用户鉴权token
+}
+
+service UserService {
+  rpc UserInfo (UserInfoRequest) returns (UserInfoResponse) {}
+  rpc UserLogin (UserLoginRequest) returns (UserLoginResponse) {}
+}
