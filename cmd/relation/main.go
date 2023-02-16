@@ -1,9 +1,9 @@
 package main
 
 import (
-	"dousheng/cmd/relation/rpc"
 	relation "dousheng/kitex_gen/relation/relationservice"
 	"dousheng/pkg/database"
+	"dousheng/pkg/etcd_discovery"
 	g "dousheng/pkg/global"
 	"dousheng/pkg/tracer"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
@@ -16,13 +16,13 @@ import (
 
 func init() {
 	tracer.InitJaeger(g.ServiceRelationName)
-	rpc.InitRPC()
+	etcd_discovery.InitUserRpc()
 	database.InitDB()
 }
 
 func main() {
-	addr, _ := net.ResolveTCPAddr("tcp", g.ServiceRelationAddress)
-	r, err := etcd.NewEtcdRegistry([]string{g.EtcdAddress}) // r should not be reused.
+	addr, _ := net.ResolveTCPAddr("tcp", g.ServiceRelationAddress) // TODO 声明自己的服务地址
+	r, err := etcd.NewEtcdRegistry([]string{g.EtcdAddress})        // r should not be reused.
 	if err != nil {
 		log.Println(err.Error())
 	}
@@ -30,8 +30,8 @@ func main() {
 		server.WithServiceAddr(addr),                                                               // 定义端口
 		server.WithMuxTransport(),                                                                  // 多路复用
 		server.WithSuite(opentracing.NewDefaultServerSuite()),                                      // 链路监听
-		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: g.ServiceRelationName}), // 声明服务名
-		server.WithRegistry(r),                                                                     // 注册服务
+		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: g.ServiceRelationName}), // TODO 声明自己的服务名
+		server.WithRegistry(r),                                                                     // 注册服务 -> etcd
 	)
 	err = svr.Run()
 	if err != nil {

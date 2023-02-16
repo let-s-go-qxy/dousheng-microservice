@@ -28,7 +28,7 @@ type UserAndMsgListResponse struct {
 
 func GetFollowList(c context.Context, ctx *app.RequestContext) {
 	userId, _ := strconv.Atoi(ctx.Query("user_id"))
-	resp, err := etcd_discovery.FollowerList(c, &relation.RelationFollowListRequest{
+	resp, err := etcd_discovery.RelationClient.RelationFollowList(c, &relation.RelationFollowListRequest{
 		UserId: int64(userId),
 		Token:  "",
 	})

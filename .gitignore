@@ -21,4 +21,5 @@ manifest/
 .idea/
 log/
 conf/config.yaml
+conf/ossRelated.go
 default.etcd/

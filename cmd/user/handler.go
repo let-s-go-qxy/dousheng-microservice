@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	user "dousheng/kitex_gen/user"
+	"github.com/pkg/errors"
 )
 
 // UserServiceImpl implements the last service interface defined in the IDL.
@@ -26,6 +27,8 @@ func (s *UserServiceImpl) UserInfo(ctx context.Context, req *user.UserInfoReques
 
 // UserLogin implements the UserServiceImpl interface.
 func (s *UserServiceImpl) UserLogin(ctx context.Context, req *user.UserLoginRequest) (resp *user.UserLoginResponse, err error) {
-	// TODO: Your code here...
+	if req.GetUsername() == "" || req.GetPassword() == "" {
+		err = errors.New("账号或密码不规范")
+	}
 	return
 }

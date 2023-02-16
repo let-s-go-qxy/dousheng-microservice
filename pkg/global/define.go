@@ -24,4 +24,20 @@ var (
 	DbVerify     *redis.Client
 	DbUserLike   *redis.Client
 	DbVideoLike  *redis.Client
+	Config       = &Conf{
+		JWT{
+			JwtSecretKey:   "MSR2pH^N6dqqQ5Ns5x!eD2YWVpwzmb3@8RzphRFbEkRwLEra86v3LCB%PvGx$a$L",
+			JwtExpiresTime: 604800,
+		},
+	}
 )
+
+type Conf struct {
+	JWT
+}
+
+// TODO 放到 config.yaml 中，在需要的服务中再读取
+type JWT struct {
+	JwtSecretKey   string
+	JwtExpiresTime int64
+}

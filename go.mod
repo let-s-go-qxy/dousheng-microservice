@@ -6,6 +6,7 @@ require (
 	github.com/cloudwego/fastpb v0.0.3
 	github.com/cloudwego/hertz v0.5.2
 	github.com/cloudwego/kitex v0.4.4
+	github.com/form3tech-oss/jwt-go v3.2.3+incompatible
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/kitex-contrib/registry-etcd v0.1.0
 	github.com/kitex-contrib/tracer-opentracing v0.0.2
