@@ -21,8 +21,12 @@ dousheng-microservice
 1. 编写 idl
 2. 生成 idl
    kitex -module dousheng -I ./idl/ ./idl/xx.proto
-3. 在 src 目录下生成对应服务...（详情见src下readme）
-4. 再 pkg/etcd_discovery/ 目录下新增对应微服务的发现中心（只需要某个服务发现的服务可以写在自己的微服务下）
+3. 完善各类配置（如 pkg/global/rpc.go ）
+4. 在 src 目录下生成对应服务...（详情见src下readme）
+5. 再 pkg/etcd_discovery/ 目录下新增对应微服务的发现中心（只需要某个服务发现的服务可以写在自己的微服务下）
+6. 利用 docker 启动 etcd，jaeger
+7. 服务完善后，依次启动微服务，最后启动 api_gateway 网关服务
+8. 使用模拟器或 apifox 测试接口， 使用 http://127.0.0.1:16686/search 查看链路追踪
 
 ### 环境准备
 #### docker
