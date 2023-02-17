@@ -1,8 +1,9 @@
 syntax = "proto3";
+import "feed.proto";
 package like;
-import "user.proto";
 option go_package = "like";
 
+//喜欢操作
 message FavoriteActionRequest {
   int64 user_id = 1; // 用户id
   int64 video_id = 2; // 视频id
@@ -15,6 +16,7 @@ message FavoriteActionResponse {
   string status_msg = 2; // 返回状态描述
 }
 
+//喜欢列表
 message FavoriteListRequest {
   int64 user_id = 1; // 用户id
   string token = 2; // 用户鉴权token
@@ -23,21 +25,21 @@ message FavoriteListRequest {
 message FavoriteListResponse {
   int32 status_code = 1; // 状态码，0-成功，其他值-失败
   string status_msg = 2; // 返回状态描述
-  repeated Video video_list = 3; // 用户点赞视频列表
+  repeated feed.Video video_list = 3; // 用户点赞视频列表
 }
 
-message Video {
-  int64 id = 1; // 视频唯一标识
-  user.User author = 2; // 视频作者信息
-  string play_url = 3; // 视频播放地址
-  string cover_url = 4; // 视频封面地址
-  int32 favorite_count = 5; // 视频的点赞总数
-  int32 comment_count = 6; // 视频的评论总数
-  bool is_favorite = 7; // true-已点赞，false-未点赞
-  string title = 8; // 视频标题
+//喜欢总数和喜欢作品数
+message FavoriteCountRequest{
+  int64 user_id = 1; // 用户id
+}
+
+message FavoriteCountResponse{
+  int64 total_favorited = 1; //获赞数量
+  int64 favorite_count = 2; //点赞数量
 }
 
 service LikeService{
   rpc FavoriteAction(FavoriteActionRequest) returns (FavoriteActionResponse){}
   rpc GetFavoriteList(FavoriteListRequest) returns (FavoriteListResponse){}
+  rpc FavoriteCount(FavoriteCountRequest) returns (FavoriteCountResponse){}
 }
