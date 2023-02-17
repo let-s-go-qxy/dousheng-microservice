@@ -11,12 +11,13 @@ message User {
   bool is_follow = 5; // true-已关注，false-未关注
   int32 work_count = 6; // 作品数
   int32 favorite_count = 7; // 用户喜欢作品数
+  string avatar = 8; // 用户头像
 }
 
 // 用户信息
 message UserInfoRequest {
   int64 user_id = 1; // 用户id
-  string token = 2; // 用户鉴权token
+  int64 my_id = 2; // 登录的用户id
 }
 message UserInfoResponse {
   int32 status_code = 1; // 状态码，0-成功，其他值-失败
@@ -44,7 +45,7 @@ message UserRegisterRequest {
 message UserRegisterResponse {
    int32 status_code = 1; // 状态码，0-成功，其他值-失败
    string status_msg = 2; // 返回状态描述
-   int64 user_id = 3; // 用户id
+   int64  user_id = 3; // 用户id
    string token = 4; // 用户鉴权token
 }
 

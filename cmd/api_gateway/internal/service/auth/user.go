@@ -1,15 +1,13 @@
-package service
+package auth
 
 import (
-	"dousheng/cmd/user/internal/model"
 	g "dousheng/pkg/global"
 	"errors"
 	"github.com/form3tech-oss/jwt-go"
-	"time"
 )
 
 type UserClaims struct {
-	Id     int64  `json:"id"`
+	Id     int    `json:"id"`
 	Name   string `json:"name"`
 	Expire int    `json:"expire"`
 	jwt.StandardClaims
@@ -28,17 +26,4 @@ func ParseToken(str string) (UserClaims, error) {
 		return *c, errors.New("token不合法")
 	}
 	return *c, err
-}
-
-// GenerateToken 生成7天的token
-func GenerateToken(user model.User) (str string) {
-	c := &UserClaims{
-		Id:     user.Id,
-		Name:   user.Name,
-		Expire: int(g.Config.JwtExpiresTime + time.Now().Unix()), // 7天
-	}
-	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, c)
-	// 根据自定义key生成tokenString
-	str, _ = claims.SignedString([]byte(g.Config.JwtSecretKey))
-	return
 }

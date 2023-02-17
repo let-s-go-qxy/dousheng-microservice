@@ -12,7 +12,9 @@ import (
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
 	RelationAction(ctx context.Context, Req *relation.RelationActionRequest, callOptions ...callopt.Option) (r *relation.RelationActionResponse, err error)
-	RelationFollowList(ctx context.Context, Req *relation.RelationFollowListRequest, callOptions ...callopt.Option) (r *relation.RelationFollowListResponse, err error)
+	GetFollowList(ctx context.Context, Req *relation.RelationFollowListRequest, callOptions ...callopt.Option) (r *relation.RelationFollowListResponse, err error)
+	GetFollowerList(ctx context.Context, Req *relation.RelationFollowerListRequest, callOptions ...callopt.Option) (r *relation.RelationFollowerListResponse, err error)
+	GetFriendList(ctx context.Context, Req *relation.RelationFriendListRequest, callOptions ...callopt.Option) (r *relation.RelationFriendListResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -49,7 +51,17 @@ func (p *kRelationServiceClient) RelationAction(ctx context.Context, Req *relati
 	return p.kClient.RelationAction(ctx, Req)
 }
 
-func (p *kRelationServiceClient) RelationFollowList(ctx context.Context, Req *relation.RelationFollowListRequest, callOptions ...callopt.Option) (r *relation.RelationFollowListResponse, err error) {
+func (p *kRelationServiceClient) GetFollowList(ctx context.Context, Req *relation.RelationFollowListRequest, callOptions ...callopt.Option) (r *relation.RelationFollowListResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.RelationFollowList(ctx, Req)
+	return p.kClient.GetFollowList(ctx, Req)
+}
+
+func (p *kRelationServiceClient) GetFollowerList(ctx context.Context, Req *relation.RelationFollowerListRequest, callOptions ...callopt.Option) (r *relation.RelationFollowerListResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetFollowerList(ctx, Req)
+}
+
+func (p *kRelationServiceClient) GetFriendList(ctx context.Context, Req *relation.RelationFriendListRequest, callOptions ...callopt.Option) (r *relation.RelationFriendListResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetFriendList(ctx, Req)
 }
