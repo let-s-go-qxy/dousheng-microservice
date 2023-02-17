@@ -59,9 +59,26 @@ message RelationFriendListResponse {
    repeated FriendUser user_list = 3; // 用户列表
 }
 
+// 获取 关注数
+message RelationFollowCountRequest {
+  int64 user_id = 1;
+}
+message RelationFollowCountResponse {
+  int32 count = 1;
+}
+// 获取粉丝数
+message RelationFollowerCountRequest {
+  int64 user_id = 1;
+}
+message RelationFollowerCountResponse {
+  int32 count = 1;
+}
+
 service RelationService {
    rpc RelationAction (RelationActionRequest) returns (RelationActionResponse) {}
    rpc GetFollowList (RelationFollowListRequest) returns (RelationFollowListResponse) {}
    rpc GetFollowerList (RelationFollowerListRequest) returns (RelationFollowerListResponse) {}
    rpc GetFriendList (RelationFriendListRequest) returns (RelationFriendListResponse) {}
+   rpc GetFollowCount (RelationFollowCountRequest) returns (RelationFollowCountResponse) {}
+   rpc GetFollowerCount (RelationFollowerCountRequest) returns (RelationFollowerCountResponse) {}
 }

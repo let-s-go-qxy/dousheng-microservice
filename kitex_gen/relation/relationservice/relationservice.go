@@ -22,10 +22,12 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "RelationService"
 	handlerType := (*relation.RelationService)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"RelationAction":  kitex.NewMethodInfo(relationActionHandler, newRelationActionArgs, newRelationActionResult, false),
-		"GetFollowList":   kitex.NewMethodInfo(getFollowListHandler, newGetFollowListArgs, newGetFollowListResult, false),
-		"GetFollowerList": kitex.NewMethodInfo(getFollowerListHandler, newGetFollowerListArgs, newGetFollowerListResult, false),
-		"GetFriendList":   kitex.NewMethodInfo(getFriendListHandler, newGetFriendListArgs, newGetFriendListResult, false),
+		"RelationAction":   kitex.NewMethodInfo(relationActionHandler, newRelationActionArgs, newRelationActionResult, false),
+		"GetFollowList":    kitex.NewMethodInfo(getFollowListHandler, newGetFollowListArgs, newGetFollowListResult, false),
+		"GetFollowerList":  kitex.NewMethodInfo(getFollowerListHandler, newGetFollowerListArgs, newGetFollowerListResult, false),
+		"GetFriendList":    kitex.NewMethodInfo(getFriendListHandler, newGetFriendListArgs, newGetFriendListResult, false),
+		"GetFollowCount":   kitex.NewMethodInfo(getFollowCountHandler, newGetFollowCountArgs, newGetFollowCountResult, false),
+		"GetFollowerCount": kitex.NewMethodInfo(getFollowerCountHandler, newGetFollowerCountArgs, newGetFollowerCountResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "relation",
@@ -621,6 +623,296 @@ func (p *GetFriendListResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
+func getFollowCountHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(relation.RelationFollowCountRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(relation.RelationService).GetFollowCount(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *GetFollowCountArgs:
+		success, err := handler.(relation.RelationService).GetFollowCount(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*GetFollowCountResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newGetFollowCountArgs() interface{} {
+	return &GetFollowCountArgs{}
+}
+
+func newGetFollowCountResult() interface{} {
+	return &GetFollowCountResult{}
+}
+
+type GetFollowCountArgs struct {
+	Req *relation.RelationFollowCountRequest
+}
+
+func (p *GetFollowCountArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(relation.RelationFollowCountRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *GetFollowCountArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *GetFollowCountArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *GetFollowCountArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in GetFollowCountArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *GetFollowCountArgs) Unmarshal(in []byte) error {
+	msg := new(relation.RelationFollowCountRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var GetFollowCountArgs_Req_DEFAULT *relation.RelationFollowCountRequest
+
+func (p *GetFollowCountArgs) GetReq() *relation.RelationFollowCountRequest {
+	if !p.IsSetReq() {
+		return GetFollowCountArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *GetFollowCountArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type GetFollowCountResult struct {
+	Success *relation.RelationFollowCountResponse
+}
+
+var GetFollowCountResult_Success_DEFAULT *relation.RelationFollowCountResponse
+
+func (p *GetFollowCountResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(relation.RelationFollowCountResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *GetFollowCountResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *GetFollowCountResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *GetFollowCountResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in GetFollowCountResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *GetFollowCountResult) Unmarshal(in []byte) error {
+	msg := new(relation.RelationFollowCountResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *GetFollowCountResult) GetSuccess() *relation.RelationFollowCountResponse {
+	if !p.IsSetSuccess() {
+		return GetFollowCountResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *GetFollowCountResult) SetSuccess(x interface{}) {
+	p.Success = x.(*relation.RelationFollowCountResponse)
+}
+
+func (p *GetFollowCountResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func getFollowerCountHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(relation.RelationFollowerCountRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(relation.RelationService).GetFollowerCount(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *GetFollowerCountArgs:
+		success, err := handler.(relation.RelationService).GetFollowerCount(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*GetFollowerCountResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newGetFollowerCountArgs() interface{} {
+	return &GetFollowerCountArgs{}
+}
+
+func newGetFollowerCountResult() interface{} {
+	return &GetFollowerCountResult{}
+}
+
+type GetFollowerCountArgs struct {
+	Req *relation.RelationFollowerCountRequest
+}
+
+func (p *GetFollowerCountArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(relation.RelationFollowerCountRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *GetFollowerCountArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *GetFollowerCountArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *GetFollowerCountArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in GetFollowerCountArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *GetFollowerCountArgs) Unmarshal(in []byte) error {
+	msg := new(relation.RelationFollowerCountRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var GetFollowerCountArgs_Req_DEFAULT *relation.RelationFollowerCountRequest
+
+func (p *GetFollowerCountArgs) GetReq() *relation.RelationFollowerCountRequest {
+	if !p.IsSetReq() {
+		return GetFollowerCountArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *GetFollowerCountArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type GetFollowerCountResult struct {
+	Success *relation.RelationFollowerCountResponse
+}
+
+var GetFollowerCountResult_Success_DEFAULT *relation.RelationFollowerCountResponse
+
+func (p *GetFollowerCountResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(relation.RelationFollowerCountResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *GetFollowerCountResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *GetFollowerCountResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *GetFollowerCountResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in GetFollowerCountResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *GetFollowerCountResult) Unmarshal(in []byte) error {
+	msg := new(relation.RelationFollowerCountResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *GetFollowerCountResult) GetSuccess() *relation.RelationFollowerCountResponse {
+	if !p.IsSetSuccess() {
+		return GetFollowerCountResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *GetFollowerCountResult) SetSuccess(x interface{}) {
+	p.Success = x.(*relation.RelationFollowerCountResponse)
+}
+
+func (p *GetFollowerCountResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -666,6 +958,26 @@ func (p *kClient) GetFriendList(ctx context.Context, Req *relation.RelationFrien
 	_args.Req = Req
 	var _result GetFriendListResult
 	if err = p.c.Call(ctx, "GetFriendList", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GetFollowCount(ctx context.Context, Req *relation.RelationFollowCountRequest) (r *relation.RelationFollowCountResponse, err error) {
+	var _args GetFollowCountArgs
+	_args.Req = Req
+	var _result GetFollowCountResult
+	if err = p.c.Call(ctx, "GetFollowCount", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GetFollowerCount(ctx context.Context, Req *relation.RelationFollowerCountRequest) (r *relation.RelationFollowerCountResponse, err error) {
+	var _args GetFollowerCountArgs
+	_args.Req = Req
+	var _result GetFollowerCountResult
+	if err = p.c.Call(ctx, "GetFollowerCount", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

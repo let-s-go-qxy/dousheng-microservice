@@ -5,6 +5,7 @@ import (
 	"dousheng/cmd/user/internal/service"
 	user "dousheng/kitex_gen/user"
 	g "dousheng/pkg/global"
+	"github.com/pkg/errors"
 )
 
 // UserServiceImpl implements the last service interface defined in the IDL.
@@ -46,8 +47,14 @@ func (s *UserServiceImpl) UserRegister(ctx context.Context, req *user.UserRegist
 }
 
 // GetAvatar implements the UserServiceImpl interface.
-func (s *UserServiceImpl) GetAvatar(ctx context.Context, req *user.GetAvatarRequest) (resp *user.GetAvatarResponse, err error) {
-	resp = &user.GetAvatarResponse{}
+func (s *UserServiceImpl) GetAvatar(ctx context.Context, req *user.UserAvatarRequest) (resp *user.UserAvatarResponse, err error) {
+	resp = &user.UserAvatarResponse{}
 	resp.Avatar = service.GetAvatar(req.UserId)
+	return
+}
+
+// GetBackgroundImage implements the UserServiceImpl interface.
+func (s *UserServiceImpl) GetBackgroundImage(ctx context.Context, req *user.UserBackgroundImageRequest) (resp *user.UserBackgroundImageResponse, err error) {
+	err = errors.New("未完成")
 	return
 }

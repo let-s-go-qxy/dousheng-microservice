@@ -54,6 +54,21 @@ func (x *User) FastRead(buf []byte, _type int8, number int32) (offset int, err e
 		if err != nil {
 			goto ReadFieldError
 		}
+	case 9:
+		offset, err = x.fastReadField9(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 10:
+		offset, err = x.fastReadField10(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 11:
+		offset, err = x.fastReadField11(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
 	default:
 		offset, err = fastpb.Skip(buf, _type, number)
 		if err != nil {
@@ -98,11 +113,26 @@ func (x *User) fastReadField6(buf []byte, _type int8) (offset int, err error) {
 }
 
 func (x *User) fastReadField7(buf []byte, _type int8) (offset int, err error) {
-	x.FavoriteCount, offset, err = fastpb.ReadInt32(buf, _type)
+	x.BackgroundImage, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
 func (x *User) fastReadField8(buf []byte, _type int8) (offset int, err error) {
+	x.Signature, offset, err = fastpb.ReadString(buf, _type)
+	return offset, err
+}
+
+func (x *User) fastReadField9(buf []byte, _type int8) (offset int, err error) {
+	x.TotalFavorite, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *User) fastReadField10(buf []byte, _type int8) (offset int, err error) {
+	x.FavoriteCount, offset, err = fastpb.ReadInt32(buf, _type)
+	return offset, err
+}
+
+func (x *User) fastReadField11(buf []byte, _type int8) (offset int, err error) {
 	x.Avatar, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
@@ -372,7 +402,7 @@ func (x *UserRegisterResponse) fastReadField4(buf []byte, _type int8) (offset in
 	return offset, err
 }
 
-func (x *GetAvatarRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+func (x *UserAvatarRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
 	switch number {
 	case 1:
 		offset, err = x.fastReadField1(buf, _type)
@@ -389,15 +419,15 @@ func (x *GetAvatarRequest) FastRead(buf []byte, _type int8, number int32) (offse
 SkipFieldError:
 	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
 ReadFieldError:
-	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_GetAvatarRequest[number], err)
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_UserAvatarRequest[number], err)
 }
 
-func (x *GetAvatarRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+func (x *UserAvatarRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
 	x.UserId, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
-func (x *GetAvatarResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+func (x *UserAvatarResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
 	switch number {
 	case 1:
 		offset, err = x.fastReadField1(buf, _type)
@@ -414,11 +444,61 @@ func (x *GetAvatarResponse) FastRead(buf []byte, _type int8, number int32) (offs
 SkipFieldError:
 	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
 ReadFieldError:
-	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_GetAvatarResponse[number], err)
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_UserAvatarResponse[number], err)
 }
 
-func (x *GetAvatarResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+func (x *UserAvatarResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
 	x.Avatar, offset, err = fastpb.ReadString(buf, _type)
+	return offset, err
+}
+
+func (x *UserBackgroundImageRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_UserBackgroundImageRequest[number], err)
+}
+
+func (x *UserBackgroundImageRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.UserId, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *UserBackgroundImageResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_UserBackgroundImageResponse[number], err)
+}
+
+func (x *UserBackgroundImageResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.BackgroundImage, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
@@ -434,6 +514,9 @@ func (x *User) FastWrite(buf []byte) (offset int) {
 	offset += x.fastWriteField6(buf[offset:])
 	offset += x.fastWriteField7(buf[offset:])
 	offset += x.fastWriteField8(buf[offset:])
+	offset += x.fastWriteField9(buf[offset:])
+	offset += x.fastWriteField10(buf[offset:])
+	offset += x.fastWriteField11(buf[offset:])
 	return offset
 }
 
@@ -486,18 +569,42 @@ func (x *User) fastWriteField6(buf []byte) (offset int) {
 }
 
 func (x *User) fastWriteField7(buf []byte) (offset int) {
-	if x.FavoriteCount == 0 {
+	if x.BackgroundImage == "" {
 		return offset
 	}
-	offset += fastpb.WriteInt32(buf[offset:], 7, x.FavoriteCount)
+	offset += fastpb.WriteString(buf[offset:], 7, x.BackgroundImage)
 	return offset
 }
 
 func (x *User) fastWriteField8(buf []byte) (offset int) {
+	if x.Signature == "" {
+		return offset
+	}
+	offset += fastpb.WriteString(buf[offset:], 8, x.Signature)
+	return offset
+}
+
+func (x *User) fastWriteField9(buf []byte) (offset int) {
+	if x.TotalFavorite == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 9, x.TotalFavorite)
+	return offset
+}
+
+func (x *User) fastWriteField10(buf []byte) (offset int) {
+	if x.FavoriteCount == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt32(buf[offset:], 10, x.FavoriteCount)
+	return offset
+}
+
+func (x *User) fastWriteField11(buf []byte) (offset int) {
 	if x.Avatar == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 8, x.Avatar)
+	offset += fastpb.WriteString(buf[offset:], 11, x.Avatar)
 	return offset
 }
 
@@ -696,7 +803,7 @@ func (x *UserRegisterResponse) fastWriteField4(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *GetAvatarRequest) FastWrite(buf []byte) (offset int) {
+func (x *UserAvatarRequest) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
 	}
@@ -704,7 +811,7 @@ func (x *GetAvatarRequest) FastWrite(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *GetAvatarRequest) fastWriteField1(buf []byte) (offset int) {
+func (x *UserAvatarRequest) fastWriteField1(buf []byte) (offset int) {
 	if x.UserId == 0 {
 		return offset
 	}
@@ -712,7 +819,7 @@ func (x *GetAvatarRequest) fastWriteField1(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *GetAvatarResponse) FastWrite(buf []byte) (offset int) {
+func (x *UserAvatarResponse) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
 	}
@@ -720,11 +827,43 @@ func (x *GetAvatarResponse) FastWrite(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *GetAvatarResponse) fastWriteField1(buf []byte) (offset int) {
+func (x *UserAvatarResponse) fastWriteField1(buf []byte) (offset int) {
 	if x.Avatar == "" {
 		return offset
 	}
 	offset += fastpb.WriteString(buf[offset:], 1, x.Avatar)
+	return offset
+}
+
+func (x *UserBackgroundImageRequest) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	return offset
+}
+
+func (x *UserBackgroundImageRequest) fastWriteField1(buf []byte) (offset int) {
+	if x.UserId == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.UserId)
+	return offset
+}
+
+func (x *UserBackgroundImageResponse) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	return offset
+}
+
+func (x *UserBackgroundImageResponse) fastWriteField1(buf []byte) (offset int) {
+	if x.BackgroundImage == "" {
+		return offset
+	}
+	offset += fastpb.WriteString(buf[offset:], 1, x.BackgroundImage)
 	return offset
 }
 
@@ -740,6 +879,9 @@ func (x *User) Size() (n int) {
 	n += x.sizeField6()
 	n += x.sizeField7()
 	n += x.sizeField8()
+	n += x.sizeField9()
+	n += x.sizeField10()
+	n += x.sizeField11()
 	return n
 }
 
@@ -792,18 +934,42 @@ func (x *User) sizeField6() (n int) {
 }
 
 func (x *User) sizeField7() (n int) {
-	if x.FavoriteCount == 0 {
+	if x.BackgroundImage == "" {
 		return n
 	}
-	n += fastpb.SizeInt32(7, x.FavoriteCount)
+	n += fastpb.SizeString(7, x.BackgroundImage)
 	return n
 }
 
 func (x *User) sizeField8() (n int) {
+	if x.Signature == "" {
+		return n
+	}
+	n += fastpb.SizeString(8, x.Signature)
+	return n
+}
+
+func (x *User) sizeField9() (n int) {
+	if x.TotalFavorite == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(9, x.TotalFavorite)
+	return n
+}
+
+func (x *User) sizeField10() (n int) {
+	if x.FavoriteCount == 0 {
+		return n
+	}
+	n += fastpb.SizeInt32(10, x.FavoriteCount)
+	return n
+}
+
+func (x *User) sizeField11() (n int) {
 	if x.Avatar == "" {
 		return n
 	}
-	n += fastpb.SizeString(8, x.Avatar)
+	n += fastpb.SizeString(11, x.Avatar)
 	return n
 }
 
@@ -1002,7 +1168,7 @@ func (x *UserRegisterResponse) sizeField4() (n int) {
 	return n
 }
 
-func (x *GetAvatarRequest) Size() (n int) {
+func (x *UserAvatarRequest) Size() (n int) {
 	if x == nil {
 		return n
 	}
@@ -1010,7 +1176,7 @@ func (x *GetAvatarRequest) Size() (n int) {
 	return n
 }
 
-func (x *GetAvatarRequest) sizeField1() (n int) {
+func (x *UserAvatarRequest) sizeField1() (n int) {
 	if x.UserId == 0 {
 		return n
 	}
@@ -1018,7 +1184,7 @@ func (x *GetAvatarRequest) sizeField1() (n int) {
 	return n
 }
 
-func (x *GetAvatarResponse) Size() (n int) {
+func (x *UserAvatarResponse) Size() (n int) {
 	if x == nil {
 		return n
 	}
@@ -1026,7 +1192,7 @@ func (x *GetAvatarResponse) Size() (n int) {
 	return n
 }
 
-func (x *GetAvatarResponse) sizeField1() (n int) {
+func (x *UserAvatarResponse) sizeField1() (n int) {
 	if x.Avatar == "" {
 		return n
 	}
@@ -1034,15 +1200,50 @@ func (x *GetAvatarResponse) sizeField1() (n int) {
 	return n
 }
 
+func (x *UserBackgroundImageRequest) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	return n
+}
+
+func (x *UserBackgroundImageRequest) sizeField1() (n int) {
+	if x.UserId == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(1, x.UserId)
+	return n
+}
+
+func (x *UserBackgroundImageResponse) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	return n
+}
+
+func (x *UserBackgroundImageResponse) sizeField1() (n int) {
+	if x.BackgroundImage == "" {
+		return n
+	}
+	n += fastpb.SizeString(1, x.BackgroundImage)
+	return n
+}
+
 var fieldIDToName_User = map[int32]string{
-	1: "Id",
-	2: "Name",
-	3: "FollowCount",
-	4: "FollowerCount",
-	5: "IsFollow",
-	6: "WorkCount",
-	7: "FavoriteCount",
-	8: "Avatar",
+	1:  "Id",
+	2:  "Name",
+	3:  "FollowCount",
+	4:  "FollowerCount",
+	5:  "IsFollow",
+	6:  "WorkCount",
+	7:  "BackgroundImage",
+	8:  "Signature",
+	9:  "TotalFavorite",
+	10: "FavoriteCount",
+	11: "Avatar",
 }
 
 var fieldIDToName_UserInfoRequest = map[int32]string{
@@ -1080,10 +1281,18 @@ var fieldIDToName_UserRegisterResponse = map[int32]string{
 	4: "Token",
 }
 
-var fieldIDToName_GetAvatarRequest = map[int32]string{
+var fieldIDToName_UserAvatarRequest = map[int32]string{
 	1: "UserId",
 }
 
-var fieldIDToName_GetAvatarResponse = map[int32]string{
+var fieldIDToName_UserAvatarResponse = map[int32]string{
 	1: "Avatar",
+}
+
+var fieldIDToName_UserBackgroundImageRequest = map[int32]string{
+	1: "UserId",
+}
+
+var fieldIDToName_UserBackgroundImageResponse = map[int32]string{
+	1: "BackgroundImage",
 }

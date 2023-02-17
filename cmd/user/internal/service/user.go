@@ -24,10 +24,10 @@ func UserLogin(name, password string) (userId int64, token string, err error) {
 		err = errors.New("账号或密码不符合要求")
 		return
 	}
-	user := &User{
+	user := &model.User{
 		Name: name,
 	}
-	err = GetUser(user)
+	err = model.GetUser(user)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			err = errors.New("账号或密码错误")
@@ -40,7 +40,7 @@ func UserLogin(name, password string) (userId int64, token string, err error) {
 		err = errors.New("账号或密码错误")
 		return
 	}
-	userId = int64(user.Id)
+	userId = user.Id
 	token = GenerateToken(*user)
 	return
 }
