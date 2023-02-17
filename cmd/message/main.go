@@ -3,6 +3,7 @@ package main
 import (
 	message "dousheng/kitex_gen/message/messageservice"
 	"dousheng/pkg/database"
+	"dousheng/pkg/etcd_discovery"
 	g "dousheng/pkg/global"
 	"dousheng/pkg/tracer"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
@@ -14,7 +15,9 @@ import (
 )
 
 func init() {
-	tracer.InitJaeger(g.ServiceUserName)
+	tracer.InitJaeger(g.ServiceMessageName)
+	etcd_discovery.InitUserRpc()
+	etcd_discovery.InitRelationRpc()
 	database.InitDB()
 }
 

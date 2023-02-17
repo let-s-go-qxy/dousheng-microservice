@@ -3,6 +3,7 @@ package main
 import (
 	user "dousheng/kitex_gen/user/userservice"
 	"dousheng/pkg/database"
+	"dousheng/pkg/etcd_discovery"
 	g "dousheng/pkg/global"
 	"dousheng/pkg/tracer"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
@@ -15,6 +16,9 @@ import (
 
 func init() {
 	tracer.InitJaeger(g.ServiceUserName)
+	etcd_discovery.InitLikeRpc()
+	etcd_discovery.InitRelationRpc()
+	etcd_discovery.InitVideoRpc()
 	database.InitDB()
 }
 

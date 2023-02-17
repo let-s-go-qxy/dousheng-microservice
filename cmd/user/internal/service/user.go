@@ -3,6 +3,7 @@ package service
 import (
 	"dousheng/cmd/user/internal/model"
 	"dousheng/conf"
+	userService "dousheng/kitex_gen/user"
 	g "dousheng/pkg/global"
 	utils2 "dousheng/pkg/utils"
 	"errors"
@@ -73,7 +74,7 @@ func UserRegister(name, password string) (userId int64, token string, err error)
 	return
 }
 
-func UserInfo(myId int64, userId int64) (Id int64, FollowCount, FollowerCount int32, Name string, IsFollow bool, avatar string, err error) {
+func UserInfo(myId int64, userId int64) (userInfo userService.User, err error) {
 	userDao := &model.User{
 		Id: userId,
 	}
@@ -84,12 +85,25 @@ func UserInfo(myId int64, userId int64) (Id int64, FollowCount, FollowerCount in
 		}
 		return
 	}
-	avatar = GetAvatar(userId)
-	Name = userDao.Name
+	userInfo = userService.User{
+		Id:              userId,
+		Name:            userDao.Name,
+		FollowCount:     0,
+		FollowerCount:   0,
+		IsFollow:        false,
+		WorkCount:       0,
+		BackgroundImage: "https://tse2-mm.cn.bing.net/th/id/OIP-C.BRuY39z2iJY_hiqkoNhH_wHaE7?pid=ImgDet&rs=1",
+		Signature:       "我不想再当一个xx了，我只想拥有快乐（谢谢你，狗子）",
+		TotalFavorite:   0,
+		FavoriteCount:   0,
+		Avatar:          "",
+	}
+	userInfo.Avatar = GetAvatar(userId)
+	userInfo.Name = userDao.Name
 	//FollowCount = int(model.GetFollowCount(userDao.Id))
 	//FollowerCount = int(model.GetFollowerCount(userDao.Id))
 	//IsFollow = model.IsFollow(myId, userId)
-	return userDao.Id, FollowCount, FollowerCount, Name, IsFollow, avatar, err
+	return
 }
 
 // GetAvatar 获取用户头像
