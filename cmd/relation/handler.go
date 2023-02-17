@@ -33,3 +33,21 @@ func (s *RelationServiceImpl) RelationFollowList(ctx context.Context, req *relat
 	resp.StatusMsg = "ok"
 	return
 }
+
+// GetFollowList implements the RelationServiceImpl interface.
+func (s *RelationServiceImpl) GetFollowList(ctx context.Context, req *relation.RelationFollowListRequest) (resp *relation.RelationFollowListResponse, err error) {
+	// TODO: Your code here...
+	return
+}
+
+// GetFollowerList implements the RelationServiceImpl interface.
+func (s *RelationServiceImpl) GetFollowerList(ctx context.Context, req *relation.RelationFollowerListRequest) (resp *relation.RelationFollowerListResponse, err error) {
+	// TODO: Your code here...
+	return
+}
+
+// GetFriendList implements the RelationServiceImpl interface.
+func (s *RelationServiceImpl) GetFriendList(ctx context.Context, req *relation.RelationFriendListRequest) (resp *relation.RelationFriendListResponse, err error) {
+	// TODO: Your code here...
+	return
+}
