@@ -5,7 +5,7 @@ import (
 	"dousheng/cmd/user/internal/service"
 	user "dousheng/kitex_gen/user"
 	g "dousheng/pkg/global"
-	"github.com/pkg/errors"
+	"errors"
 )
 
 // UserServiceImpl implements the last service interface defined in the IDL.
@@ -15,7 +15,8 @@ type UserServiceImpl struct{}
 func (s *UserServiceImpl) UserInfo(ctx context.Context, req *user.UserInfoRequest) (resp *user.UserInfoResponse, err error) {
 	resp = &user.UserInfoResponse{}
 	user1 := &user.User{}
-	user1.Id, user1.FollowCount, user1.FollowerCount, user1.Name, user1.IsFollow, user1.Avatar, err = service.UserInfo(req.GetMyId(), req.GetUserId())
+	user1.Id, user1.FollowCount, user1.FollowerCount, user1.Name, user1.IsFollow,
+		user1.Avatar, err = service.UserInfo(req.GetMyId(), req.GetUserId())
 	if err != nil {
 		return nil, err
 	}
