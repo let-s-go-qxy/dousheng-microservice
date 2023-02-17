@@ -17,4 +17,7 @@ const (
 
 	ServiceRelationName    = "relationservice"
 	ServiceRelationAddress = "127.0.0.1:8084"
+
+	ServiceMessageName    = "messageservice"
+	ServiceMessageAddress = "127.0.0.1:8100"
 )

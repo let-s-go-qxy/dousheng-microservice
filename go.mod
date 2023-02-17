@@ -1,6 +1,6 @@
 module dousheng
 
-go 1.19
+go 1.17
 
 require (
 	github.com/cloudwego/fastpb v0.0.3
@@ -8,11 +8,13 @@ require (
 	github.com/cloudwego/kitex v0.4.4
 	github.com/form3tech-oss/jwt-go v3.2.3+incompatible
 	github.com/go-redis/redis/v8 v8.11.5
+	github.com/jinzhu/copier v0.3.5
 	github.com/kitex-contrib/registry-etcd v0.1.0
 	github.com/kitex-contrib/tracer-opentracing v0.0.2
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/viper v1.7.0
+	github.com/streadway/amqp v1.0.0
 	github.com/uber/jaeger-client-go v2.29.1+incompatible
 	google.golang.org/protobuf v1.28.1
 	gorm.io/driver/mysql v1.4.6
