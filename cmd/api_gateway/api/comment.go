@@ -2,11 +2,11 @@ package api
 
 import (
 	"context"
-	"dousheng/kitex_gen/comment/commentservice"
+	"dousheng/pkg/etcd_discovery"
 	g "dousheng/pkg/global"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
-
+	"github.com/jinzhu/copier"
 	"strconv"
 )
 
@@ -24,7 +24,7 @@ func GetCommentList(c context.Context, ctx *app.RequestContext) {
 
 	}
 	// 1、通过video表查询对应主键服务；2、根据video主键作为查询条件，查询相应评论
-	comments, videoCommentCount := commentservice.GetCommentList(vid, int(userId))
+	comments, videoCommentCount := etcd_discovery.CommentClient.GetCommentList(vid, int(userId))
 	print(videoCommentCount)
 	respCommentList := make([]Comment, 0)
 	for _, comment := range comments {
@@ -37,7 +37,7 @@ func GetCommentList(c context.Context, ctx *app.RequestContext) {
 	ctx.JSON(consts.StatusOK, resp)
 }
 
-// PostCommentAction对视频下的评论进行发表或者删除
+// PostCommentAction 对视频下的评论进行发表或者删除
 func PostCommentAction(c context.Context, ctx *app.RequestContext) {
 	// 获取请求参数
 	videoId, _ := strconv.Atoi(ctx.Query("video_id"))       //》根据视频查找对应评论
