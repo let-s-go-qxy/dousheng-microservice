@@ -4,7 +4,7 @@ option go_package = "message";
 
 
 message MessageChatRequest {
-  int64 user_id = 1; // 用户鉴权token
+  int64 user_id = 1;
    int64 to_user_id = 2; // 对方用户id
 }
 
