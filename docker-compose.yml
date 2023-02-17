@@ -17,4 +17,34 @@ services:
       - 6832:6832/udp
       - 5778:5778/tcp
       - "16686:16686"
-
+  rabbitmq:
+    restart: always
+    image: rabbitmq:management
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      RABBITMQ_DEFAULT_USER: Admin
+      RABBITMQ_DEFAULT_PASS: Qd20010701.
+  mysql_compose:
+    image: mysql:8.0.32
+    container_name: mysql_compose
+    ports:
+      - 3307:3306
+    volumes:
+#      - /docker/mysql/data:/var/lib/mysql
+      - ./conf/mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
+    environment:
+      MYSQL_ROOT_PASSWORD: "123456"
+  redis:
+    image: redis:6.2.6-alpine # 指定服务镜像，最好是与之前下载的redis配置文件保持一致
+    container_name: my_redis # 容器名称
+    restart: always # 重启方式
+    environment:
+      - TZ=Asia/Shanghai # 设置时区
+    volumes:
+      - ./conf/redis.conf:/usr/local/etc/redis/redis.conf
+    ports: # 映射端口
+      - "6380:6379"
+    privileged: true # 使用该参数，container内的root拥有真正的root权限。否则，container内的root只是外部的一个普通用户权限
