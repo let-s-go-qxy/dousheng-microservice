@@ -17,4 +17,23 @@ services:
       - 6832:6832/udp
       - 5778:5778/tcp
       - "16686:16686"
-
+  rabbitmq:
+    restart: always
+    image: rabbitmq:management
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      RABBITMQ_DEFAULT_USER: Admin
+      RABBITMQ_DEFAULT_PASS: Qd20010701.
+  mysql_compose:
+    image: mysql:8.0.32
+    container_name: mysql_compose
+    ports:
+      - 3307:3306
+    volumes:
+      #      - /docker/mysql/data:/var/lib/mysql
+      - ./conf/mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
+    environment:
+      MYSQL_ROOT_PASSWORD: "123456"
