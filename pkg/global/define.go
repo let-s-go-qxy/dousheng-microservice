@@ -42,7 +42,7 @@ type Conf struct {
 	JWT
 }
 
-// TODO 放到 config.yaml 中，在需要的服务中再读取
+// JWT TODO 放到 config.yaml 中，在需要的服务中再读取
 type JWT struct {
 	JwtSecretKey   string
 	JwtExpiresTime int64

@@ -7,6 +7,7 @@ import (
 	g "dousheng/pkg/global"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	"strconv"
 )
 
 type UserLoginResponse struct {
@@ -21,15 +22,17 @@ type UserResponse struct {
 }
 
 func UserInfo(c context.Context, ctx *app.RequestContext) {
+	userId, _ := strconv.Atoi(ctx.Query("user_id"))
+	myID, _ := strconv.Atoi(ctx.Query("user_id"))
 	req := &userService.UserInfoRequest{
-		UserId: 1,
-		Token:  "123",
+		UserId: int64(userId),
+		MyId:   int64(myID),
 	}
 	resp, err := etcd_discovery.UserClient.UserInfo(c, req)
 	if err != nil {
 		ctx.JSON(consts.StatusOK, UserResponse{
 			Response: Response{
-				StatusCode: 1,
+				StatusCode: g.StatusCodeFail,
 				StatusMsg:  err.Error(),
 			},
 		})
@@ -43,7 +46,7 @@ func UserLogin(c context.Context, ctx *app.RequestContext) {
 		Username: ctx.Query("username"),
 		Password: ctx.Query("password"),
 	}
-	userInfo, err := etcd_discovery.UserClient.UserLogin(c, req)
+	resp, err := etcd_discovery.UserClient.UserLogin(c, req)
 	if err != nil {
 		ctx.JSON(consts.StatusOK, Response{
 			StatusCode: g.StatusCodeFail,
@@ -51,11 +54,23 @@ func UserLogin(c context.Context, ctx *app.RequestContext) {
 		})
 		return
 	}
-	ctx.JSON(consts.StatusOK, UserLoginResponse{
-		Response: Response{
-			StatusCode: 0,
-		},
-		UserId: userInfo.UserId,
-		Token:  userInfo.Token,
-	})
+	ctx.JSON(consts.StatusOK, resp)
+}
+
+func UserRegister(c context.Context, ctx *app.RequestContext) {
+	name := ctx.Query("username")
+	pw := ctx.Query("password")
+	req := userService.UserRegisterRequest{
+		Username: name,
+		Password: pw,
+	}
+	resp, err := etcd_discovery.UserClient.UserRegister(c, &req)
+	if err != nil {
+		ctx.JSON(consts.StatusOK, Response{
+			StatusCode: g.StatusCodeFail,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+	ctx.JSON(consts.StatusOK, resp)
 }

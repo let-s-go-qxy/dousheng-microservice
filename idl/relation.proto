@@ -17,7 +17,7 @@ message FriendUser {
 
 // 关注操作
 message RelationActionRequest {
-   string token = 1; // 用户鉴权token
+   int64 from_user_id = 1; // 登录的用户id
    int64 to_user_id = 2; // 对方用户id
    int32 action_type = 3; // 1-关注，2-取消关注
 }
@@ -29,7 +29,7 @@ message RelationActionResponse {
 // 关注列表
 message RelationFollowListRequest {
    int64 user_id = 1;
-   string token = 2;
+   int64 my_id = 2; // 登录的用户id
 }
 message RelationFollowListResponse {
    int32 status_code = 1; // 状态码，0-成功，其他值-失败
@@ -40,7 +40,7 @@ message RelationFollowListResponse {
 // 粉丝列表
 message RelationFollowerListRequest {
     int64 user_id = 1; // 用户id
-    string token = 2; // 用户鉴权token
+    int64 my_id = 2; // 登录的用户id
 }
 message RelationFollowerListResponse {
     int32 status_code = 1; // 状态码，0-成功，其他值-失败
@@ -51,7 +51,7 @@ message RelationFollowerListResponse {
 // 用户好友列表
 message RelationFriendListRequest {
    int64 user_id = 1; // 用户id
-   string token = 2; // 用户鉴权token
+   int64 my_id = 2; // 登录的用户id
 }
 message RelationFriendListResponse {
    int32 status_code = 1; // 状态码，0-成功，其他值-失败
@@ -61,7 +61,7 @@ message RelationFriendListResponse {
 
 service RelationService {
    rpc RelationAction (RelationActionRequest) returns (RelationActionResponse) {}
-   rpc RelationFollowList (RelationFollowListRequest) returns (RelationFollowListResponse) {}
-   rpc RelationFollowerList (RelationFollowerListRequest) returns (RelationFollowerListResponse) {}
-   rpc 
+   rpc GetFollowList (RelationFollowListRequest) returns (RelationFollowListResponse) {}
+   rpc GetFollowerList (RelationFollowerListRequest) returns (RelationFollowerListResponse) {}
+   rpc GetFriendList (RelationFriendListRequest) returns (RelationFriendListResponse) {}
 }

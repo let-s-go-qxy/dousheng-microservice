@@ -22,8 +22,10 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "UserService"
 	handlerType := (*user.UserService)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"UserInfo":  kitex.NewMethodInfo(userInfoHandler, newUserInfoArgs, newUserInfoResult, false),
-		"UserLogin": kitex.NewMethodInfo(userLoginHandler, newUserLoginArgs, newUserLoginResult, false),
+		"UserInfo":     kitex.NewMethodInfo(userInfoHandler, newUserInfoArgs, newUserInfoResult, false),
+		"UserLogin":    kitex.NewMethodInfo(userLoginHandler, newUserLoginArgs, newUserLoginResult, false),
+		"UserRegister": kitex.NewMethodInfo(userRegisterHandler, newUserRegisterArgs, newUserRegisterResult, false),
+		"GetAvatar":    kitex.NewMethodInfo(getAvatarHandler, newGetAvatarArgs, newGetAvatarResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "user",
@@ -329,6 +331,296 @@ func (p *UserLoginResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
+func userRegisterHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(user.UserRegisterRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(user.UserService).UserRegister(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *UserRegisterArgs:
+		success, err := handler.(user.UserService).UserRegister(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*UserRegisterResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newUserRegisterArgs() interface{} {
+	return &UserRegisterArgs{}
+}
+
+func newUserRegisterResult() interface{} {
+	return &UserRegisterResult{}
+}
+
+type UserRegisterArgs struct {
+	Req *user.UserRegisterRequest
+}
+
+func (p *UserRegisterArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(user.UserRegisterRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *UserRegisterArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *UserRegisterArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *UserRegisterArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in UserRegisterArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *UserRegisterArgs) Unmarshal(in []byte) error {
+	msg := new(user.UserRegisterRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var UserRegisterArgs_Req_DEFAULT *user.UserRegisterRequest
+
+func (p *UserRegisterArgs) GetReq() *user.UserRegisterRequest {
+	if !p.IsSetReq() {
+		return UserRegisterArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *UserRegisterArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type UserRegisterResult struct {
+	Success *user.UserRegisterResponse
+}
+
+var UserRegisterResult_Success_DEFAULT *user.UserRegisterResponse
+
+func (p *UserRegisterResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(user.UserRegisterResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *UserRegisterResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *UserRegisterResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *UserRegisterResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in UserRegisterResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *UserRegisterResult) Unmarshal(in []byte) error {
+	msg := new(user.UserRegisterResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *UserRegisterResult) GetSuccess() *user.UserRegisterResponse {
+	if !p.IsSetSuccess() {
+		return UserRegisterResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *UserRegisterResult) SetSuccess(x interface{}) {
+	p.Success = x.(*user.UserRegisterResponse)
+}
+
+func (p *UserRegisterResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func getAvatarHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(user.GetAvatarRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(user.UserService).GetAvatar(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *GetAvatarArgs:
+		success, err := handler.(user.UserService).GetAvatar(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*GetAvatarResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newGetAvatarArgs() interface{} {
+	return &GetAvatarArgs{}
+}
+
+func newGetAvatarResult() interface{} {
+	return &GetAvatarResult{}
+}
+
+type GetAvatarArgs struct {
+	Req *user.GetAvatarRequest
+}
+
+func (p *GetAvatarArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(user.GetAvatarRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *GetAvatarArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *GetAvatarArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *GetAvatarArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in GetAvatarArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *GetAvatarArgs) Unmarshal(in []byte) error {
+	msg := new(user.GetAvatarRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var GetAvatarArgs_Req_DEFAULT *user.GetAvatarRequest
+
+func (p *GetAvatarArgs) GetReq() *user.GetAvatarRequest {
+	if !p.IsSetReq() {
+		return GetAvatarArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *GetAvatarArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type GetAvatarResult struct {
+	Success *user.GetAvatarResponse
+}
+
+var GetAvatarResult_Success_DEFAULT *user.GetAvatarResponse
+
+func (p *GetAvatarResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(user.GetAvatarResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *GetAvatarResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *GetAvatarResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *GetAvatarResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in GetAvatarResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *GetAvatarResult) Unmarshal(in []byte) error {
+	msg := new(user.GetAvatarResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *GetAvatarResult) GetSuccess() *user.GetAvatarResponse {
+	if !p.IsSetSuccess() {
+		return GetAvatarResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *GetAvatarResult) SetSuccess(x interface{}) {
+	p.Success = x.(*user.GetAvatarResponse)
+}
+
+func (p *GetAvatarResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -354,6 +646,26 @@ func (p *kClient) UserLogin(ctx context.Context, Req *user.UserLoginRequest) (r 
 	_args.Req = Req
 	var _result UserLoginResult
 	if err = p.c.Call(ctx, "UserLogin", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) UserRegister(ctx context.Context, Req *user.UserRegisterRequest) (r *user.UserRegisterResponse, err error) {
+	var _args UserRegisterArgs
+	_args.Req = Req
+	var _result UserRegisterResult
+	if err = p.c.Call(ctx, "UserRegister", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GetAvatar(ctx context.Context, Req *user.GetAvatarRequest) (r *user.GetAvatarResponse, err error) {
+	var _args GetAvatarArgs
+	_args.Req = Req
+	var _result GetAvatarResult
+	if err = p.c.Call(ctx, "GetAvatar", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

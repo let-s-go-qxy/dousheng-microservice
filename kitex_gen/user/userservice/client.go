@@ -13,6 +13,8 @@ import (
 type Client interface {
 	UserInfo(ctx context.Context, Req *user.UserInfoRequest, callOptions ...callopt.Option) (r *user.UserInfoResponse, err error)
 	UserLogin(ctx context.Context, Req *user.UserLoginRequest, callOptions ...callopt.Option) (r *user.UserLoginResponse, err error)
+	UserRegister(ctx context.Context, Req *user.UserRegisterRequest, callOptions ...callopt.Option) (r *user.UserRegisterResponse, err error)
+	GetAvatar(ctx context.Context, Req *user.GetAvatarRequest, callOptions ...callopt.Option) (r *user.GetAvatarResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -52,4 +54,14 @@ func (p *kUserServiceClient) UserInfo(ctx context.Context, Req *user.UserInfoReq
 func (p *kUserServiceClient) UserLogin(ctx context.Context, Req *user.UserLoginRequest, callOptions ...callopt.Option) (r *user.UserLoginResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.UserLogin(ctx, Req)
+}
+
+func (p *kUserServiceClient) UserRegister(ctx context.Context, Req *user.UserRegisterRequest, callOptions ...callopt.Option) (r *user.UserRegisterResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.UserRegister(ctx, Req)
+}
+
+func (p *kUserServiceClient) GetAvatar(ctx context.Context, Req *user.GetAvatarRequest, callOptions ...callopt.Option) (r *user.GetAvatarResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetAvatar(ctx, Req)
 }
