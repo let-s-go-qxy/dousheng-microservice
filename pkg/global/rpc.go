@@ -23,4 +23,7 @@ const (
 
 	ServiceCommentName    = "commentservice"
 	ServiceCommentAddress = "127.0.0.1:8088"
+  
+	ServiceMessageName    = "messageservice"
+	ServiceMessageAddress = "127.0.0.1:8100"
 )
