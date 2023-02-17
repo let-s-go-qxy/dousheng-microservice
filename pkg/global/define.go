@@ -13,6 +13,12 @@ const (
 	RequestCancelFavoriteAction = 2
 )
 
+// 状态码
+var (
+	StatusCodeOk int32 = 0 // 响应状态码 - 成功
+	//StatusCodeFail int32 = 1 // 响应状态码 - 一般失败
+)
+
 const (
 	MessageSendEvent = 1 //发送消息
 )

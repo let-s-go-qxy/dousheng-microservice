@@ -9,4 +9,5 @@ func InitRPC() {
 	etcd_discovery.InitUserRpc()
 	etcd_discovery.InitVideoRpc()
 	etcd_discovery.InitRelationRpc()
+	etcd_discovery.InitMessageRpc()
 }
