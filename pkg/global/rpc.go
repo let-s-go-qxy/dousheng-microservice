@@ -17,4 +17,10 @@ const (
 
 	ServiceRelationName    = "relationservice"
 	ServiceRelationAddress = "127.0.0.1:8084"
+
+	ServiceLikeName    = "likeservice"
+	ServiceLikeAddress = "127.0.0.1:8087"
+
+	ServiceCommentName    = "commentservice"
+	ServiceCommentAddress = "127.0.0.1:8088"
 )
