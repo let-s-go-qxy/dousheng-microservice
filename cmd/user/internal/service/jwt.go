@@ -1,6 +1,7 @@
 package service
 
 import (
+	"dousheng/cmd/user/internal/model"
 	g "dousheng/pkg/global"
 	"errors"
 	"github.com/form3tech-oss/jwt-go"
@@ -30,7 +31,7 @@ func ParseToken(str string) (UserClaims, error) {
 }
 
 // GenerateToken 生成7天的token
-func GenerateToken(user User) (str string) {
+func GenerateToken(user model.User) (str string) {
 	c := &UserClaims{
 		Id:     user.Id,
 		Name:   user.Name,

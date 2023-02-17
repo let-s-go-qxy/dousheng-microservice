@@ -22,10 +22,11 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "UserService"
 	handlerType := (*user.UserService)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"UserInfo":     kitex.NewMethodInfo(userInfoHandler, newUserInfoArgs, newUserInfoResult, false),
-		"UserLogin":    kitex.NewMethodInfo(userLoginHandler, newUserLoginArgs, newUserLoginResult, false),
-		"UserRegister": kitex.NewMethodInfo(userRegisterHandler, newUserRegisterArgs, newUserRegisterResult, false),
-		"GetAvatar":    kitex.NewMethodInfo(getAvatarHandler, newGetAvatarArgs, newGetAvatarResult, false),
+		"UserInfo":           kitex.NewMethodInfo(userInfoHandler, newUserInfoArgs, newUserInfoResult, false),
+		"UserLogin":          kitex.NewMethodInfo(userLoginHandler, newUserLoginArgs, newUserLoginResult, false),
+		"UserRegister":       kitex.NewMethodInfo(userRegisterHandler, newUserRegisterArgs, newUserRegisterResult, false),
+		"GetAvatar":          kitex.NewMethodInfo(getAvatarHandler, newGetAvatarArgs, newGetAvatarResult, false),
+		"GetBackgroundImage": kitex.NewMethodInfo(getBackgroundImageHandler, newGetBackgroundImageArgs, newGetBackgroundImageResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "user",
@@ -480,7 +481,7 @@ func getAvatarHandler(ctx context.Context, handler interface{}, arg, result inte
 	switch s := arg.(type) {
 	case *streaming.Args:
 		st := s.Stream
-		req := new(user.GetAvatarRequest)
+		req := new(user.UserAvatarRequest)
 		if err := st.RecvMsg(req); err != nil {
 			return err
 		}
@@ -510,12 +511,12 @@ func newGetAvatarResult() interface{} {
 }
 
 type GetAvatarArgs struct {
-	Req *user.GetAvatarRequest
+	Req *user.UserAvatarRequest
 }
 
 func (p *GetAvatarArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetReq() {
-		p.Req = new(user.GetAvatarRequest)
+		p.Req = new(user.UserAvatarRequest)
 	}
 	return p.Req.FastRead(buf, _type, number)
 }
@@ -542,7 +543,7 @@ func (p *GetAvatarArgs) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *GetAvatarArgs) Unmarshal(in []byte) error {
-	msg := new(user.GetAvatarRequest)
+	msg := new(user.UserAvatarRequest)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -550,9 +551,9 @@ func (p *GetAvatarArgs) Unmarshal(in []byte) error {
 	return nil
 }
 
-var GetAvatarArgs_Req_DEFAULT *user.GetAvatarRequest
+var GetAvatarArgs_Req_DEFAULT *user.UserAvatarRequest
 
-func (p *GetAvatarArgs) GetReq() *user.GetAvatarRequest {
+func (p *GetAvatarArgs) GetReq() *user.UserAvatarRequest {
 	if !p.IsSetReq() {
 		return GetAvatarArgs_Req_DEFAULT
 	}
@@ -564,14 +565,14 @@ func (p *GetAvatarArgs) IsSetReq() bool {
 }
 
 type GetAvatarResult struct {
-	Success *user.GetAvatarResponse
+	Success *user.UserAvatarResponse
 }
 
-var GetAvatarResult_Success_DEFAULT *user.GetAvatarResponse
+var GetAvatarResult_Success_DEFAULT *user.UserAvatarResponse
 
 func (p *GetAvatarResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetSuccess() {
-		p.Success = new(user.GetAvatarResponse)
+		p.Success = new(user.UserAvatarResponse)
 	}
 	return p.Success.FastRead(buf, _type, number)
 }
@@ -598,7 +599,7 @@ func (p *GetAvatarResult) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *GetAvatarResult) Unmarshal(in []byte) error {
-	msg := new(user.GetAvatarResponse)
+	msg := new(user.UserAvatarResponse)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -606,7 +607,7 @@ func (p *GetAvatarResult) Unmarshal(in []byte) error {
 	return nil
 }
 
-func (p *GetAvatarResult) GetSuccess() *user.GetAvatarResponse {
+func (p *GetAvatarResult) GetSuccess() *user.UserAvatarResponse {
 	if !p.IsSetSuccess() {
 		return GetAvatarResult_Success_DEFAULT
 	}
@@ -614,10 +615,155 @@ func (p *GetAvatarResult) GetSuccess() *user.GetAvatarResponse {
 }
 
 func (p *GetAvatarResult) SetSuccess(x interface{}) {
-	p.Success = x.(*user.GetAvatarResponse)
+	p.Success = x.(*user.UserAvatarResponse)
 }
 
 func (p *GetAvatarResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func getBackgroundImageHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(user.UserBackgroundImageRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(user.UserService).GetBackgroundImage(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *GetBackgroundImageArgs:
+		success, err := handler.(user.UserService).GetBackgroundImage(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*GetBackgroundImageResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newGetBackgroundImageArgs() interface{} {
+	return &GetBackgroundImageArgs{}
+}
+
+func newGetBackgroundImageResult() interface{} {
+	return &GetBackgroundImageResult{}
+}
+
+type GetBackgroundImageArgs struct {
+	Req *user.UserBackgroundImageRequest
+}
+
+func (p *GetBackgroundImageArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(user.UserBackgroundImageRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *GetBackgroundImageArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *GetBackgroundImageArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *GetBackgroundImageArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in GetBackgroundImageArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *GetBackgroundImageArgs) Unmarshal(in []byte) error {
+	msg := new(user.UserBackgroundImageRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var GetBackgroundImageArgs_Req_DEFAULT *user.UserBackgroundImageRequest
+
+func (p *GetBackgroundImageArgs) GetReq() *user.UserBackgroundImageRequest {
+	if !p.IsSetReq() {
+		return GetBackgroundImageArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *GetBackgroundImageArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type GetBackgroundImageResult struct {
+	Success *user.UserBackgroundImageResponse
+}
+
+var GetBackgroundImageResult_Success_DEFAULT *user.UserBackgroundImageResponse
+
+func (p *GetBackgroundImageResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(user.UserBackgroundImageResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *GetBackgroundImageResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *GetBackgroundImageResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *GetBackgroundImageResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in GetBackgroundImageResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *GetBackgroundImageResult) Unmarshal(in []byte) error {
+	msg := new(user.UserBackgroundImageResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *GetBackgroundImageResult) GetSuccess() *user.UserBackgroundImageResponse {
+	if !p.IsSetSuccess() {
+		return GetBackgroundImageResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *GetBackgroundImageResult) SetSuccess(x interface{}) {
+	p.Success = x.(*user.UserBackgroundImageResponse)
+}
+
+func (p *GetBackgroundImageResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
@@ -661,11 +807,21 @@ func (p *kClient) UserRegister(ctx context.Context, Req *user.UserRegisterReques
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) GetAvatar(ctx context.Context, Req *user.GetAvatarRequest) (r *user.GetAvatarResponse, err error) {
+func (p *kClient) GetAvatar(ctx context.Context, Req *user.UserAvatarRequest) (r *user.UserAvatarResponse, err error) {
 	var _args GetAvatarArgs
 	_args.Req = Req
 	var _result GetAvatarResult
 	if err = p.c.Call(ctx, "GetAvatar", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GetBackgroundImage(ctx context.Context, Req *user.UserBackgroundImageRequest) (r *user.UserBackgroundImageResponse, err error) {
+	var _args GetBackgroundImageArgs
+	_args.Req = Req
+	var _result GetBackgroundImageResult
+	if err = p.c.Call(ctx, "GetBackgroundImage", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

@@ -443,6 +443,106 @@ func (x *RelationFriendListResponse) fastReadField3(buf []byte, _type int8) (off
 	return offset, nil
 }
 
+func (x *RelationFollowCountRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_RelationFollowCountRequest[number], err)
+}
+
+func (x *RelationFollowCountRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.UserId, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *RelationFollowCountResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_RelationFollowCountResponse[number], err)
+}
+
+func (x *RelationFollowCountResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.Count, offset, err = fastpb.ReadInt32(buf, _type)
+	return offset, err
+}
+
+func (x *RelationFollowerCountRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_RelationFollowerCountRequest[number], err)
+}
+
+func (x *RelationFollowerCountRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.UserId, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *RelationFollowerCountResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_RelationFollowerCountResponse[number], err)
+}
+
+func (x *RelationFollowerCountResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.Count, offset, err = fastpb.ReadInt32(buf, _type)
+	return offset, err
+}
+
 func (x *FriendUser) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
@@ -761,6 +861,70 @@ func (x *RelationFriendListResponse) fastWriteField3(buf []byte) (offset int) {
 	for i := range x.UserList {
 		offset += fastpb.WriteMessage(buf[offset:], 3, x.UserList[i])
 	}
+	return offset
+}
+
+func (x *RelationFollowCountRequest) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	return offset
+}
+
+func (x *RelationFollowCountRequest) fastWriteField1(buf []byte) (offset int) {
+	if x.UserId == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.UserId)
+	return offset
+}
+
+func (x *RelationFollowCountResponse) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	return offset
+}
+
+func (x *RelationFollowCountResponse) fastWriteField1(buf []byte) (offset int) {
+	if x.Count == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt32(buf[offset:], 1, x.Count)
+	return offset
+}
+
+func (x *RelationFollowerCountRequest) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	return offset
+}
+
+func (x *RelationFollowerCountRequest) fastWriteField1(buf []byte) (offset int) {
+	if x.UserId == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.UserId)
+	return offset
+}
+
+func (x *RelationFollowerCountResponse) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	return offset
+}
+
+func (x *RelationFollowerCountResponse) fastWriteField1(buf []byte) (offset int) {
+	if x.Count == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt32(buf[offset:], 1, x.Count)
 	return offset
 }
 
@@ -1085,6 +1249,70 @@ func (x *RelationFriendListResponse) sizeField3() (n int) {
 	return n
 }
 
+func (x *RelationFollowCountRequest) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	return n
+}
+
+func (x *RelationFollowCountRequest) sizeField1() (n int) {
+	if x.UserId == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(1, x.UserId)
+	return n
+}
+
+func (x *RelationFollowCountResponse) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	return n
+}
+
+func (x *RelationFollowCountResponse) sizeField1() (n int) {
+	if x.Count == 0 {
+		return n
+	}
+	n += fastpb.SizeInt32(1, x.Count)
+	return n
+}
+
+func (x *RelationFollowerCountRequest) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	return n
+}
+
+func (x *RelationFollowerCountRequest) sizeField1() (n int) {
+	if x.UserId == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(1, x.UserId)
+	return n
+}
+
+func (x *RelationFollowerCountResponse) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	return n
+}
+
+func (x *RelationFollowerCountResponse) sizeField1() (n int) {
+	if x.Count == 0 {
+		return n
+	}
+	n += fastpb.SizeInt32(1, x.Count)
+	return n
+}
+
 var fieldIDToName_FriendUser = map[int32]string{
 	1: "Id",
 	2: "Name",
@@ -1138,6 +1366,22 @@ var fieldIDToName_RelationFriendListResponse = map[int32]string{
 	1: "StatusCode",
 	2: "StatusMsg",
 	3: "UserList",
+}
+
+var fieldIDToName_RelationFollowCountRequest = map[int32]string{
+	1: "UserId",
+}
+
+var fieldIDToName_RelationFollowCountResponse = map[int32]string{
+	1: "Count",
+}
+
+var fieldIDToName_RelationFollowerCountRequest = map[int32]string{
+	1: "UserId",
+}
+
+var fieldIDToName_RelationFollowerCountResponse = map[int32]string{
+	1: "Count",
 }
 
 var _ = user.File_user_proto

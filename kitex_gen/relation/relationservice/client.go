@@ -15,6 +15,8 @@ type Client interface {
 	GetFollowList(ctx context.Context, Req *relation.RelationFollowListRequest, callOptions ...callopt.Option) (r *relation.RelationFollowListResponse, err error)
 	GetFollowerList(ctx context.Context, Req *relation.RelationFollowerListRequest, callOptions ...callopt.Option) (r *relation.RelationFollowerListResponse, err error)
 	GetFriendList(ctx context.Context, Req *relation.RelationFriendListRequest, callOptions ...callopt.Option) (r *relation.RelationFriendListResponse, err error)
+	GetFollowCount(ctx context.Context, Req *relation.RelationFollowCountRequest, callOptions ...callopt.Option) (r *relation.RelationFollowCountResponse, err error)
+	GetFollowerCount(ctx context.Context, Req *relation.RelationFollowerCountRequest, callOptions ...callopt.Option) (r *relation.RelationFollowerCountResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -64,4 +66,14 @@ func (p *kRelationServiceClient) GetFollowerList(ctx context.Context, Req *relat
 func (p *kRelationServiceClient) GetFriendList(ctx context.Context, Req *relation.RelationFriendListRequest, callOptions ...callopt.Option) (r *relation.RelationFriendListResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetFriendList(ctx, Req)
+}
+
+func (p *kRelationServiceClient) GetFollowCount(ctx context.Context, Req *relation.RelationFollowCountRequest, callOptions ...callopt.Option) (r *relation.RelationFollowCountResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetFollowCount(ctx, Req)
+}
+
+func (p *kRelationServiceClient) GetFollowerCount(ctx context.Context, Req *relation.RelationFollowerCountRequest, callOptions ...callopt.Option) (r *relation.RelationFollowerCountResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetFollowerCount(ctx, Req)
 }
