@@ -143,6 +143,7 @@ func GetPublishList(userId int) (respVideoList []model.RespVideo, err error) {
 
 	//利用封装函数
 	respVideoList = PlusAuthor(userId, videoList)
+	i := len(respVideoList)
 	return
 }
 
