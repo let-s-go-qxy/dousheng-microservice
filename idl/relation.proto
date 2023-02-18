@@ -1,5 +1,6 @@
 syntax = "proto3";
 import "user.proto";
+import "message.proto";
 package relation;
 option go_package = "relation";
 
@@ -7,8 +8,8 @@ option go_package = "relation";
 message FriendUser {
   int64 id = 1; // 用户id
   string name = 2; // 用户名称
-  int64 follow_count = 3; // 关注总数
-  int64 follower_count = 4; // 粉丝总数
+  int32 follow_count = 3; // 关注总数
+  int32 follower_count = 4; // 粉丝总数
   bool is_follow = 5; // true-已关注，false-未关注
   string avatar = 6; // 用户头像Url
   string message = 7; // 和该好友的最新聊天消息
@@ -74,6 +75,21 @@ message RelationFollowerCountResponse {
   int32 count = 1;
 }
 
+message RelationIsFollowRequest {
+  int64 my_id = 1;
+  int64 user_id = 2;
+}
+message RelationIsFollowResponse {
+  bool isFollow = 1;
+}
+
+message RelationFriendsMessageListRequest {
+  int64 user_id = 1;
+}
+message RelationFriendsMessageListResponse {
+  repeated message.Message message_list = 1;
+}
+
 service RelationService {
    rpc RelationAction (RelationActionRequest) returns (RelationActionResponse) {}
    rpc GetFollowList (RelationFollowListRequest) returns (RelationFollowListResponse) {}
@@ -81,4 +97,6 @@ service RelationService {
    rpc GetFriendList (RelationFriendListRequest) returns (RelationFriendListResponse) {}
    rpc GetFollowCount (RelationFollowCountRequest) returns (RelationFollowCountResponse) {}
    rpc GetFollowerCount (RelationFollowerCountRequest) returns (RelationFollowerCountResponse) {}
+   rpc GetIsFollow (RelationIsFollowRequest) returns (RelationIsFollowResponse) {}
+   rpc GetFriendsMessageList (RelationFriendsMessageListRequest) returns (RelationFriendsMessageListResponse) {}
 }

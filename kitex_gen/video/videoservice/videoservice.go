@@ -25,6 +25,7 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		"PublishVideo":      kitex.NewMethodInfo(publishVideoHandler, newPublishVideoArgs, newPublishVideoResult, false),
 		"PublishList":       kitex.NewMethodInfo(publishListHandler, newPublishListArgs, newPublishListResult, false),
 		"PublishVideoCount": kitex.NewMethodInfo(publishVideoCountHandler, newPublishVideoCountArgs, newPublishVideoCountResult, false),
+		"GetFeedList":       kitex.NewMethodInfo(getFeedListHandler, newGetFeedListArgs, newGetFeedListResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "video",
@@ -475,6 +476,151 @@ func (p *PublishVideoCountResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
+func getFeedListHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(video.FeedRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(video.VideoService).GetFeedList(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *GetFeedListArgs:
+		success, err := handler.(video.VideoService).GetFeedList(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*GetFeedListResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newGetFeedListArgs() interface{} {
+	return &GetFeedListArgs{}
+}
+
+func newGetFeedListResult() interface{} {
+	return &GetFeedListResult{}
+}
+
+type GetFeedListArgs struct {
+	Req *video.FeedRequest
+}
+
+func (p *GetFeedListArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(video.FeedRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *GetFeedListArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *GetFeedListArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *GetFeedListArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in GetFeedListArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *GetFeedListArgs) Unmarshal(in []byte) error {
+	msg := new(video.FeedRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var GetFeedListArgs_Req_DEFAULT *video.FeedRequest
+
+func (p *GetFeedListArgs) GetReq() *video.FeedRequest {
+	if !p.IsSetReq() {
+		return GetFeedListArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *GetFeedListArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type GetFeedListResult struct {
+	Success *video.FeedResponse
+}
+
+var GetFeedListResult_Success_DEFAULT *video.FeedResponse
+
+func (p *GetFeedListResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(video.FeedResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *GetFeedListResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *GetFeedListResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *GetFeedListResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in GetFeedListResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *GetFeedListResult) Unmarshal(in []byte) error {
+	msg := new(video.FeedResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *GetFeedListResult) GetSuccess() *video.FeedResponse {
+	if !p.IsSetSuccess() {
+		return GetFeedListResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *GetFeedListResult) SetSuccess(x interface{}) {
+	p.Success = x.(*video.FeedResponse)
+}
+
+func (p *GetFeedListResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -510,6 +656,16 @@ func (p *kClient) PublishVideoCount(ctx context.Context, Req *video.PublishVideo
 	_args.Req = Req
 	var _result PublishVideoCountResult
 	if err = p.c.Call(ctx, "PublishVideoCount", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GetFeedList(ctx context.Context, Req *video.FeedRequest) (r *video.FeedResponse, err error) {
+	var _args GetFeedListArgs
+	_args.Req = Req
+	var _result GetFeedListResult
+	if err = p.c.Call(ctx, "GetFeedList", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

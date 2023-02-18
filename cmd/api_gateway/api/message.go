@@ -5,7 +5,6 @@ import (
 	"dousheng/kitex_gen/message"
 	"dousheng/pkg/etcd_discovery"
 	g "dousheng/pkg/global"
-	m "dousheng/pkg/mq"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	"github.com/jinzhu/copier"
@@ -47,12 +46,19 @@ func GetMessageList(c context.Context, ctx *app.RequestContext) {
 	if success {
 		fromId = int(userIdInterface.(int))
 	} // 若不存在，userID默认为0
-	var recordList, currentList []RespMessage
-	recordListMQ, err := m.GetRabbitMQMessageList(fromId)
-	currentListMQ, err := m.GetRabbitMQMessageCurrent(fromId)
-	copier.Copy(&recordList, &recordListMQ)
-	copier.Copy(&currentList, &currentListMQ)
-	allMessageList := append(recordList, currentList...)
+	messageChatRequest := &message.MessageChatRequest{}
+	messageChatRequest.UserId = int64(fromId)
+	messageChatRequest.ToUserId = int64(toId)
+
+	getMessageListResponse, err := etcd_discovery.MessageClient.GetMessageList(c, messageChatRequest)
+	messages := getMessageListResponse.MessageList
+	var msg RespMessage
+	allMessageList := []RespMessage{}
+	for _, msgPointer := range messages {
+		m := *msgPointer
+		copier.Copy(&msg, &m)
+		allMessageList = append(allMessageList, msg)
+	}
 	messageList := []RespMessage{}
 	for _, message := range allMessageList {
 		if (message.ToId == toId && message.FromId == fromId) || (message.ToId == fromId && message.FromId == toId) {
@@ -87,7 +93,7 @@ func PostMessageAction(c context.Context, ctx *app.RequestContext) {
 	toId, _ := strconv.Atoi(ctx.Query("to_user_id"))
 	content := ctx.Query("content")
 	actionType, _ := strconv.Atoi(ctx.Query("action_type"))
-	chatActionRequest := &message.RelationActionRequest{
+	chatActionRequest := &message.MessageActionRequest{
 		UserId:     int64(fromId),
 		ToUserId:   int64(toId),
 		ActionType: int32(actionType),
