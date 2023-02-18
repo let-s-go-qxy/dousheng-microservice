@@ -80,7 +80,7 @@ message RelationIsFollowRequest {
   int64 user_id = 2;
 }
 message RelationIsFollowResponse {
-  bool isFollow = 1;
+  bool is_follow = 1;
 }
 
 message RelationFriendsMessageListRequest {

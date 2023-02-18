@@ -54,7 +54,7 @@ func GetFeedList(c context.Context, ctx *app.RequestContext) {
 	userIDInterface, success := ctx.Get("user_id")
 	var userID int32
 	if success {
-		userID = int32(userIDInterface.(int))
+		userID = int32(userIDInterface.(int64))
 	} // 若不存在，userID默认为0
 
 	if latestTime == 0 {
@@ -110,7 +110,7 @@ func GetFeedList(c context.Context, ctx *app.RequestContext) {
 				StatusCode: g.StatusCodeOk,
 				StatusMsg:  g.GetVideoInfoSuccessMsg,
 			}, NextTime: int64(nextTime),
-			VideoList: videoInfoListResp,
+			VideoList:   videoInfoListResp,
 		})
 	}
 }
@@ -156,7 +156,7 @@ func PublishVideo(c context.Context, ctx *app.RequestContext) {
 
 	publishVideoReq := &video.PublishActionRequest{}
 	publishVideoReq.Title = title
-	publishVideoReq.UserId = int64(userID.(int))
+	publishVideoReq.UserId = userID.(int64)
 	publishVideoReq.Data = fileByte
 
 	publishVideoResponse, err := etcd_discovery.VideoClient.PublishVideo(c, publishVideoReq)

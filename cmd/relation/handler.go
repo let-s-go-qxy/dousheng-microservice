@@ -11,6 +11,7 @@ type RelationServiceImpl struct{}
 
 // RelationAction implements the RelationServiceImpl interface.
 func (s *RelationServiceImpl) RelationAction(ctx context.Context, req *relation.RelationActionRequest) (resp *relation.RelationActionResponse, err error) {
+	resp = &relation.RelationActionResponse{}
 	err = service.RelationAction(req.GetFromUserId(), req.GetToUserId(), req.GetActionType())
 	if err != nil {
 		resp.StatusCode = 1
@@ -77,6 +78,6 @@ func (s *RelationServiceImpl) GetIsFollow(ctx context.Context, req *relation.Rel
 
 // GetFriendsMessageList implements the RelationServiceImpl interface.
 func (s *RelationServiceImpl) GetFriendsMessageList(ctx context.Context, req *relation.RelationFriendsMessageListRequest) (resp *relation.RelationFriendsMessageListResponse, err error) {
-	// TODO: Your code here...
+	resp, err = service.GetFriendMessageList(ctx, req.GetUserId())
 	return
 }

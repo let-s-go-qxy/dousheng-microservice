@@ -6,6 +6,7 @@ import (
 	message "dousheng/kitex_gen/message"
 	g "dousheng/pkg/global"
 	"github.com/jinzhu/copier"
+	"github.com/pkg/errors"
 )
 
 // MessageServiceImpl implements the last service interface defined in the IDL.
@@ -50,6 +51,6 @@ func (s *MessageServiceImpl) PostMessageAction(ctx context.Context, req *message
 
 // GetLatestMessage implements the MessageServiceImpl interface.
 func (s *MessageServiceImpl) GetLatestMessage(ctx context.Context, req *message.MessageLastRequest) (resp *message.MessageLastResponse, err error) {
-	// TODO: Your code here...
+	err = errors.New("GetLatestMessage 未完成")
 	return
 }

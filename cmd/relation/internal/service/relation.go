@@ -12,6 +12,7 @@ import (
 func GetFollowList(ctx context.Context, userId int64, myId int64) (*relation.RelationFollowListResponse, error) {
 	ids := model.GetFollowsByUserId(userId)
 	followUsers := new(relation.RelationFollowListResponse)
+	//followUsers.UserList = make([]*user.User, 0)
 	for _, id := range ids {
 		resp, err := etcd_discovery.UserClient.UserInfo(ctx, &user.UserInfoRequest{
 			UserId: id,
@@ -34,6 +35,7 @@ func GetFollowList(ctx context.Context, userId int64, myId int64) (*relation.Rel
 func GetFollowerList(ctx context.Context, userId int64, myId int64) (*relation.RelationFollowerListResponse, error) {
 	ids := model.GetFollowersByUserId(userId)
 	followerUsers := new(relation.RelationFollowerListResponse)
+	followerUsers.UserList = make([]*user.User, 0)
 	for _, id := range ids {
 		resp, err := etcd_discovery.UserClient.UserInfo(ctx, &user.UserInfoRequest{
 			UserId: id,
@@ -53,9 +55,11 @@ func GetFollowerList(ctx context.Context, userId int64, myId int64) (*relation.R
 	return followerUsers, nil
 }
 
+// GetFriendList 获取朋友列表并附带最新的消息
 func GetFriendList(ctx context.Context, userId int64, myId int64) (*relation.RelationFriendListResponse, error) {
-	ids := model.GetFriendsByUserId(userId)
+	ids := model.GetFriendsByUserId(myId)
 	friends := new(relation.RelationFriendListResponse)
+	friends.UserList = make([]*relation.FriendUser, 0)
 	for _, id := range ids {
 		resp, err := etcd_discovery.UserClient.UserInfo(ctx, &user.UserInfoRequest{
 			UserId: id,
@@ -64,6 +68,13 @@ func GetFriendList(ctx context.Context, userId int64, myId int64) (*relation.Rel
 		if err != nil {
 			return nil, err
 		}
+		resp2, err := etcd_discovery.MessageClient.GetLatestMessage(ctx, &message.MessageLastRequest{
+			MyId:   myId,
+			UserId: id,
+		})
+		if err != nil {
+			resp2.Content = "这里齐迪还没加上"
+		}
 		friends.UserList = append(friends.UserList, &relation.FriendUser{
 			Id:            resp.User.Id,
 			Name:          resp.User.Name,
@@ -71,7 +82,7 @@ func GetFriendList(ctx context.Context, userId int64, myId int64) (*relation.Rel
 			FollowerCount: resp.User.FollowerCount,
 			IsFollow:      resp.User.IsFollow,
 			Avatar:        resp.User.Avatar,
-			Message:       "最后一条信息", // TODO 等待齐迪增加功能
+			Message:       resp2.Content,
 			MsgType:       0,
 		})
 	}
@@ -102,6 +113,25 @@ func IsFollow(ctx context.Context, userId int64, myId int64) (*relation.Relation
 	}, nil
 }
 
+// MyList 实现排序
+type MyList []*message.Message
+
+// Len 实现sort.Interface接口的获取元素数量方法
+func (m MyList) Len() int {
+	return len(m)
+}
+
+// Less 实现sort.Interface接口的比较元素方法
+func (m MyList) Less(i, j int) bool {
+	return m[i].Id < m[j].Id
+}
+
+// Swap 实现sort.Interface接口的交换元素方法
+func (m MyList) Swap(i, j int) {
+	m[i], m[j] = m[j], m[i]
+}
+
+// GetFriendMessageList 获取所有朋友的聊天记录
 func GetFriendMessageList(ctx context.Context, userId int64) (*relation.RelationFriendsMessageListResponse, error) {
 	ids := model.GetFriendsByUserId(userId)
 	messageList := &relation.RelationFriendsMessageListResponse{}
@@ -113,19 +143,12 @@ func GetFriendMessageList(ctx context.Context, userId int64) (*relation.Relation
 		if err != nil {
 			return nil, err
 		}
-		//chat2, err := etcd_discovery.MessageClient.GetMessageList(ctx, &message.MessageChatRequest{
-		//	UserId:   friendId,
-		//	ToUserId: userId,
-		//})
-		for _, msg := range chat.GetMessageList() {
-			messageList.MessageList = append(messageList.MessageList, &message.Message{
-				Id:         msg.GetId(),
-				ToId:       msg.GetToId(),
-				FromId:     msg.GetFromId(),
-				Content:    msg.GetContent(),
-				CreateTime: msg.GetCreateTime(),
-			})
-		}
+		chat2, err := etcd_discovery.MessageClient.GetMessageList(ctx, &message.MessageChatRequest{
+			UserId:   friendId,
+			ToUserId: userId,
+		})
+		chat.MessageList = append(chat.MessageList, chat2.MessageList...)
+		messageList.MessageList = chat.MessageList
 	}
 	return messageList, nil
 }

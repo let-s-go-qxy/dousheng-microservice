@@ -38,7 +38,7 @@ func GetFavoriteList(c context.Context, ctx *app.RequestContext) {
 // FavoriteAction 点赞和取消点赞操作
 func FavoriteAction(c context.Context, ctx *app.RequestContext) {
 	value, _ := ctx.Get("user_id")
-	userId := value.(int)
+	userId := value.(int64)
 	videoId, _ := strconv.Atoi(ctx.Query("video_id"))
 	actionType, _ := strconv.Atoi(ctx.Query("action_type"))
 
