@@ -128,66 +128,6 @@ func (x *CommentActionResponse) fastReadField3(buf []byte, _type int8) (offset i
 	return offset, nil
 }
 
-func (x *Comment) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
-	switch number {
-	case 1:
-		offset, err = x.fastReadField1(buf, _type)
-		if err != nil {
-			goto ReadFieldError
-		}
-	case 2:
-		offset, err = x.fastReadField2(buf, _type)
-		if err != nil {
-			goto ReadFieldError
-		}
-	case 3:
-		offset, err = x.fastReadField3(buf, _type)
-		if err != nil {
-			goto ReadFieldError
-		}
-	case 4:
-		offset, err = x.fastReadField4(buf, _type)
-		if err != nil {
-			goto ReadFieldError
-		}
-	default:
-		offset, err = fastpb.Skip(buf, _type, number)
-		if err != nil {
-			goto SkipFieldError
-		}
-	}
-	return offset, nil
-SkipFieldError:
-	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
-ReadFieldError:
-	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_Comment[number], err)
-}
-
-func (x *Comment) fastReadField1(buf []byte, _type int8) (offset int, err error) {
-	x.Id, offset, err = fastpb.ReadInt64(buf, _type)
-	return offset, err
-}
-
-func (x *Comment) fastReadField2(buf []byte, _type int8) (offset int, err error) {
-	var v user.User
-	offset, err = fastpb.ReadMessage(buf, _type, &v)
-	if err != nil {
-		return offset, err
-	}
-	x.User = &v
-	return offset, nil
-}
-
-func (x *Comment) fastReadField3(buf []byte, _type int8) (offset int, err error) {
-	x.Content, offset, err = fastpb.ReadString(buf, _type)
-	return offset, err
-}
-
-func (x *Comment) fastReadField4(buf []byte, _type int8) (offset int, err error) {
-	x.CreateDate, offset, err = fastpb.ReadString(buf, _type)
-	return offset, err
-}
-
 func (x *CommentListRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
 	switch number {
 	case 1:
@@ -271,6 +211,66 @@ func (x *CommentListResponse) fastReadField3(buf []byte, _type int8) (offset int
 	}
 	x.CommentList = append(x.CommentList, &v)
 	return offset, nil
+}
+
+func (x *Comment) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 3:
+		offset, err = x.fastReadField3(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 4:
+		offset, err = x.fastReadField4(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_Comment[number], err)
+}
+
+func (x *Comment) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.Id, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *Comment) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+	var v user.User
+	offset, err = fastpb.ReadMessage(buf, _type, &v)
+	if err != nil {
+		return offset, err
+	}
+	x.User = &v
+	return offset, nil
+}
+
+func (x *Comment) fastReadField3(buf []byte, _type int8) (offset int, err error) {
+	x.Content, offset, err = fastpb.ReadString(buf, _type)
+	return offset, err
+}
+
+func (x *Comment) fastReadField4(buf []byte, _type int8) (offset int, err error) {
+	x.CreateDate, offset, err = fastpb.ReadString(buf, _type)
+	return offset, err
 }
 
 func (x *CommentActionRequest) FastWrite(buf []byte) (offset int) {
@@ -359,49 +359,6 @@ func (x *CommentActionResponse) fastWriteField3(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *Comment) FastWrite(buf []byte) (offset int) {
-	if x == nil {
-		return offset
-	}
-	offset += x.fastWriteField1(buf[offset:])
-	offset += x.fastWriteField2(buf[offset:])
-	offset += x.fastWriteField3(buf[offset:])
-	offset += x.fastWriteField4(buf[offset:])
-	return offset
-}
-
-func (x *Comment) fastWriteField1(buf []byte) (offset int) {
-	if x.Id == 0 {
-		return offset
-	}
-	offset += fastpb.WriteInt64(buf[offset:], 1, x.Id)
-	return offset
-}
-
-func (x *Comment) fastWriteField2(buf []byte) (offset int) {
-	if x.User == nil {
-		return offset
-	}
-	offset += fastpb.WriteMessage(buf[offset:], 2, x.User)
-	return offset
-}
-
-func (x *Comment) fastWriteField3(buf []byte) (offset int) {
-	if x.Content == "" {
-		return offset
-	}
-	offset += fastpb.WriteString(buf[offset:], 3, x.Content)
-	return offset
-}
-
-func (x *Comment) fastWriteField4(buf []byte) (offset int) {
-	if x.CreateDate == "" {
-		return offset
-	}
-	offset += fastpb.WriteString(buf[offset:], 4, x.CreateDate)
-	return offset
-}
-
 func (x *CommentListRequest) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
@@ -460,6 +417,49 @@ func (x *CommentListResponse) fastWriteField3(buf []byte) (offset int) {
 	for i := range x.CommentList {
 		offset += fastpb.WriteMessage(buf[offset:], 3, x.CommentList[i])
 	}
+	return offset
+}
+
+func (x *Comment) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	offset += x.fastWriteField2(buf[offset:])
+	offset += x.fastWriteField3(buf[offset:])
+	offset += x.fastWriteField4(buf[offset:])
+	return offset
+}
+
+func (x *Comment) fastWriteField1(buf []byte) (offset int) {
+	if x.Id == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.Id)
+	return offset
+}
+
+func (x *Comment) fastWriteField2(buf []byte) (offset int) {
+	if x.User == nil {
+		return offset
+	}
+	offset += fastpb.WriteMessage(buf[offset:], 2, x.User)
+	return offset
+}
+
+func (x *Comment) fastWriteField3(buf []byte) (offset int) {
+	if x.Content == "" {
+		return offset
+	}
+	offset += fastpb.WriteString(buf[offset:], 3, x.Content)
+	return offset
+}
+
+func (x *Comment) fastWriteField4(buf []byte) (offset int) {
+	if x.CreateDate == "" {
+		return offset
+	}
+	offset += fastpb.WriteString(buf[offset:], 4, x.CreateDate)
 	return offset
 }
 
@@ -549,49 +549,6 @@ func (x *CommentActionResponse) sizeField3() (n int) {
 	return n
 }
 
-func (x *Comment) Size() (n int) {
-	if x == nil {
-		return n
-	}
-	n += x.sizeField1()
-	n += x.sizeField2()
-	n += x.sizeField3()
-	n += x.sizeField4()
-	return n
-}
-
-func (x *Comment) sizeField1() (n int) {
-	if x.Id == 0 {
-		return n
-	}
-	n += fastpb.SizeInt64(1, x.Id)
-	return n
-}
-
-func (x *Comment) sizeField2() (n int) {
-	if x.User == nil {
-		return n
-	}
-	n += fastpb.SizeMessage(2, x.User)
-	return n
-}
-
-func (x *Comment) sizeField3() (n int) {
-	if x.Content == "" {
-		return n
-	}
-	n += fastpb.SizeString(3, x.Content)
-	return n
-}
-
-func (x *Comment) sizeField4() (n int) {
-	if x.CreateDate == "" {
-		return n
-	}
-	n += fastpb.SizeString(4, x.CreateDate)
-	return n
-}
-
 func (x *CommentListRequest) Size() (n int) {
 	if x == nil {
 		return n
@@ -653,6 +610,49 @@ func (x *CommentListResponse) sizeField3() (n int) {
 	return n
 }
 
+func (x *Comment) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	n += x.sizeField2()
+	n += x.sizeField3()
+	n += x.sizeField4()
+	return n
+}
+
+func (x *Comment) sizeField1() (n int) {
+	if x.Id == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(1, x.Id)
+	return n
+}
+
+func (x *Comment) sizeField2() (n int) {
+	if x.User == nil {
+		return n
+	}
+	n += fastpb.SizeMessage(2, x.User)
+	return n
+}
+
+func (x *Comment) sizeField3() (n int) {
+	if x.Content == "" {
+		return n
+	}
+	n += fastpb.SizeString(3, x.Content)
+	return n
+}
+
+func (x *Comment) sizeField4() (n int) {
+	if x.CreateDate == "" {
+		return n
+	}
+	n += fastpb.SizeString(4, x.CreateDate)
+	return n
+}
+
 var fieldIDToName_CommentActionRequest = map[int32]string{
 	1: "UserId",
 	2: "VideoId",
@@ -667,13 +667,6 @@ var fieldIDToName_CommentActionResponse = map[int32]string{
 	3: "Comment",
 }
 
-var fieldIDToName_Comment = map[int32]string{
-	1: "Id",
-	2: "User",
-	3: "Content",
-	4: "CreateDate",
-}
-
 var fieldIDToName_CommentListRequest = map[int32]string{
 	1: "UserId",
 	2: "VideoId",
@@ -683,6 +676,13 @@ var fieldIDToName_CommentListResponse = map[int32]string{
 	1: "StatusCode",
 	2: "StatusMsg",
 	3: "CommentList",
+}
+
+var fieldIDToName_Comment = map[int32]string{
+	1: "Id",
+	2: "User",
+	3: "Content",
+	4: "CreateDate",
 }
 
 var _ = user.File_user_proto
