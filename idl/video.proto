@@ -2,15 +2,17 @@ syntax = "proto3";
 package video;
 option go_package = "video";
 
-message PublishListRequest {
-  int64 user_id = 1; // 用户id
-  string token = 2; // 用户鉴权token
+message FeedRequest {
+  int32 latest_time = 1; // 可选参数，限制返回视频的最新投稿时间戳，精确到秒，不填表示当前时间
+  int64 user_id = 2; // 可选参数，登录用户设置
 }
 
-message PublishListResponse {
+message FeedResponse {
   int32 status_code = 1; // 状态码，0-成功，其他值-失败
   string status_msg = 2; // 返回状态描述
-  repeated Video video_list = 3; // 用户发布的视频列表
+  repeated Video video_list = 3; // 视频列表
+  int32 next_time = 4; // 本次返回的视频中，发布最早的时间，作为下次请求时的latest_time
+  int32 state = 5;
 }
 
 message Video {
@@ -38,6 +40,20 @@ message User {
   int32 favorite_count = 11; //点赞数量
 }
 
+
+
+message PublishListRequest {
+  int64 user_id = 1; // 用户id
+  string token = 2; // 用户鉴权token
+}
+
+message PublishListResponse {
+  int32 status_code = 1; // 状态码，0-成功，其他值-失败
+  string status_msg = 2; // 返回状态描述
+  repeated Video video_list = 3; // 用户发布的视频列表
+}
+
+
 message PublishActionRequest {
   int64 user_id = 1;
   bytes data = 2; // 视频数据
@@ -61,4 +77,5 @@ service VideoService {
   rpc PublishVideo (PublishActionRequest) returns (PublishActionResponse) {}
   rpc PublishList (PublishListRequest) returns (PublishListResponse) {}
   rpc PublishVideoCount (PublishVideoCountRequest) returns (PublishVideoCountResponse) {}
+  rpc GetFeedList (FeedRequest) returns (FeedResponse) {}
 }

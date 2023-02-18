@@ -3,6 +3,7 @@
 package relation
 
 import (
+	message "dousheng/kitex_gen/message"
 	user "dousheng/kitex_gen/user"
 	fmt "fmt"
 	fastpb "github.com/cloudwego/fastpb"
@@ -79,12 +80,12 @@ func (x *FriendUser) fastReadField2(buf []byte, _type int8) (offset int, err err
 }
 
 func (x *FriendUser) fastReadField3(buf []byte, _type int8) (offset int, err error) {
-	x.FollowCount, offset, err = fastpb.ReadInt64(buf, _type)
+	x.FollowCount, offset, err = fastpb.ReadInt32(buf, _type)
 	return offset, err
 }
 
 func (x *FriendUser) fastReadField4(buf []byte, _type int8) (offset int, err error) {
-	x.FollowerCount, offset, err = fastpb.ReadInt64(buf, _type)
+	x.FollowerCount, offset, err = fastpb.ReadInt32(buf, _type)
 	return offset, err
 }
 
@@ -543,6 +544,121 @@ func (x *RelationFollowerCountResponse) fastReadField1(buf []byte, _type int8) (
 	return offset, err
 }
 
+func (x *RelationIsFollowRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_RelationIsFollowRequest[number], err)
+}
+
+func (x *RelationIsFollowRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.MyId, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *RelationIsFollowRequest) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+	x.UserId, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *RelationIsFollowResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_RelationIsFollowResponse[number], err)
+}
+
+func (x *RelationIsFollowResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.IsFollow, offset, err = fastpb.ReadBool(buf, _type)
+	return offset, err
+}
+
+func (x *RelationFriendsMessageListRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_RelationFriendsMessageListRequest[number], err)
+}
+
+func (x *RelationFriendsMessageListRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.UserId, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *RelationFriendsMessageListResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_RelationFriendsMessageListResponse[number], err)
+}
+
+func (x *RelationFriendsMessageListResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	var v message.Message
+	offset, err = fastpb.ReadMessage(buf, _type, &v)
+	if err != nil {
+		return offset, err
+	}
+	x.MessageList = append(x.MessageList, &v)
+	return offset, nil
+}
+
 func (x *FriendUser) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
@@ -578,7 +694,7 @@ func (x *FriendUser) fastWriteField3(buf []byte) (offset int) {
 	if x.FollowCount == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 3, x.FollowCount)
+	offset += fastpb.WriteInt32(buf[offset:], 3, x.FollowCount)
 	return offset
 }
 
@@ -586,7 +702,7 @@ func (x *FriendUser) fastWriteField4(buf []byte) (offset int) {
 	if x.FollowerCount == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 4, x.FollowerCount)
+	offset += fastpb.WriteInt32(buf[offset:], 4, x.FollowerCount)
 	return offset
 }
 
@@ -928,6 +1044,81 @@ func (x *RelationFollowerCountResponse) fastWriteField1(buf []byte) (offset int)
 	return offset
 }
 
+func (x *RelationIsFollowRequest) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	offset += x.fastWriteField2(buf[offset:])
+	return offset
+}
+
+func (x *RelationIsFollowRequest) fastWriteField1(buf []byte) (offset int) {
+	if x.MyId == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.MyId)
+	return offset
+}
+
+func (x *RelationIsFollowRequest) fastWriteField2(buf []byte) (offset int) {
+	if x.UserId == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 2, x.UserId)
+	return offset
+}
+
+func (x *RelationIsFollowResponse) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	return offset
+}
+
+func (x *RelationIsFollowResponse) fastWriteField1(buf []byte) (offset int) {
+	if !x.IsFollow {
+		return offset
+	}
+	offset += fastpb.WriteBool(buf[offset:], 1, x.IsFollow)
+	return offset
+}
+
+func (x *RelationFriendsMessageListRequest) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	return offset
+}
+
+func (x *RelationFriendsMessageListRequest) fastWriteField1(buf []byte) (offset int) {
+	if x.UserId == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.UserId)
+	return offset
+}
+
+func (x *RelationFriendsMessageListResponse) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	return offset
+}
+
+func (x *RelationFriendsMessageListResponse) fastWriteField1(buf []byte) (offset int) {
+	if x.MessageList == nil {
+		return offset
+	}
+	for i := range x.MessageList {
+		offset += fastpb.WriteMessage(buf[offset:], 1, x.MessageList[i])
+	}
+	return offset
+}
+
 func (x *FriendUser) Size() (n int) {
 	if x == nil {
 		return n
@@ -963,7 +1154,7 @@ func (x *FriendUser) sizeField3() (n int) {
 	if x.FollowCount == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(3, x.FollowCount)
+	n += fastpb.SizeInt32(3, x.FollowCount)
 	return n
 }
 
@@ -971,7 +1162,7 @@ func (x *FriendUser) sizeField4() (n int) {
 	if x.FollowerCount == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(4, x.FollowerCount)
+	n += fastpb.SizeInt32(4, x.FollowerCount)
 	return n
 }
 
@@ -1313,6 +1504,81 @@ func (x *RelationFollowerCountResponse) sizeField1() (n int) {
 	return n
 }
 
+func (x *RelationIsFollowRequest) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	n += x.sizeField2()
+	return n
+}
+
+func (x *RelationIsFollowRequest) sizeField1() (n int) {
+	if x.MyId == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(1, x.MyId)
+	return n
+}
+
+func (x *RelationIsFollowRequest) sizeField2() (n int) {
+	if x.UserId == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(2, x.UserId)
+	return n
+}
+
+func (x *RelationIsFollowResponse) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	return n
+}
+
+func (x *RelationIsFollowResponse) sizeField1() (n int) {
+	if !x.IsFollow {
+		return n
+	}
+	n += fastpb.SizeBool(1, x.IsFollow)
+	return n
+}
+
+func (x *RelationFriendsMessageListRequest) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	return n
+}
+
+func (x *RelationFriendsMessageListRequest) sizeField1() (n int) {
+	if x.UserId == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(1, x.UserId)
+	return n
+}
+
+func (x *RelationFriendsMessageListResponse) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	return n
+}
+
+func (x *RelationFriendsMessageListResponse) sizeField1() (n int) {
+	if x.MessageList == nil {
+		return n
+	}
+	for i := range x.MessageList {
+		n += fastpb.SizeMessage(1, x.MessageList[i])
+	}
+	return n
+}
+
 var fieldIDToName_FriendUser = map[int32]string{
 	1: "Id",
 	2: "Name",
@@ -1384,4 +1650,22 @@ var fieldIDToName_RelationFollowerCountResponse = map[int32]string{
 	1: "Count",
 }
 
+var fieldIDToName_RelationIsFollowRequest = map[int32]string{
+	1: "MyId",
+	2: "UserId",
+}
+
+var fieldIDToName_RelationIsFollowResponse = map[int32]string{
+	1: "IsFollow",
+}
+
+var fieldIDToName_RelationFriendsMessageListRequest = map[int32]string{
+	1: "UserId",
+}
+
+var fieldIDToName_RelationFriendsMessageListResponse = map[int32]string{
+	1: "MessageList",
+}
+
 var _ = user.File_user_proto
+var _ = message.File_message_proto

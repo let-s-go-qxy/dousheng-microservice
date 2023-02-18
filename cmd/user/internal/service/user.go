@@ -1,9 +1,12 @@
 package service
 
 import (
+	"context"
 	"dousheng/cmd/user/internal/model"
 	"dousheng/conf"
-	userService "dousheng/kitex_gen/user"
+	"dousheng/kitex_gen/relation"
+	"dousheng/kitex_gen/user"
+	"dousheng/pkg/etcd_discovery"
 	g "dousheng/pkg/global"
 	utils2 "dousheng/pkg/utils"
 	"errors"
@@ -74,7 +77,7 @@ func UserRegister(name, password string) (userId int64, token string, err error)
 	return
 }
 
-func UserInfo(myId int64, userId int64) (userInfo userService.User, err error) {
+func UserInfo(myId int64, userId int64) (userInfo user.User, err error) {
 	userDao := &model.User{
 		Id: userId,
 	}
@@ -85,21 +88,27 @@ func UserInfo(myId int64, userId int64) (userInfo userService.User, err error) {
 		}
 		return
 	}
-	userInfo = userService.User{
+	userInfo = user.User{
 		Id:              userId,
 		Name:            userDao.Name,
-		FollowCount:     0,
-		FollowerCount:   0,
-		IsFollow:        false,
-		WorkCount:       0,
-		BackgroundImage: "https://tse2-mm.cn.bing.net/th/id/OIP-C.BRuY39z2iJY_hiqkoNhH_wHaE7?pid=ImgDet&rs=1",
+		BackgroundImage: GetBackgroundImage(userId),
 		Signature:       "我不想再当一个xx了，我只想拥有快乐（谢谢你，狗子）",
-		TotalFavorite:   0,
-		FavoriteCount:   0,
-		Avatar:          "",
 	}
 	userInfo.Avatar = GetAvatar(userId)
-	userInfo.Name = userDao.Name
+	resp, err := etcd_discovery.RelationClient.GetFollowCount(context.Background(), &relation.RelationFollowCountRequest{
+		UserId: userId,
+	})
+	if err != nil {
+		return
+	}
+	userInfo.FollowCount = resp.GetCount()
+	resp2, err := etcd_discovery.RelationClient.GetFollowerCount(context.Background(), &relation.RelationFollowerCountRequest{
+		UserId: userId,
+	})
+	if err != nil {
+		return
+	}
+	userInfo.FollowerCount = resp2.GetCount()
 	//FollowCount = int(model.GetFollowCount(userDao.Id))
 	//FollowerCount = int(model.GetFollowerCount(userDao.Id))
 	//IsFollow = model.IsFollow(myId, userId)
@@ -111,4 +120,8 @@ func GetAvatar(userID int64) string {
 	strUserID := strconv.Itoa(int(userID))
 	avatarURL := conf.OSSAvatarPreURL + strUserID + "_avatar.jpg"
 	return avatarURL
+}
+
+func GetBackgroundImage(userID int64) string {
+	return "https://th.bing.com/th/id/R.e6b23f7279370871e1d13a9b8472bacc?rik=8%2fOfHw3gtBb%2fiw&riu=http%3a%2f%2fi2.hdslb.com%2fbfs%2farchive%2f63cd640f4ba78525a8797a94888d0fac654d7cdb.jpg&ehk=td%2bSb3B1RLfBQKrbTv43cN3r7MmjFMxg07MvGUDVoao%3d&risl=&pid=ImgRaw&r=0"
 }
