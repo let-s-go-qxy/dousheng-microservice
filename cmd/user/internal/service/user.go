@@ -92,9 +92,9 @@ func UserInfo(myId int64, userId int64) (userInfo user.User, err error) {
 		Id:              userId,
 		Name:            userDao.Name,
 		BackgroundImage: GetBackgroundImage(userId),
+		Avatar:          GetAvatar(userId),
 		Signature:       "我不想再当一个xx了，我只想拥有快乐（谢谢你，狗子）",
 	}
-	userInfo.Avatar = GetAvatar(userId)
 	resp, err := etcd_discovery.RelationClient.GetFollowCount(context.Background(), &relation.RelationFollowCountRequest{
 		UserId: userId,
 	})
@@ -109,9 +109,12 @@ func UserInfo(myId int64, userId int64) (userInfo user.User, err error) {
 		return
 	}
 	userInfo.FollowerCount = resp2.GetCount()
-	//FollowCount = int(model.GetFollowCount(userDao.Id))
-	//FollowerCount = int(model.GetFollowerCount(userDao.Id))
-	//IsFollow = model.IsFollow(myId, userId)
+	resp3, err := etcd_discovery.RelationClient.GetIsFollow(context.Background(), &relation.RelationIsFollowRequest{
+		MyId:   myId,
+		UserId: userId,
+	})
+	userInfo.IsFollow = resp3.GetIsFollow()
+	// TODO 作品数，喜欢数
 	return
 }
 
@@ -122,6 +125,7 @@ func GetAvatar(userID int64) string {
 	return avatarURL
 }
 
+// GetBackgroundImage 获取用户背景图
 func GetBackgroundImage(userID int64) string {
 	return "https://th.bing.com/th/id/R.e6b23f7279370871e1d13a9b8472bacc?rik=8%2fOfHw3gtBb%2fiw&riu=http%3a%2f%2fi2.hdslb.com%2fbfs%2farchive%2f63cd640f4ba78525a8797a94888d0fac654d7cdb.jpg&ehk=td%2bSb3B1RLfBQKrbTv43cN3r7MmjFMxg07MvGUDVoao%3d&risl=&pid=ImgRaw&r=0"
 }

@@ -4,7 +4,6 @@ import (
 	"context"
 	"dousheng/cmd/relation/internal/service"
 	relation "dousheng/kitex_gen/relation"
-	"github.com/pkg/errors"
 )
 
 // RelationServiceImpl implements the last service interface defined in the IDL.
@@ -60,19 +59,19 @@ func (s *RelationServiceImpl) GetFriendList(ctx context.Context, req *relation.R
 
 // GetFollowCount implements the RelationServiceImpl interface.
 func (s *RelationServiceImpl) GetFollowCount(ctx context.Context, req *relation.RelationFollowCountRequest) (resp *relation.RelationFollowCountResponse, err error) {
-	err = errors.New("未完成")
+	resp, err = service.GetFollowCount(ctx, req.GetUserId())
 	return
 }
 
 // GetFollowerCount implements the RelationServiceImpl interface.
 func (s *RelationServiceImpl) GetFollowerCount(ctx context.Context, req *relation.RelationFollowerCountRequest) (resp *relation.RelationFollowerCountResponse, err error) {
-	err = errors.New("未完成")
+	resp, err = service.GetFollowerCount(ctx, req.GetUserId())
 	return
 }
 
 // GetIsFollow implements the RelationServiceImpl interface.
 func (s *RelationServiceImpl) GetIsFollow(ctx context.Context, req *relation.RelationIsFollowRequest) (resp *relation.RelationIsFollowResponse, err error) {
-
+	resp, err = service.IsFollow(ctx, req.GetUserId(), req.GetMyId())
 	return
 }
 

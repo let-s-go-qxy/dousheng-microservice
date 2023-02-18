@@ -58,18 +58,18 @@ func GetFriendsByUserId(userId int64) (arr []int64) {
 }
 
 // GetFollowCount 获取当前用户的关注人数
-func GetFollowCount(userId int) (count int64) {
+func GetFollowCount(userId int64) (count int64) {
 	g.MysqlDB.Model(&Follow{}).Where("user_id = ? AND cancel = ?", userId, 1).Count(&count)
 	return
 }
 
 // GetFollowerCount 获取当前用户的粉丝人数
-func GetFollowerCount(userId int) (count int64) {
+func GetFollowerCount(userId int64) (count int64) {
 	g.MysqlDB.Model(&Follow{}).Where("follow_id = ? AND cancel = ?", userId, 1).Count(&count)
 	return
 }
 
-func IsFollow(userId, followId int) bool {
+func IsFollow(userId, followId int64) bool {
 	err := g.MysqlDB.Debug().First(&Follow{}, "user_id = ? AND follow_id = ? AND cancel = ?", userId, followId, 1).Error
 	return err == nil
 }
