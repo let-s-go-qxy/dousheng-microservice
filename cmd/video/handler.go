@@ -5,7 +5,6 @@ import (
 	videoService "dousheng/cmd/video/internal/service"
 	video "dousheng/kitex_gen/video"
 	g "dousheng/pkg/global"
-	"errors"
 	"github.com/jinzhu/copier"
 )
 
@@ -34,7 +33,7 @@ func (s *VideoServiceImpl) PublishVideo(ctx context.Context, req *video.PublishA
 
 // PublishList implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) PublishList(ctx context.Context, req *video.PublishListRequest) (resp *video.PublishListResponse, err error) {
-	publishList, err := videoService.GetPublishList(int(req.UserId))
+	publishList, _, err := videoService.GetPublishList(int(req.UserId))
 
 	var publishVideoListResp []*video.Video
 
@@ -59,9 +58,10 @@ func (s *VideoServiceImpl) PublishList(ctx context.Context, req *video.PublishLi
 
 // PublishVideoCount implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) PublishVideoCount(ctx context.Context, req *video.PublishVideoCountRequest) (resp *video.PublishVideoCountResponse, err error) {
-	// TODO: Your code here...
-	err = errors.New("未完成")
-	return
+	_, messageCount, _ := videoService.GetPublishList(int(req.UserId))
+	response := &video.PublishVideoCountResponse{}
+	response.PublishVideoCount = int32(messageCount)
+	return response, err
 }
 
 // GetFeedList implements the VideoServiceImpl interface.
