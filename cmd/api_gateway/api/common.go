@@ -8,12 +8,17 @@ type Response struct {
 
 // User 用户返回模型
 type User struct {
-	Id            int    `json:"id,omitempty"`
-	Name          string `json:"name,omitempty"`
-	FollowCount   int    `json:"follow_count"`
-	FollowerCount int    `json:"follower_count"`
-	IsFollow      bool   `json:"is_follow"`
-	Avatar        string `json:"avatar"`
+	Id              int64  `json:"id,omitempty"`
+	Name            string `json:"name,omitempty"`
+	FollowCount     int32  `json:"follow_count"`
+	FollowerCount   int32  `json:"follower_count"`
+	IsFollow        bool   `json:"is_follow"`
+	Avatar          string `json:"avatar"`
+	WorkCount       int32  `json:"work_count"`
+	FavoriteCount   int32  `json:"favorite_count"`
+	BackgroundImage string `json:"background_image"`
+	Signature       string `json:"signature"`
+	TotalFavorited  int32  `json:"total_favorited"`
 }
 
 // Video 视频返回模型

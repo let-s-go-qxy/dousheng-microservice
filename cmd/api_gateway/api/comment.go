@@ -19,7 +19,7 @@ func GetCommentList(c context.Context, ctx *app.RequestContext) {
 	userIDInterface, success := ctx.Get("user_id")
 	var userId int64
 	if success {
-		userId = int64(userIDInterface.(int))
+		userId = userIDInterface.(int64)
 	} // 若不存在，userID默认为0
 	vid, err := strconv.Atoi(videoId)
 	if err != nil {
@@ -42,7 +42,7 @@ func GetCommentList(c context.Context, ctx *app.RequestContext) {
 func PostCommentAction(c context.Context, ctx *app.RequestContext) {
 	// 获取请求参数
 	value, _ := ctx.Get("user_id")
-	userId := value.(int)
+	userId := value.(int64)
 	videoId, _ := strconv.Atoi(ctx.Query("video_id"))       //》根据视频查找对应评论
 	actionType, _ := strconv.Atoi(ctx.Query("action_type")) //》视频操作？1》添加insert：2》删除delete
 	commentText := ctx.Query("comment_text")

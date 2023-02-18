@@ -6,6 +6,7 @@ import (
 	"dousheng/conf"
 	"dousheng/kitex_gen/relation"
 	"dousheng/kitex_gen/user"
+	"dousheng/kitex_gen/video"
 	"dousheng/pkg/etcd_discovery"
 	g "dousheng/pkg/global"
 	utils2 "dousheng/pkg/utils"
@@ -95,6 +96,7 @@ func UserInfo(myId int64, userId int64) (userInfo user.User, err error) {
 		Avatar:          GetAvatar(userId),
 		Signature:       "我不想再当一个xx了，我只想拥有快乐（谢谢你，狗子）",
 	}
+	// 获取用户关注数
 	resp, err := etcd_discovery.RelationClient.GetFollowCount(context.Background(), &relation.RelationFollowCountRequest{
 		UserId: userId,
 	})
@@ -102,6 +104,7 @@ func UserInfo(myId int64, userId int64) (userInfo user.User, err error) {
 		return
 	}
 	userInfo.FollowCount = resp.GetCount()
+	// 获取用户粉丝数
 	resp2, err := etcd_discovery.RelationClient.GetFollowerCount(context.Background(), &relation.RelationFollowerCountRequest{
 		UserId: userId,
 	})
@@ -109,12 +112,18 @@ func UserInfo(myId int64, userId int64) (userInfo user.User, err error) {
 		return
 	}
 	userInfo.FollowerCount = resp2.GetCount()
+	// 获取用户是否被关注
 	resp3, err := etcd_discovery.RelationClient.GetIsFollow(context.Background(), &relation.RelationIsFollowRequest{
 		MyId:   myId,
 		UserId: userId,
 	})
 	userInfo.IsFollow = resp3.GetIsFollow()
-	// TODO 作品数，喜欢数
+	// 获取用户作品数
+	resp4, _ := etcd_discovery.VideoClient.PublishVideoCount(context.Background(), &video.PublishVideoCountRequest{
+		UserId: userId,
+	})
+	userInfo.WorkCount = resp4.GetPublishVideoCount()
+	// TODO 喜欢数
 	return
 }
 

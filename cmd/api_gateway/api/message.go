@@ -44,7 +44,7 @@ func GetMessageList(c context.Context, ctx *app.RequestContext) {
 	userIdInterface, success := ctx.Get("user_id")
 	var fromId int
 	if success {
-		fromId = int(userIdInterface.(int))
+		fromId = int(userIdInterface.(int64))
 	} // 若不存在，userID默认为0
 	messageChatRequest := &message.MessageChatRequest{}
 	messageChatRequest.UserId = int64(fromId)
@@ -87,7 +87,7 @@ func PostMessageAction(c context.Context, ctx *app.RequestContext) {
 	userIDInterface, success := ctx.Get("user_id")
 	var fromId int
 	if success {
-		fromId = int(userIDInterface.(int))
+		fromId = int(userIDInterface.(int64))
 	} // 若不存在，userID默认为0
 
 	toId, _ := strconv.Atoi(ctx.Query("to_user_id"))

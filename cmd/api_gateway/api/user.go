@@ -7,12 +7,13 @@ import (
 	g "dousheng/pkg/global"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	"github.com/jinzhu/copier"
 	"strconv"
 )
 
 type UserLoginResponse struct {
 	Response
-	UserId int64  `json:"user_id,omitempty"`
+	UserId int64  `json:"user_id"`
 	Token  string `json:"token"`
 }
 
@@ -38,7 +39,14 @@ func UserInfo(c context.Context, ctx *app.RequestContext) {
 		})
 		return
 	}
-	ctx.JSON(consts.StatusOK, resp)
+	userInfo := &User{}
+	copier.Copy(userInfo, resp.User)
+	ctx.JSON(consts.StatusOK, UserResponse{
+		Response: Response{
+			StatusCode: resp.GetStatusCode(),
+			StatusMsg:  resp.GetStatusMsg(),
+		}, User: *userInfo,
+	})
 }
 
 func UserLogin(c context.Context, ctx *app.RequestContext) {
@@ -54,7 +62,13 @@ func UserLogin(c context.Context, ctx *app.RequestContext) {
 		})
 		return
 	}
-	ctx.JSON(consts.StatusOK, resp)
+	ctx.JSON(consts.StatusOK, UserLoginResponse{
+		Response: Response{
+			StatusCode: 0,
+		},
+		UserId: resp.GetUserId(),
+		Token:  resp.GetToken(),
+	})
 }
 
 func UserRegister(c context.Context, ctx *app.RequestContext) {
@@ -72,5 +86,11 @@ func UserRegister(c context.Context, ctx *app.RequestContext) {
 		})
 		return
 	}
-	ctx.JSON(consts.StatusOK, resp)
+	ctx.JSON(consts.StatusOK, UserLoginResponse{
+		Response: Response{
+			StatusCode: 0,
+		},
+		UserId: resp.GetUserId(),
+		Token:  resp.GetToken(),
+	})
 }
