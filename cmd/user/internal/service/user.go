@@ -2,7 +2,7 @@ package service
 
 import (
 	"dousheng/cmd/user/internal/model"
-	"dousheng/conf"
+	conf "dousheng/conf"
 	userService "dousheng/kitex_gen/user"
 	g "dousheng/pkg/global"
 	utils2 "dousheng/pkg/utils"

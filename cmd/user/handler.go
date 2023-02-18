@@ -14,12 +14,12 @@ type UserServiceImpl struct{}
 // UserInfo implements the UserServiceImpl interface.
 func (s *UserServiceImpl) UserInfo(ctx context.Context, req *user.UserInfoRequest) (resp *user.UserInfoResponse, err error) {
 	resp = &user.UserInfoResponse{}
-	user1 := &user.User{}
-	user1.Id, user1.FollowCount, user1.FollowerCount, user1.Name, user1.IsFollow,
-		user1.Avatar, err = service.UserInfo(req.GetMyId(), req.GetUserId())
-	if err != nil {
-		return nil, err
-	}
+	//user1 := &user.User{}
+	//user1.Id, user1.FollowCount, user1.FollowerCount, user1.Name, user1.IsFollow,
+	//	user1.Avatar, err = service.UserInfo(req.GetMyId(), req.GetUserId())
+	//if err != nil {
+	//	return nil, err
+	//}
 	return
 }
 
