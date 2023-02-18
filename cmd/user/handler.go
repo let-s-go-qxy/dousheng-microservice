@@ -3,9 +3,8 @@ package main
 import (
 	"context"
 	"dousheng/cmd/user/internal/service"
-	user "dousheng/kitex_gen/user"
+	"dousheng/kitex_gen/user"
 	g "dousheng/pkg/global"
-	"errors"
 )
 
 // UserServiceImpl implements the last service interface defined in the IDL.
@@ -14,12 +13,12 @@ type UserServiceImpl struct{}
 // UserInfo implements the UserServiceImpl interface.
 func (s *UserServiceImpl) UserInfo(ctx context.Context, req *user.UserInfoRequest) (resp *user.UserInfoResponse, err error) {
 	resp = &user.UserInfoResponse{}
-	//user1 := &user.User{}
-	//user1.Id, user1.FollowCount, user1.FollowerCount, user1.Name, user1.IsFollow,
-	//	user1.Avatar, err = service.UserInfo(req.GetMyId(), req.GetUserId())
-	//if err != nil {
-	//	return nil, err
-	//}
+	user1 := user.User{}
+	user1, err = service.UserInfo(req.GetMyId(), req.GetUserId())
+	if err != nil {
+		return nil, err
+	}
+	resp.User = &user1
 	return
 }
 
@@ -56,6 +55,8 @@ func (s *UserServiceImpl) GetAvatar(ctx context.Context, req *user.UserAvatarReq
 
 // GetBackgroundImage implements the UserServiceImpl interface.
 func (s *UserServiceImpl) GetBackgroundImage(ctx context.Context, req *user.UserBackgroundImageRequest) (resp *user.UserBackgroundImageResponse, err error) {
-	err = errors.New("未完成")
+	resp = &user.UserBackgroundImageResponse{
+		BackgroundImage: service.GetBackgroundImage(req.GetUserId()),
+	}
 	return
 }
