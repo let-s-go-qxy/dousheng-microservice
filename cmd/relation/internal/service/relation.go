@@ -120,8 +120,8 @@ func GetFriendMessageList(ctx context.Context, userId int64) (*relation.Relation
 		for _, msg := range chat.GetMessageList() {
 			messageList.MessageList = append(messageList.MessageList, &message.Message{
 				Id:         msg.GetId(),
-				ToUserId:   msg.GetToUserId(),
-				FromUserId: msg.GetFromUserId(),
+				ToId:       msg.GetToId(),
+				FromId:     msg.GetFromId(),
 				Content:    msg.GetContent(),
 				CreateTime: msg.GetCreateTime(),
 			})

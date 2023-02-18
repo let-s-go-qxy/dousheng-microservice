@@ -21,7 +21,7 @@ func FindCommentByVideo(id int64) []Comment {
 }
 
 // FindCommentById 根据评论的id查询返回对应评论
-func FindCommentById(id int) (comment Comment) {
+func FindCommentById(id int64) (comment Comment) {
 	g.MysqlDB.Where("id = ?", id).Find(&comment)
 	return
 }

@@ -3,7 +3,6 @@ package service
 import (
 	"dousheng/cmd/comment/internal/model"
 	"dousheng/kitex_gen/comment"
-	user "dousheng/kitex_gen/user/userservice"
 	"errors"
 	"time"
 
@@ -24,19 +23,7 @@ func GetCommentList(videoId int64, myId int64) (respCommentList []comment.Commen
 }
 
 // CommentAction 对评论进行创建或者删除
-func CommentAction(videoId int64, actionType int32, contentText string, commentId int64, userId int64) (comment comment.Comment, err error) {
-	// 调用service.userInfo方法查询发表用户信息
-	userid, followCount, followerCount, name, isFollow, err := user.UserInfo(userId, userId)
-	if err != nil {
-		err = errors.New("创建者不存在: " + err.Error())
-	}
-	userDao = User{
-		Id:            userid,
-		Name:          name,
-		FollowCount:   followCount,
-		FollowerCount: followerCount,
-		IsFollow:      isFollow,
-	}
+func CommentAction(videoId int64, actionType int32, contentText string, commentId int64, userId int64) (id int64, content string, createTime string, err error) {
 	// 填装Comment数据
 	com := &model.Comment{
 		Id:         commentId,
@@ -47,20 +34,17 @@ func CommentAction(videoId int64, actionType int32, contentText string, commentI
 		Cancel:     actionType,
 	}
 	if actionType == 1 {
-		com, err = repository.CreateComment(com)
+		com, err = model.CreateComment(com)
 		// 评论创建失败
 		if err != nil {
 			err = errors.New("发表评论失败: " + err.Error())
 
 		}
-		comment = repository.FindCommentById(com.Id)
 	} else {
-		err = repository.DeleteComment(com)
+		err = model.DeleteComment(com)
 		if err != nil {
 			err = errors.New("删除评论失败: " + err.Error())
 		}
-
-		comment = repository.FindCommentById(commentId)
 	}
-	return
+	return com.Id, com.Content, com.CreateDate, err
 }
