@@ -15,7 +15,7 @@ type RespMessage struct {
 	CreateTime string `json:"create_time"`
 }
 
-//指定MQ的Queue的Id 和strJsonMessageList 就能将和strJsonMessageList生产到对应的Queue中去
+// 指定MQ的Queue的Id 和strJsonMessageList 就能将和strJsonMessageList生产到对应的Queue中去
 func PublishMessageCurrentToMQ(strJsonMessageList string, rabbitMQQueueId int) error {
 	strRabbitMQQueueId := strconv.Itoa(rabbitMQQueueId)
 	conn, err := amqp.Dial("amqp://" +
@@ -59,6 +59,7 @@ func PublishMessageCurrentToMQ(strJsonMessageList string, rabbitMQQueueId int) e
 	conn.Close()
 	return err
 }
+
 func PublishMessageListToMQ(strJsonMessageList string, rabbitMQQueueId int) error {
 	strRabbitMQQueueId := strconv.Itoa(rabbitMQQueueId)
 	conn, err := amqp.Dial("amqp://" +
@@ -110,7 +111,10 @@ func GetRabbitMQMessageList(userId int) (respMessageList []RespMessage, err erro
 		g.RabbitMQServerAddress +
 		":5672/")
 	strUserId := strconv.Itoa(userId)
-	ch, _ := conn.Channel()
+	ch, err := conn.Channel()
+	if err != nil {
+		return
+	}
 	argumentsMap := map[string]interface{}{}
 	argumentsMap["x-max-length"] = 1
 	argumentsMap["x-overflow"] = "drop-head"

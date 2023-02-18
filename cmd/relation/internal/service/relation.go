@@ -7,6 +7,8 @@ import (
 	"dousheng/kitex_gen/relation"
 	"dousheng/kitex_gen/user"
 	"dousheng/pkg/etcd_discovery"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
+	"sort"
 )
 
 func GetFollowList(ctx context.Context, userId int64, myId int64) (*relation.RelationFollowListResponse, error) {
@@ -73,7 +75,7 @@ func GetFriendList(ctx context.Context, userId int64, myId int64) (*relation.Rel
 			UserId: id,
 		})
 		if err != nil {
-			resp2.Content = "这里齐迪还没加上"
+			resp2 = &message.MessageLastResponse{Content: "这里齐迪还没加上"}
 		}
 		friends.UserList = append(friends.UserList, &relation.FriendUser{
 			Id:            resp.User.Id,
@@ -136,10 +138,12 @@ func GetFriendMessageList(ctx context.Context, userId int64) (*relation.Relation
 	ids := model.GetFriendsByUserId(userId)
 	messageList := &relation.RelationFriendsMessageListResponse{}
 	for _, friendId := range ids {
+		hlog.Info(">>>>>>>>: ", friendId, userId)
 		chat, err := etcd_discovery.MessageClient.GetMessageList(ctx, &message.MessageChatRequest{
 			UserId:   userId,
 			ToUserId: friendId,
 		})
+		hlog.Info("chat:", chat.MessageList)
 		if err != nil {
 			return nil, err
 		}
@@ -147,8 +151,12 @@ func GetFriendMessageList(ctx context.Context, userId int64) (*relation.Relation
 			UserId:   friendId,
 			ToUserId: userId,
 		})
+		hlog.Info("chat2:", chat2.MessageList)
 		chat.MessageList = append(chat.MessageList, chat2.MessageList...)
-		messageList.MessageList = chat.MessageList
+		var myList MyList = chat.MessageList
+		sort.Sort(myList)
+		messageList.MessageList = myList
+		hlog.Info("排序后list: ", myList)
 	}
 	return messageList, nil
 }
