@@ -3,6 +3,7 @@ import "user.proto";
 package comment;
 option go_package = "comment";
 
+//评论操作
 message CommentActionRequest {
   int64 user_id = 1; // 用户id
   int64 video_id = 2; // 视频id
@@ -17,13 +18,7 @@ message CommentActionResponse {
   Comment comment = 3; // 评论成功返回评论内容，不需要重新拉取整个列表
 }
 
-message Comment {
-  int64 id = 1; // 视频评论id
-  user.User user = 2; // 评论用户信息
-  string content = 3; // 评论内容
-  string create_date = 4; // 评论发布日期，格式 mm-dd
-}
-
+//评论列表
 message CommentListRequest {
   int64 user_id = 1; // 用户id
   int64 video_id = 2; // 视频id
@@ -33,6 +28,13 @@ message CommentListResponse {
   int32 status_code = 1; // 状态码，0-成功，其他值-失败
   string status_msg = 2; // 返回状态描述
   repeated Comment comment_list = 3; // 评论列表
+}
+
+message Comment {
+  int64 id = 1; // 视频评论id
+  user.User user = 2; // 评论用户信息
+  string content = 3; // 评论内容
+  string create_date = 4; // 评论发布日期，格式 mm-dd
 }
 
 service CommentService{
