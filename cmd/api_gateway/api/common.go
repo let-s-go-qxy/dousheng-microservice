@@ -32,7 +32,7 @@ type Comment struct {
 	Id         int    `json:"id,omitempty"`
 	User       User   `json:"user"`
 	Content    string `json:"content,omitempty"`
-	CreateTime string `json:"create_date,omitempty"`
+	CreateDate string `json:"create_date,omitempty"`
 }
 
 type Message struct {

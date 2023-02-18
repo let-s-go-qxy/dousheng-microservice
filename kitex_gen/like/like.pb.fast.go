@@ -124,7 +124,7 @@ func (x *FavoriteListRequest) fastReadField1(buf []byte, _type int8) (offset int
 }
 
 func (x *FavoriteListRequest) fastReadField2(buf []byte, _type int8) (offset int, err error) {
-	x.Token, offset, err = fastpb.ReadString(buf, _type)
+	x.MyId, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
@@ -315,10 +315,10 @@ func (x *FavoriteListRequest) fastWriteField1(buf []byte) (offset int) {
 }
 
 func (x *FavoriteListRequest) fastWriteField2(buf []byte) (offset int) {
-	if x.Token == "" {
+	if x.MyId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 2, x.Token)
+	offset += fastpb.WriteInt64(buf[offset:], 2, x.MyId)
 	return offset
 }
 
@@ -476,10 +476,10 @@ func (x *FavoriteListRequest) sizeField1() (n int) {
 }
 
 func (x *FavoriteListRequest) sizeField2() (n int) {
-	if x.Token == "" {
+	if x.MyId == 0 {
 		return n
 	}
-	n += fastpb.SizeString(2, x.Token)
+	n += fastpb.SizeInt64(2, x.MyId)
 	return n
 }
 
@@ -573,7 +573,7 @@ var fieldIDToName_FavoriteActionResponse = map[int32]string{
 
 var fieldIDToName_FavoriteListRequest = map[int32]string{
 	1: "UserId",
-	2: "Token",
+	2: "MyId",
 }
 
 var fieldIDToName_FavoriteListResponse = map[int32]string{

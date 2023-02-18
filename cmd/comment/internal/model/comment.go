@@ -5,16 +5,16 @@ import (
 )
 
 type Comment struct {
-	Id         int    `gorm:"primaryKey" json:"id"`
-	UserId     int    `json:"user_id"`
+	Id         int64  `gorm:"primaryKey" json:"id"`
+	UserId     int64  `json:"user_id"`
 	Content    string `json:"comment_text" gorm:"column:comment_text"`
-	CreateTime string `json:"create_time" gorm:"column:create_time"`
-	VideoId    int    `json:"video_id"`
-	Cancel     int    `gorm:"default:1"`
+	CreateDate string `json:"create_time" gorm:"column:create_time"`
+	VideoId    int64  `json:"video_id"`
+	Cancel     int32  `gorm:"default:1" json:"cancel"`
 }
 
 // FindCommentByVideo 根据视频id查询全部评论，并且仅返回cancel等于1的
-func FindCommentByVideo(id int) []Comment {
+func FindCommentByVideo(id int64) []Comment {
 	comments := make([]Comment, 0)
 	g.MysqlDB.Where("video_id = ? AND cancel = 1 ", id).Order("create_time desc").Find(&comments)
 	return comments
