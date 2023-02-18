@@ -135,7 +135,7 @@ func PublishVideo(userID int, title string, fileBytes []byte) (success bool) {
 }
 
 // 获取登录用户的视频发布列表
-func GetPublishList(userId int) (respVideoList []model.RespVideo, err error) {
+func GetPublishList(userId int) (respVideoList []model.RespVideo, publishCount int, err error) {
 
 	//获取视频数组
 	var videoList []model.Video
@@ -143,7 +143,7 @@ func GetPublishList(userId int) (respVideoList []model.RespVideo, err error) {
 
 	//利用封装函数
 	respVideoList = PlusAuthor(userId, videoList)
-	i := len(respVideoList)
+	publishCount = len(respVideoList)
 	return
 }
 
