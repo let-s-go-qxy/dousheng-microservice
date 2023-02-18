@@ -6,11 +6,19 @@ import (
 	"dousheng/pkg/mq"
 	"fmt"
 	"github.com/cloudwego/hertz/pkg/common/json"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"strconv"
 	"time"
 )
 
-func MessageAction(fromId int, toId int, content string, actionType int) (err error) {
+func GetMessageList(fromID int) ([]mq.RespMessage, error) {
+	listMQ, err := model.GetMessageListMQ(fromID)
+	if err != nil {
+		klog.Error(err.Error())
+	}
+	return listMQ, err
+}
+func PostMessageAction(fromId int, toId int, content string, actionType int) (err error) {
 
 	msg := model.RespMessage{
 		ToId:       toId,

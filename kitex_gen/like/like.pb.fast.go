@@ -3,7 +3,7 @@
 package like
 
 import (
-	feed "dousheng/kitex_gen/feed"
+	video "dousheng/kitex_gen/video"
 	fmt "fmt"
 	fastpb "github.com/cloudwego/fastpb"
 )
@@ -169,7 +169,7 @@ func (x *FavoriteListResponse) fastReadField2(buf []byte, _type int8) (offset in
 }
 
 func (x *FavoriteListResponse) fastReadField3(buf []byte, _type int8) (offset int, err error) {
-	var v feed.Video
+	var v video.Video
 	offset, err = fastpb.ReadMessage(buf, _type, &v)
 	if err != nil {
 		return offset, err
@@ -591,4 +591,4 @@ var fieldIDToName_FavoriteCountResponse = map[int32]string{
 	2: "FavoriteCount",
 }
 
-var _ = feed.File_feed_proto
+var _ = video.File_video_proto

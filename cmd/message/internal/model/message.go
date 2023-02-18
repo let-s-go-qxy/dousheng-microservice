@@ -1,6 +1,11 @@
 package model
 
-import g "dousheng/pkg/global"
+import (
+	g "dousheng/pkg/global"
+	"dousheng/pkg/mq"
+	m "dousheng/pkg/mq"
+	"github.com/cloudwego/kitex/pkg/klog"
+)
 
 type Message struct {
 	Id         int    `json:"id"`
@@ -27,23 +32,17 @@ type RespMessage struct {
 	CreateTime string `json:"create_time"`
 }
 
-func GetMessageList(messageId []int) (respMessageList []RespMessage) {
-
-	var message RespMessage
-	for _, id := range messageId {
-		g.MysqlDB.Table("messages").
-			Where("id = ?", id).
-			Scan(&message)
-		respMessageList = append(respMessageList, message)
+func GetMessageListMQ(fromID int) ([]mq.RespMessage, error) {
+	recordListMQ, err := m.GetRabbitMQMessageList(fromID)
+	if err != nil {
+		klog.Error("GetRabbitMQMessageList时出错了:" + err.Error())
 	}
-	return
-}
-
-func GetMessageIdList(toUserId int, fromUserId int) (messageId []int) {
-	g.MysqlDB.Table("messages").Select("id").
-		Where("from_id = ? and to_id = ?", fromUserId, toUserId).
-		Scan(&messageId)
-	return
+	currentListMQ, err := m.GetRabbitMQMessageCurrent(fromID)
+	if err != nil {
+		klog.Error("GetRabbitMQMessageCurrent时出错了:" + err.Error())
+	}
+	allMessageListMQ := append(recordListMQ, currentListMQ...)
+	return allMessageListMQ, err
 }
 
 // CreateMessage 创建消息

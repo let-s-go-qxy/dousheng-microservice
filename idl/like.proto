@@ -1,5 +1,5 @@
 syntax = "proto3";
-import "feed.proto";
+import "video.proto";
 package like;
 option go_package = "like";
 
@@ -25,7 +25,7 @@ message FavoriteListRequest {
 message FavoriteListResponse {
   int32 status_code = 1; // 状态码，0-成功，其他值-失败
   string status_msg = 2; // 返回状态描述
-  repeated feed.Video video_list = 3; // 用户点赞视频列表
+  repeated video.Video video_list = 3; // 用户点赞视频列表
 }
 
 //喜欢总数和喜欢作品数
