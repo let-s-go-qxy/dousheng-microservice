@@ -1,11 +1,13 @@
 package like
 
 import (
+	"context"
+	repository "dousheng/cmd/like/internal/model"
+	"dousheng/kitex_gen/video"
+	"dousheng/pkg/etcd_discovery"
+	g "dousheng/pkg/global"
 	"errors"
 	"github.com/cloudwego/kitex/pkg/klog"
-
-	repository "dousheng/cmd/like/internal/model"
-	g "dousheng/pkg/global"
 	"strconv"
 
 	"time"
@@ -185,52 +187,34 @@ func FavoriteAction(userId int64, videoId int64, action int32) error {
 	return nil
 }
 
-// GetVideoListByIdList 根据视频ID列表查询视频列表,按照点赞时间顺序
-//func GetVideoListByIdList(videoIdList []int) (videoList []repository.Video) {
-//	for _, videoId := range videoIdList {
-//		video := repository.Video{}
-//		g.MysqlDB.Table("videos").Where("id = ?", videoId).Take(&video)
-//		video.CoverUrl = ossRelated.OSSPreURL + video.CoverUrl + ".jpg"
-//		video.PlayUrl = ossRelated.OSSPreURL + video.PlayUrl + ".mp4"
-//		videoList = append(videoList, video)
-//	}
-//	return
-//}
-
 // GetFavoriteList 根据用户ID查询用户的喜欢视频列表
-//func GetFavoriteList(userId int) ([]repository.RespVideo, error) {
+//func GetFavoriteList(userId int64) ([]*video.Video, error) {
 //	// 用户喜欢的视频ID列表
 //	videoIdList, err := like.GetFavoriteVideoList(userId)
-//
 //	if err != nil {
 //		return nil, err
 //	}
-//	// 每个视频点赞数
-//	videoFavoriteCount, err1 := like.GetVideosFavoriteCount(videoIdList)
-//	if err1 != nil {
-//		return nil, err
+//
+//	for _, id := range videoIdList {
+//		etcd_discovery.VideoClient.
 //	}
-//	// 视频列表
-//	videoList := GetVideoListByIdList(videoIdList)
 //	// 视频对应的发布者
 //	videosAuthor := GetVideosAuthor(userId, videoList)
 //
-//	var respVideoList []repository.RespVideo
 //
-//	//封装返回视频RespVideo列表
-//	for _, video := range videoList {
-//		respVideo := repository.RespVideo{}
-//		copier.Copy(&respVideo, &video)
-//		respVideo.FavoriteCount = videoFavoriteCount[int(video.Id)]
-//		respVideo.Author = videosAuthor[int(video.Id)]
-//		respVideo.IsFavorite = true
-//		respVideoList = append(respVideoList, respVideo)
-//	}
+//
 //	return respVideoList, nil
 //}
 
-func TotalFavoriteCount(userId int64) int32 { //TODO 还需要处理逻辑
-	tfc := like.TotalFavorite(userId)
+func TotalFavoriteCount(userId int64) int32 {
+	resp, _ := etcd_discovery.VideoClient.GetPublishIds(context.Background(), &video.PublishIdsRequest{
+		UserId: userId,
+	})
+	ids := []int64{}
+	for _, id := range resp.GetIds() {
+		ids = append(ids, id)
+	}
+	tfc := like.TotalFavorite(ids)
 	return int32(tfc)
 }
 

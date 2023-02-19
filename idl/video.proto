@@ -73,9 +73,26 @@ message PublishVideoCountResponse {
   int32 publish_video_count = 1;
 }
 
+message PublishIdsRequest {
+  int64 user_id = 1;
+}
+
+message PublishIdsResponse {
+  repeated int64 ids = 1;
+}
+
+message VideoInfoRequest {
+  int64 video_id = 1;
+}
+message VideoInfoResponse {
+  Video video_info = 1;
+}
+
 service VideoService {
   rpc PublishVideo (PublishActionRequest) returns (PublishActionResponse) {}
   rpc PublishList (PublishListRequest) returns (PublishListResponse) {}
   rpc PublishVideoCount (PublishVideoCountRequest) returns (PublishVideoCountResponse) {}
   rpc GetFeedList (FeedRequest) returns (FeedResponse) {}
+  rpc GetPublishIds (PublishIdsRequest) returns (PublishIdsResponse) {}
+  rpc GetVideoInfo (VideoInfoRequest) returns(VideoInfoResponse) {}
 }

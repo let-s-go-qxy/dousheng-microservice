@@ -12,7 +12,11 @@ type LikeServiceImpl struct{}
 
 // FavoriteAction implements the LikeServiceImpl interface.
 func (s *LikeServiceImpl) FavoriteAction(ctx context.Context, req *like.FavoriteActionRequest) (resp *like.FavoriteActionResponse, err error) {
-	err = errors.New("未完成")
+	err = service.FavoriteAction(req.GetUserId(), req.GetVideoId(), req.GetActionType())
+	if err != nil {
+		resp.StatusCode = 0
+		resp.StatusMsg = "ok"
+	}
 	return
 }
 
@@ -34,6 +38,7 @@ func (s *LikeServiceImpl) TotalFavorite(ctx context.Context, req *like.TotalFavo
 
 // FavoriteCount implements the LikeServiceImpl interface.
 func (s *LikeServiceImpl) FavoriteCount(ctx context.Context, req *like.FavoriteCountRequest) (resp *like.FavoriteCountResponse, err error) {
+	resp = &like.FavoriteCountResponse{}
 	vfc := service.VideoFavoriteCount(req.VideoId)
 	resp.FavoriteCount = vfc
 	return
@@ -41,6 +46,7 @@ func (s *LikeServiceImpl) FavoriteCount(ctx context.Context, req *like.FavoriteC
 
 // IsFavorite implements the LikeServiceImpl interface.
 func (s *LikeServiceImpl) IsFavorite(ctx context.Context, req *like.IsFavoriteRequest) (resp *like.IsFavoriteResponse, err error) {
+	resp = &like.IsFavoriteResponse{}
 	isf := service.IsLike(req.VideoId, req.UserId)
 	resp.IsFavorite = isf
 	return
