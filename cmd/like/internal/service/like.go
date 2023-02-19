@@ -230,7 +230,6 @@ func FavoriteAction(userId int64, videoId int64, action int32) error {
 //}
 
 func TotalFavoriteCount(userId int64) int32 { //TODO 还需要处理逻辑
-
 	tfc := like.TotalFavorite(userId)
 	return int32(tfc)
 }

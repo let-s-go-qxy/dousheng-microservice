@@ -198,7 +198,6 @@ func (like *Like) IsLike(userId int64, videoId int64) (b bool, err error) {
 
 // TotalFavorite 查询用户获赞总数
 func (like *Like) TotalFavorite(userId int64) (count int64) {
-
 	g.MysqlDB.Model(&Like{}).Where("user_id = ? AND cancel = ? ", userId, 1).Count(&count)
 	return
 }
