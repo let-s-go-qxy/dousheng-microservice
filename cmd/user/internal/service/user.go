@@ -4,6 +4,7 @@ import (
 	"context"
 	"dousheng/cmd/user/internal/model"
 	"dousheng/conf"
+	"dousheng/kitex_gen/like"
 	"dousheng/kitex_gen/relation"
 	"dousheng/kitex_gen/user"
 	"dousheng/kitex_gen/video"
@@ -109,49 +110,51 @@ func UserInfo(myId int64, userId int64) (userInfo user.User, err error) {
 		Name:            userDao.Name,
 		BackgroundImage: GetBackgroundImage(userId),
 		Avatar:          GetAvatar(userId),
-		Signature:       "我不想再当一个xx了，我只想拥有快乐（谢谢你，狗子）",
+		Signature:       g.SaoHua[userId%10],
 	}
 	// 获取用户关注数
 	resp, err := etcd_discovery.RelationClient.GetFollowCount(context.Background(), &relation.RelationFollowCountRequest{
+		UserId: userId,
+	})
+	// 获取用户粉丝数
+	resp2, err := etcd_discovery.RelationClient.GetFollowerCount(context.Background(), &relation.RelationFollowerCountRequest{
+		UserId: userId,
+	})
+	// 获取用户是否被关注
+	resp3, err := etcd_discovery.RelationClient.GetIsFollow(context.Background(), &relation.RelationIsFollowRequest{
+		MyId:   myId,
+		UserId: userId,
+	})
+	// 获取用户作品数
+	resp4, err := etcd_discovery.VideoClient.PublishVideoCount(context.Background(), &video.PublishVideoCountRequest{
+		UserId: userId,
+	})
+	// 喜欢数,被喜欢数
+	resp5, err := etcd_discovery.LikeClient.TotalFavorite(context.Background(), &like.TotalFavoriteRequest{
 		UserId: userId,
 	})
 	if err != nil {
 		return
 	}
 	userInfo.FollowCount = resp.GetCount()
-	// 获取用户粉丝数
-	resp2, err := etcd_discovery.RelationClient.GetFollowerCount(context.Background(), &relation.RelationFollowerCountRequest{
-		UserId: userId,
-	})
-	if err != nil {
-		return
-	}
 	userInfo.FollowerCount = resp2.GetCount()
-	// 获取用户是否被关注
-	resp3, err := etcd_discovery.RelationClient.GetIsFollow(context.Background(), &relation.RelationIsFollowRequest{
-		MyId:   myId,
-		UserId: userId,
-	})
 	userInfo.IsFollow = resp3.GetIsFollow()
-	// 获取用户作品数
-	resp4, _ := etcd_discovery.VideoClient.PublishVideoCount(context.Background(), &video.PublishVideoCountRequest{
-		UserId: userId,
-	})
 	userInfo.WorkCount = resp4.GetPublishVideoCount()
-	// TODO 喜欢数
+	userInfo.FavoriteCount = resp5.GetFavoriteCount()
+	userInfo.TotalFavorite = resp5.GetTotalFavorited()
 	return
 }
 
 // GetAvatar 获取用户头像
 func GetAvatar(userID int64) string {
-	strUserID := strconv.Itoa(int(userID))
+	strUserID := strconv.Itoa(int(userID) % 10)
 	avatarURL := conf.OSSAvatarPreURL + strUserID + "_avatar.jpg"
 	return avatarURL
 }
 
 // GetBackgroundImage 获取用户背景图
 func GetBackgroundImage(userID int64) string {
-	strUserID := strconv.Itoa(int(userID))
+	strUserID := strconv.Itoa(int(userID) % 10)
 	backgroundURL := conf.OSSBackgroundPreURL + strUserID + "_background.jpg"
 	return backgroundURL
 }
