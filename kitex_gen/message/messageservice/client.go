@@ -12,6 +12,7 @@ import (
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
 	GetMessageList(ctx context.Context, Req *message.MessageChatRequest, callOptions ...callopt.Option) (r *message.MessageChatResponse, err error)
+	GetMessageListByDB(ctx context.Context, Req *message.MessageChatRequest, callOptions ...callopt.Option) (r *message.MessageChatResponse, err error)
 	PostMessageAction(ctx context.Context, Req *message.MessageActionRequest, callOptions ...callopt.Option) (r *message.MessageActionResponse, err error)
 	GetLatestMessage(ctx context.Context, Req *message.MessageLastRequest, callOptions ...callopt.Option) (r *message.MessageLastResponse, err error)
 }
@@ -48,6 +49,11 @@ type kMessageServiceClient struct {
 func (p *kMessageServiceClient) GetMessageList(ctx context.Context, Req *message.MessageChatRequest, callOptions ...callopt.Option) (r *message.MessageChatResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetMessageList(ctx, Req)
+}
+
+func (p *kMessageServiceClient) GetMessageListByDB(ctx context.Context, Req *message.MessageChatRequest, callOptions ...callopt.Option) (r *message.MessageChatResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetMessageListByDB(ctx, Req)
 }
 
 func (p *kMessageServiceClient) PostMessageAction(ctx context.Context, Req *message.MessageActionRequest, callOptions ...callopt.Option) (r *message.MessageActionResponse, err error) {

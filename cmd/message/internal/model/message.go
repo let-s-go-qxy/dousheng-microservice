@@ -9,6 +9,8 @@ import (
 
 type Message struct {
 	Id         int    `json:"id"`
+	FromId     int64  `json:"from_id"`
+	ToId       int64  `json:"to_id"`
 	Content    string `json:"content"`
 	CreateTime string `json:"create_time"`
 }
@@ -61,4 +63,10 @@ func GetMsgLatest(userId, myId int) (msg string, msgType int) {
 	}
 	msg = msgDao.Content
 	return
+}
+
+func GetMsgListByDB(fromID, toID int64) ([]Message, error) {
+	messages := make([]Message, 0)
+	err := g.MysqlDB.Order("create_time").Find(&messages, "from_id = ? AND to_id = ?", fromID, toID).Error
+	return messages, err
 }

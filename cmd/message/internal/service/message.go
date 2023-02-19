@@ -1,7 +1,9 @@
 package service
 
 import (
+	"context"
 	"dousheng/cmd/message/internal/model"
+	"dousheng/kitex_gen/message"
 	g "dousheng/pkg/global"
 	"dousheng/pkg/mq"
 	"fmt"
@@ -47,5 +49,23 @@ func PostMessageAction(fromId int, toId int, content string, actionType int) (er
 	//将消息写到ToId对应的消息队列中去
 	mq.PublishMessageCurrentToMQ(strJsonMsg, toId)
 
+	return
+}
+
+func GetMessageListByDB(c context.Context, fromId, toId int64) (resp *message.MessageChatResponse, err error) {
+	list, err := model.GetMsgListByDB(fromId, toId)
+	if err != nil {
+		return nil, err
+	}
+	resp.MessageList = make([]*message.Message, 0)
+	for _, m := range list {
+		resp.MessageList = append(resp.MessageList, &message.Message{
+			Id:         int64(m.Id),
+			ToId:       m.ToId,
+			FromId:     m.FromId,
+			Content:    m.Content,
+			CreateTime: m.CreateTime,
+		})
+	}
 	return
 }

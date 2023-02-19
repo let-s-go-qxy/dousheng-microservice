@@ -54,3 +54,8 @@ func (s *MessageServiceImpl) GetLatestMessage(ctx context.Context, req *message.
 	err = errors.New("GetLatestMessage 未完成")
 	return
 }
+
+// GetMessageListByDB implements the MessageServiceImpl interface.
+func (s *MessageServiceImpl) GetMessageListByDB(ctx context.Context, req *message.MessageChatRequest) (resp *message.MessageChatResponse, err error) {
+	return messageService.GetMessageListByDB(ctx, req.GetUserId(), req.GetToUserId())
+}

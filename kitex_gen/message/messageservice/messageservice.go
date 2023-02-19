@@ -22,9 +22,10 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "MessageService"
 	handlerType := (*message.MessageService)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"GetMessageList":    kitex.NewMethodInfo(getMessageListHandler, newGetMessageListArgs, newGetMessageListResult, false),
-		"PostMessageAction": kitex.NewMethodInfo(postMessageActionHandler, newPostMessageActionArgs, newPostMessageActionResult, false),
-		"GetLatestMessage":  kitex.NewMethodInfo(getLatestMessageHandler, newGetLatestMessageArgs, newGetLatestMessageResult, false),
+		"GetMessageList":     kitex.NewMethodInfo(getMessageListHandler, newGetMessageListArgs, newGetMessageListResult, false),
+		"GetMessageListByDB": kitex.NewMethodInfo(getMessageListByDBHandler, newGetMessageListByDBArgs, newGetMessageListByDBResult, false),
+		"PostMessageAction":  kitex.NewMethodInfo(postMessageActionHandler, newPostMessageActionArgs, newPostMessageActionResult, false),
+		"GetLatestMessage":   kitex.NewMethodInfo(getLatestMessageHandler, newGetLatestMessageArgs, newGetLatestMessageResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "message",
@@ -182,6 +183,151 @@ func (p *GetMessageListResult) SetSuccess(x interface{}) {
 }
 
 func (p *GetMessageListResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func getMessageListByDBHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(message.MessageChatRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(message.MessageService).GetMessageListByDB(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *GetMessageListByDBArgs:
+		success, err := handler.(message.MessageService).GetMessageListByDB(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*GetMessageListByDBResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newGetMessageListByDBArgs() interface{} {
+	return &GetMessageListByDBArgs{}
+}
+
+func newGetMessageListByDBResult() interface{} {
+	return &GetMessageListByDBResult{}
+}
+
+type GetMessageListByDBArgs struct {
+	Req *message.MessageChatRequest
+}
+
+func (p *GetMessageListByDBArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(message.MessageChatRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *GetMessageListByDBArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *GetMessageListByDBArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *GetMessageListByDBArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in GetMessageListByDBArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *GetMessageListByDBArgs) Unmarshal(in []byte) error {
+	msg := new(message.MessageChatRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var GetMessageListByDBArgs_Req_DEFAULT *message.MessageChatRequest
+
+func (p *GetMessageListByDBArgs) GetReq() *message.MessageChatRequest {
+	if !p.IsSetReq() {
+		return GetMessageListByDBArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *GetMessageListByDBArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type GetMessageListByDBResult struct {
+	Success *message.MessageChatResponse
+}
+
+var GetMessageListByDBResult_Success_DEFAULT *message.MessageChatResponse
+
+func (p *GetMessageListByDBResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(message.MessageChatResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *GetMessageListByDBResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *GetMessageListByDBResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *GetMessageListByDBResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in GetMessageListByDBResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *GetMessageListByDBResult) Unmarshal(in []byte) error {
+	msg := new(message.MessageChatResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *GetMessageListByDBResult) GetSuccess() *message.MessageChatResponse {
+	if !p.IsSetSuccess() {
+		return GetMessageListByDBResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *GetMessageListByDBResult) SetSuccess(x interface{}) {
+	p.Success = x.(*message.MessageChatResponse)
+}
+
+func (p *GetMessageListByDBResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
@@ -490,6 +636,16 @@ func (p *kClient) GetMessageList(ctx context.Context, Req *message.MessageChatRe
 	_args.Req = Req
 	var _result GetMessageListResult
 	if err = p.c.Call(ctx, "GetMessageList", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GetMessageListByDB(ctx context.Context, Req *message.MessageChatRequest) (r *message.MessageChatResponse, err error) {
+	var _args GetMessageListByDBArgs
+	_args.Req = Req
+	var _result GetMessageListByDBResult
+	if err = p.c.Call(ctx, "GetMessageListByDB", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
