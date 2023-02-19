@@ -58,9 +58,9 @@ func (s *VideoServiceImpl) PublishList(ctx context.Context, req *video.PublishLi
 
 // PublishVideoCount implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) PublishVideoCount(ctx context.Context, req *video.PublishVideoCountRequest) (resp *video.PublishVideoCountResponse, err error) {
-	_, messageCount, _ := videoService.GetPublishList(int(req.UserId))
+	count := videoService.GetPublishVideoCount(int(req.UserId))
 	response := &video.PublishVideoCountResponse{}
-	response.PublishVideoCount = int32(messageCount)
+	response.PublishVideoCount = int32(count)
 	return response, err
 }
 
@@ -75,9 +75,17 @@ func (s *VideoServiceImpl) GetFeedList(ctx context.Context, req *video.FeedReque
 	for _, videoInfo := range videoInfoList {
 		v := video.Video{}
 		copier.Copy(&v, &videoInfo)
+		v.Id = int64(videoInfo.Id)
+		v.FavoriteCount = int32(videoInfo.FavoriteCount)
+		v.CommentCount = int32(videoInfo.CommentCount)
 
 		author := *v.Author
 		copier.Copy(&author, videoInfo.Author)
+		author.Id = int64(videoInfo.Author.Id)
+		author.FollowerCount = int32(videoInfo.Author.FollowerCount)
+		author.FollowCount = int32(videoInfo.Author.FollowCount)
+
+		v.Author = &author
 		videoListResp = append(videoListResp, &v)
 	}
 

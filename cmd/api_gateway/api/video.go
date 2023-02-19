@@ -23,12 +23,17 @@ type VideoListResponse struct {
 
 // AuthorInfo 作者信息
 type AuthorInfo struct {
-	ID            int32  `json:"id"`
-	Name          string `json:"name"`
-	FollowCount   int    `json:"follow_count"`
-	FollowerCount int    `json:"follower_count"`
-	IsFollow      bool   `json:"is_follow"`
-	Avatar        string `json:"avatar"`
+	ID              int32  `json:"id"`
+	Name            string `json:"name"`
+	FollowCount     int    `json:"follow_count"`
+	FollowerCount   int    `json:"follower_count"`
+	IsFollow        bool   `json:"is_follow"`
+	Avatar          string `json:"avatar"`
+	WorkCount       int32  `json:"work_count"`
+	FavoriteCount   int32  `json:"favorite_count"`
+	BackgroundImage string `json:"background_image"`
+	Signature       string `json:"signature"`
+	TotalFavorite   int32  `json:"total_favorite"`
 }
 
 // TheVideoInfo 视频信息
@@ -61,12 +66,11 @@ func GetFeedList(c context.Context, ctx *app.RequestContext) {
 		latestTime = time.Now().Unix()
 	}
 
-	feedRequest := &video.FeedRequest{}
-	feedRequest.UserId = int64(userID)
-	feedRequest.LatestTime = int32(latestTime)
-
 	// 需要获取NextTime、VideoList
-	getFeedListResp, err := etcd_discovery.VideoClient.GetFeedList(c, feedRequest)
+	getFeedListResp, err := etcd_discovery.VideoClient.GetFeedList(c, &video.FeedRequest{
+		LatestTime: int32(latestTime),
+		UserId:     int64(userID),
+	})
 	if err != nil {
 		klog.Error("GetFeedList时发生了错误：" + err.Error())
 	}
@@ -85,6 +89,8 @@ func GetFeedList(c context.Context, ctx *app.RequestContext) {
 
 		vAuthor := *v.Author
 		videoInfoResp.Author.ID = int32(vAuthor.Id)
+		videoInfoResp.Author.FollowCount = int(vAuthor.FollowCount)
+		videoInfoResp.Author.FollowerCount = int(vAuthor.FollowerCount)
 
 		videoInfoListResp = append(videoInfoListResp, videoInfoResp)
 	}
@@ -103,14 +109,14 @@ func GetFeedList(c context.Context, ctx *app.RequestContext) {
 				StatusMsg:  g.GetVideoInfoErrorMsg,
 			}, NextTime: latestTime,
 		})
-	} else if state == g.StatusCodeOk {
+	} else if state == g.FeedStatusOK {
 
 		ctx.JSON(http.StatusOK, &GetVideoResponse{
 			Response: g.Response{
 				StatusCode: g.StatusCodeOk,
 				StatusMsg:  g.GetVideoInfoSuccessMsg,
 			}, NextTime: int64(nextTime),
-			VideoList:   videoInfoListResp,
+			VideoList: videoInfoListResp,
 		})
 	}
 }

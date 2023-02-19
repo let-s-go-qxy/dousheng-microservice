@@ -61,6 +61,33 @@ func UploadAvatar(userID int) bool {
 	}
 }
 
-//func DownloadFile(downloadFileName, filename string, fileType string) bool {
-//	bucket.GetObject("video/"+)
-//}
+func UploadBackground(userID int) bool {
+
+	var fileSuffix string
+	fileSuffix = ".jpg"
+	strUserID := strconv.Itoa(userID)
+
+	ModUserID := userID % 10
+	strModUserID := strconv.Itoa(ModUserID)
+	//项目中头像相对路径
+	avatarPath := "imgs/" +
+		strModUserID +
+		"_background.jpg"
+
+	//以字节数组的形式读出本地的头像，便于后续上传到云端
+	openFile, err := os.Open(avatarPath)
+	defer openFile.Close()
+	avatarBytes, err := ioutil.ReadAll(openFile)
+	if err != nil {
+		klog.Error("上传头像失败" + err.Error())
+		return false
+	}
+	filename := strUserID + "_background"
+	err = g.OssBucket.PutObject("background/"+filename+fileSuffix, bytes.NewReader(avatarBytes))
+	if err != nil {
+		klog.Error("上传头像失败" + err.Error())
+		return false
+	} else {
+		return true
+	}
+}

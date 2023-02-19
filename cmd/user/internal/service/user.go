@@ -10,7 +10,9 @@ import (
 	"dousheng/pkg/etcd_discovery"
 	g "dousheng/pkg/global"
 	utils2 "dousheng/pkg/utils"
+	"dousheng/pkg/utils/file"
 	"errors"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"gorm.io/gorm"
 	"strconv"
 	"time"
@@ -74,6 +76,19 @@ func UserRegister(name, password string) (userId int64, token string, err error)
 		return
 	}
 	userId = int64(user.Id)
+
+	//注册成功时自动生成一张用户头像到阿里OSS云端
+	success := file.UploadAvatar(int(userId))
+	if !success {
+		klog.Error("上传用户头像失败！")
+	}
+
+	//注册成功时自动生成一张背景图到阿里OSS云端
+	success = file.UploadBackground(int(userId))
+	if !success {
+		klog.Error("上传用户头像失败！")
+	}
+
 	token = GenerateToken(*user)
 	return
 }
@@ -136,5 +151,7 @@ func GetAvatar(userID int64) string {
 
 // GetBackgroundImage 获取用户背景图
 func GetBackgroundImage(userID int64) string {
-	return "https://th.bing.com/th/id/R.e6b23f7279370871e1d13a9b8472bacc?rik=8%2fOfHw3gtBb%2fiw&riu=http%3a%2f%2fi2.hdslb.com%2fbfs%2farchive%2f63cd640f4ba78525a8797a94888d0fac654d7cdb.jpg&ehk=td%2bSb3B1RLfBQKrbTv43cN3r7MmjFMxg07MvGUDVoao%3d&risl=&pid=ImgRaw&r=0"
+	strUserID := strconv.Itoa(int(userID))
+	backgroundURL := conf.OSSBackgroundPreURL + strUserID + "_background.jpg"
+	return backgroundURL
 }
