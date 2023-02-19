@@ -7,6 +7,7 @@ import (
 	"dousheng/kitex_gen/comment"
 	"dousheng/kitex_gen/like"
 	"dousheng/kitex_gen/user"
+	"dousheng/kitex_gen/video"
 	"dousheng/pkg/etcd_discovery"
 	utils "dousheng/pkg/utils/file"
 	"fmt"
@@ -71,18 +72,18 @@ func GetVideoFeed(latestTime int64, userID int32) (nextTime int64, videoInfo []m
 
 			var followerCount, followCount, commentCount, vedioFavoriteCount int
 			var isFollow, isFavorite bool
-			followerCount = int(videoAuthor.FollowerCount)
-			followCount = int(videoAuthor.FollowCount)
-			commentCount = int(commentCountResponse.CommentCount)         //TODO
-			vedioFavoriteCount = int(favoriteCountResponse.FavoriteCount) //TODO
-			isFollow = videoAuthor.IsFollow
-			isFavorite = isFavoriteResponse.IsFavorite //TODO
+			followerCount = int(videoAuthor.GetFollowerCount())
+			followCount = int(videoAuthor.GetFollowCount())
+			commentCount = int(commentCountResponse.GetCommentCount())         //TODO
+			vedioFavoriteCount = int(favoriteCountResponse.GetFavoriteCount()) //TODO
+			isFollow = videoAuthor.GetIsFollow()
+			isFavorite = isFavoriteResponse.GetIsFavorite() //TODO
 			avatarURL := videoAuthor.Avatar
-			workCount := videoAuthor.WorkCount
-			favoriteCount := videoAuthor.FavoriteCount
+			workCount := videoAuthor.GetWorkCount()
+			favoriteCount := videoAuthor.GetFavoriteCount()
 			backgroundImage := videoAuthor.BackgroundImage
 			signature := videoAuthor.Signature
-			totalFavorite := videoAuthor.TotalFavorite
+			totalFavorite := videoAuthor.GetTotalFavorite()
 
 			videoInfo[index] = model.TheVideoInfo{
 				Id: videoInfoData.VideoID,
@@ -242,12 +243,54 @@ func PlusAuthor(userId int, videoList []model.Video) (respVideoList []model.Resp
 		respVideo.PlayUrl = conf.OSSPreURL + respVideo.PlayUrl + ".mp4"
 		respVideo.CoverUrl = conf.OSSPreURL + respVideo.CoverUrl + ".jpg"
 
-		respVideo.CommentCount = int(commentCountResponse.CommentCount)
-		respVideo.FavoriteCount = int(favoriteCountResponse.FavoriteCount)
-		klog.Info("respVideo.IsFavorite:", respVideo, "isFavoriteResponse.IsFavorite", isFavoriteResponse)
-		respVideo.IsFavorite = isFavoriteResponse.IsFavorite
+		respVideo.CommentCount = int(commentCountResponse.GetCommentCount())
+		respVideo.FavoriteCount = int(favoriteCountResponse.GetFavoriteCount())
+		respVideo.IsFavorite = isFavoriteResponse.GetIsFavorite()
 
 		respVideoList = append(respVideoList, respVideo)
 	}
 	return
+}
+
+// GetPublishIds 获取该用户发表的视频id数组
+func GetPublishIds(c context.Context, userID int64) (resp *video.PublishIdsResponse, err error) {
+	return &video.PublishIdsResponse{
+		Ids: model.FindVideoIds(userID),
+	}, nil
+}
+
+// GetVideoInfo  获取视频详情
+func GetVideoInfo(c context.Context, videoId int64) (resp *video.VideoInfoResponse, err error) {
+	userInfo := &video.User{}
+	videoInfo, err := model.FindVideoById(videoId)
+	if err != nil {
+		return
+	}
+	userInfo2, err := etcd_discovery.UserClient.UserInfo(c, &user.UserInfoRequest{
+		UserId: int64(videoInfo.Author),
+		MyId:   0,
+	})
+	isLikeResp, err := etcd_discovery.LikeClient.IsFavorite(c, &like.IsFavoriteRequest{
+		UserId:  int64(videoInfo.Author),
+		VideoId: videoId,
+	})
+	favoriteCountResp, err := etcd_discovery.LikeClient.FavoriteCount(c, &like.FavoriteCountRequest{
+		VideoId: videoId,
+	})
+	if err != nil {
+		return
+	}
+	copier.Copy(userInfo, userInfo2)
+	return &video.VideoInfoResponse{
+		VideoInfo: &video.Video{
+			Id:            int64(videoInfo.Id),
+			Author:        userInfo,
+			PlayUrl:       videoInfo.PlayUrl,
+			CoverUrl:      videoInfo.CoverUrl,
+			FavoriteCount: favoriteCountResp.GetFavoriteCount(),
+			CommentCount:  0, // 不用就不给了
+			IsFavorite:    isLikeResp.GetIsFavorite(),
+			Title:         videoInfo.Title,
+		},
+	}, nil
 }

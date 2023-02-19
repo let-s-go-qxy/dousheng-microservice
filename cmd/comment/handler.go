@@ -14,7 +14,6 @@ type CommentServiceImpl struct{}
 
 // PostCommentAction implements the CommentServiceImpl interface.
 func (s *CommentServiceImpl) PostCommentAction(ctx context.Context, req *comment.CommentActionRequest) (resp *comment.CommentActionResponse, err error) {
-
 	resp = &comment.CommentActionResponse{}
 	id, content, createDate, err := service.CommentAction(req.VideoId, req.ActionType, req.CommentText, req.CommentId, req.UserId)
 	if err != nil {
@@ -66,9 +65,7 @@ func (s *CommentServiceImpl) GetCommentList(ctx context.Context, req *comment.Co
 
 // CommentCount implements the CommentServiceImpl interface.
 func (s *CommentServiceImpl) CommentCount(ctx context.Context, req *comment.CommentCountRequest) (resp *comment.CommentCountResponse, err error) {
-
-	resp = &comment.CommentCountResponse{}
 	count := service.GetCommentCount(req.VideoId)
-	resp.CommentCount = count
-	return
+	return &comment.CommentCountResponse{
+		CommentCount: count}, nil
 }

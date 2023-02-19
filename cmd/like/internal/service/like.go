@@ -3,6 +3,7 @@ package like
 import (
 	"context"
 	repository "dousheng/cmd/like/internal/model"
+	like_gen "dousheng/kitex_gen/like"
 	"dousheng/kitex_gen/video"
 	"dousheng/pkg/etcd_discovery"
 	g "dousheng/pkg/global"
@@ -233,9 +234,11 @@ func VideoFavoriteCount(videoId int64) int32 {
 }
 
 // IsLike 根据userId查询用户是否喜欢Id为videoId的视频
-func IsLike(userId, videoId int64) (b bool) {
+func IsLike(userId, videoId int64) (*like_gen.IsFavoriteResponse, error) {
 	//like.VideoId = videoId
-	b, _ = like.IsLike(userId, videoId)
+	isLike, err := like.IsLike(userId, videoId)
 	//fmt.Println(userId, videoId, b)
-	return b
+	return &like_gen.IsFavoriteResponse{
+		IsFavorite: isLike,
+	}, err
 }

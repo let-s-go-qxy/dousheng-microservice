@@ -138,3 +138,20 @@ func (*VideoDaoStruct) GetVideoFeed(latestTime int32) ([]VideoInfo, bool) {
 	}
 	return result, true
 }
+
+func FindVideoIds(userId int64) (ids []int64) {
+	videos := []Video{{Id: int32(userId)}}
+	g.MysqlDB.Select("id").Find(&videos)
+	for _, video := range videos {
+		ids = append(ids, int64(video.Id))
+	}
+	return
+}
+
+func FindVideoById(videoId int64) (Video, error) {
+	video := &Video{
+		Id: int32(videoId),
+	}
+	err := g.MysqlDB.First(&video).Error
+	return *video, err
+}

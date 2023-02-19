@@ -4,8 +4,6 @@ import (
 	"context"
 	service "dousheng/cmd/like/internal/service"
 	like "dousheng/kitex_gen/like"
-	"errors"
-	"github.com/cloudwego/kitex/pkg/klog"
 )
 
 // LikeServiceImpl implements the last service interface defined in the IDL.
@@ -52,12 +50,6 @@ func (s *LikeServiceImpl) FavoriteCount(ctx context.Context, req *like.FavoriteC
 
 // IsFavorite implements the LikeServiceImpl interface.
 func (s *LikeServiceImpl) IsFavorite(ctx context.Context, req *like.IsFavoriteRequest) (resp *like.IsFavoriteResponse, err error) {
-
-	isf := service.IsLike(req.VideoId, req.UserId)
-	resp.IsFavorite = isf
-	klog.Info("IsFavorite:isf:", isf)
-	klog.Info("IsFavorite:resp:", resp)
-	return &like.IsFavoriteResponse{
-		IsFavorite: isf,
-	}, nil
+	resp, err = service.IsLike(req.VideoId, req.UserId)
+	return
 }
