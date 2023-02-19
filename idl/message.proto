@@ -46,6 +46,7 @@ message MessageLastResponse {
 
 service MessageService {
   rpc GetMessageList (MessageChatRequest) returns (MessageChatResponse) {}
+  rpc GetMessageListByDB (MessageChatRequest) returns (MessageChatResponse) {}
   rpc PostMessageAction (MessageActionRequest) returns (MessageActionResponse) {}
   rpc GetLatestMessage (MessageLastRequest) returns (MessageLastResponse) {}
 }

@@ -138,16 +138,14 @@ func GetFriendMessageList(ctx context.Context, userId int64) (*relation.Relation
 	ids := model.GetFriendsByUserId(userId)
 	messageList := &relation.RelationFriendsMessageListResponse{}
 	for _, friendId := range ids {
-		hlog.Info(">>>>>>>>: ", friendId, userId)
-		chat, err := etcd_discovery.MessageClient.GetMessageList(ctx, &message.MessageChatRequest{
+		chat, err := etcd_discovery.MessageClient.GetMessageListByDB(ctx, &message.MessageChatRequest{
 			UserId:   userId,
 			ToUserId: friendId,
 		})
-		hlog.Info("chat:", chat.MessageList)
 		if err != nil {
 			return nil, err
 		}
-		chat2, err := etcd_discovery.MessageClient.GetMessageList(ctx, &message.MessageChatRequest{
+		chat2, err := etcd_discovery.MessageClient.GetMessageListByDB(ctx, &message.MessageChatRequest{
 			UserId:   friendId,
 			ToUserId: userId,
 		})
