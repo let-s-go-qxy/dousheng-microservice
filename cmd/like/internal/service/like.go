@@ -237,5 +237,5 @@ func IsLike(userId, videoId int64) (b bool) {
 	//like.VideoId = videoId
 	b, _ = like.IsLike(userId, videoId)
 	//fmt.Println(userId, videoId, b)
-	return
+	return b
 }
