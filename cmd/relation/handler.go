@@ -52,6 +52,7 @@ func (s *RelationServiceImpl) GetFriendList(ctx context.Context, req *relation.R
 		resp.StatusCode = 1
 		resp.StatusMsg = err.Error()
 	}
+
 	resp.StatusCode = 0
 	resp.StatusMsg = "ok"
 	return

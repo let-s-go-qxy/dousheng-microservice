@@ -11,14 +11,14 @@ import (
 )
 
 type Like struct {
-	Id      int `gorm:"primaryKey" json:"id"`
-	UserId  int `json:"user_id"`
-	VideoId int `json:"video_id"`
-	Cancel  int `json:"cancel"`
+	Id      int64 `gorm:"primaryKey" json:"id"`
+	UserId  int64 `json:"user_id"`
+	VideoId int64 `json:"video_id"`
+	Cancel  int32 `json:"cancel"`
 }
 
 // InsertLike 插入一条点赞记录
-func (like *Like) InsertLike(userId int, videoId int) {
+func (like *Like) InsertLike(userId int64, videoId int64) {
 	var existsLike Like
 	result := g.MysqlDB.Where(map[string]interface{}{"user_id": userId, "video_id": videoId}).First(&existsLike)
 	aLike := Like{UserId: userId, VideoId: videoId, Cancel: g.FavoriteAction}
@@ -32,7 +32,7 @@ func (like *Like) InsertLike(userId int, videoId int) {
 }
 
 // UpdateLike  更新一条点赞记录
-func (like *Like) UpdateLike(userId int, videoId int, actionType int) {
+func (like *Like) UpdateLike(userId int64, videoId int64, actionType int32) {
 	g.MysqlDB.Model(like).Where(map[string]interface{}{"user_id": userId, "video_id": videoId}).Updates(map[string]interface{}{
 		"cancel": actionType,
 	})
@@ -49,7 +49,7 @@ func (like *Like) RefreshLikeCache() {
 		msg := strings.Split(value, ":")
 		userId, _ := strconv.Atoi(msg[0])
 		videoId, _ := strconv.Atoi(msg[1])
-		like.InsertLike(userId, videoId)
+		like.InsertLike(int64(userId), int64(videoId))
 	}
 
 	for _, value := range likeDel {
@@ -57,26 +57,26 @@ func (like *Like) RefreshLikeCache() {
 		msg := strings.Split(value, ":")
 		userId, _ := strconv.Atoi(msg[0])
 		videoId, _ := strconv.Atoi(msg[1])
-		like.UpdateLike(userId, videoId, g.CancelFavoriteAction)
+		like.UpdateLike(int64(userId), int64(videoId), g.CancelFavoriteAction)
 	}
 }
 
 // GetFavoriteVideoIdList 直接查询MySQL，根据userId， 查询用户点赞的视频,返回videoId列表
-func (like *Like) GetFavoriteVideoIdList(userId int) (videoIdList []int) {
+func (like *Like) GetFavoriteVideoIdList(userId int64) (videoIdList []int64) {
 	g.MysqlDB.Table("likes").Select("video_id").Where(map[string]interface{}{"user_id": userId, "cancel": g.FavoriteAction}).Find(&videoIdList)
 	return
 }
 
 // GetUserIdListForVideo 直接查询MySQL，根据videoID，从查询视频点赞列表,返回userId列表
-func (like *Like) GetUserIdListForVideo(videoId int) (userIdList []int) {
+func (like *Like) GetUserIdListForVideo(videoId int64) (userIdList []int64) {
 	g.MysqlDB.Table("likes").Select("user_id").Where(map[string]interface{}{"video_id": videoId, "cancel": g.FavoriteAction}).Find(&userIdList)
 	return
 }
 
 // GetFavoriteVideoList 根据用户ID，获取用户点赞的视频ID列表
 // 先请求缓存，缓存不存在再请求数据库
-func (like *Like) GetFavoriteVideoList(userId int) ([]int, error) {
-	strUserId := strconv.Itoa(userId)
+func (like *Like) GetFavoriteVideoList(userId int64) ([]int64, error) {
+	strUserId := strconv.Itoa(int(userId))
 	if n, err := g.DbUserLike.Exists(g.RedisContext, strUserId).Result(); n > 0 { //缓存存在
 		if err != nil {
 			klog.Error("方法GetUserFavoriteVideoList: 缓存获取用户喜爱列表失败%v", err)
@@ -109,10 +109,10 @@ func (like *Like) GetFavoriteVideoList(userId int) ([]int, error) {
 	}
 }
 
-// GetVideoFavoriteList 根据视频Id，获取视频点赞列表
+// GetVideoFavoriteList 根据视频Id，获取视频点赞用户列表
 // 先查询缓存，再查询数据库
-func (like *Like) GetVideoFavoriteList(videoId int) ([]int, error) {
-	strVideoId := strconv.Itoa(videoId)
+func (like *Like) GetVideoFavoriteList(videoId int64) ([]int64, error) {
+	strVideoId := strconv.Itoa(int(videoId))
 	if n, err := g.DbVideoLike.Exists(g.RedisContext, strVideoId).Result(); n > 0 { //缓存存在
 		if err != nil {
 			klog.Error("方法GetUserFavoriteVideoList: 缓存获取视频点赞列表失败%v", err)
@@ -145,21 +145,21 @@ func (like *Like) GetVideoFavoriteList(videoId int) ([]int, error) {
 }
 
 // GetVideosFavoriteCount 根据一组视频ID获取一组点赞数
-func (like *Like) GetVideosFavoriteCount(videoId []int) (map[int]int, error) {
-	videoFavoriteCount := map[int]int{}
+func (like *Like) GetVideosFavoriteCount(videoId []int64) (map[int64]int32, error) {
+	videoFavoriteCount := map[int64]int32{}
 	for _, id := range videoId {
 		videoFavoriteList, err := like.GetVideoFavoriteList(id)
 		if err != nil {
 			return nil, err
 		}
-		videoFavoriteCount[id] = len(videoFavoriteList)
+		videoFavoriteCount[id] = int32(len(videoFavoriteList))
 	}
 	return videoFavoriteCount, nil
 }
 
-func (like *Like) IsLike(userId int, videoId int) (b bool, err error) {
+func (like *Like) IsLike(userId int64, videoId int64) (b bool, err error) {
 
-	strUserId := strconv.Itoa(userId)
+	strUserId := strconv.Itoa(int(userId))
 	if n, err := g.DbUserLike.Exists(g.RedisContext, strUserId).Result(); n > 0 { //缓存存在
 		if err != nil {
 			klog.Error("方法GetUserFavoriteVideoList: 缓存获取用户喜爱列表失败%v", err)
@@ -194,4 +194,11 @@ func (like *Like) IsLike(userId int, videoId int) (b bool, err error) {
 			return res, nil
 		}
 	}
+}
+
+// TotalFavorite 查询用户获赞总数
+func (like *Like) TotalFavorite(userId int64) (count int64) {
+
+	g.MysqlDB.Model(&Like{}).Where("user_id = ? AND cancel = ? ", userId, 1).Count(&count)
+	return
 }

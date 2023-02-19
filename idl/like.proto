@@ -28,18 +28,44 @@ message FavoriteListResponse {
   repeated video.Video video_list = 3; // 用户点赞视频列表
 }
 
-//喜欢总数和喜欢作品数
-message FavoriteCountRequest{
+
+//喜欢总数
+message TotalFavoriteRequest{
   int64 user_id = 1; // 用户id
 }
 
-message FavoriteCountResponse{
-  int64 total_favorited = 1; //获赞数量
-  int64 favorite_count = 2; //点赞数量
+message TotalFavoriteResponse{
+  int32 total_favorited = 1; //获赞总数量
+  int32 favorite_count = 2; //点赞作品总数量
 }
+
+
+
+//视频点赞数
+message FavoriteCountRequest{
+  int64 video_id = 1; // 视频id
+}
+
+message FavoriteCountResponse{
+  int32 favorite_count = 1; //视频的点赞数量
+}
+
+//视频是否点赞
+message isFavoriteRequest{
+  int64 user_id = 1; // 用户id
+  int64 video_id = 2; // 视频id
+}
+
+message isFavoriteResponse{
+  bool is_favorite = 1; // true-已点赞，false-未点赞
+}
+
+
 
 service LikeService{
   rpc FavoriteAction(FavoriteActionRequest) returns (FavoriteActionResponse){}
   rpc GetFavoriteList(FavoriteListRequest) returns (FavoriteListResponse){}
+  rpc TotalFavorite(TotalFavoriteRequest) returns(TotalFavoriteResponse){}
   rpc FavoriteCount(FavoriteCountRequest) returns (FavoriteCountResponse){}
+  rpc isFavorite(isFavoriteRequest) returns (isFavoriteResponse){}
 }
