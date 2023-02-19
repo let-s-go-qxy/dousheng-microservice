@@ -24,6 +24,7 @@ func (s *LikeServiceImpl) GetFavoriteList(ctx context.Context, req *like.Favorit
 
 // TotalFavorite implements the LikeServiceImpl interface.
 func (s *LikeServiceImpl) TotalFavorite(ctx context.Context, req *like.TotalFavoriteRequest) (resp *like.TotalFavoriteResponse, err error) {
+	resp = &like.TotalFavoriteResponse{}
 	fWorks := service.FavoriteVideoCount(req.UserId)
 	tfd := service.TotalFavoriteCount(req.UserId)
 	resp.TotalFavorited = tfd
