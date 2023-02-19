@@ -17,6 +17,7 @@ import (
 func init() {
 	tracer.InitJaeger(g.ServiceLikeName)
 	etcd_discovery.InitUserRpc()
+	etcd_discovery.InitVideoRpc()
 	database.InitDB()
 }
 
@@ -27,11 +28,11 @@ func main() {
 		log.Println(err.Error())
 	}
 	svr := like.NewServer(new(LikeServiceImpl), //TODO 新建自己的服务
-		server.WithServiceAddr(addr),                                                           // 定义端口
-		server.WithSuite(opentracing.NewDefaultServerSuite()),                                  // 链路监听
-		server.WithMuxTransport(),                                                              // 多路复用
+		server.WithServiceAddr(addr),                          // 定义端口
+		server.WithSuite(opentracing.NewDefaultServerSuite()), // 链路监听
+		server.WithMuxTransport(),                             // 多路复用
 		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: g.ServiceLikeName}), // TODO 写自己的服务名
-		server.WithRegistry(r),                                                                 // 注册服务
+		server.WithRegistry(r), // 注册服务
 	)
 
 	err = svr.Run()
