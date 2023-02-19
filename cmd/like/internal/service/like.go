@@ -188,23 +188,25 @@ func FavoriteAction(userId int64, videoId int64, action int32) error {
 }
 
 // GetFavoriteList 根据用户ID查询用户的喜欢视频列表
-//func GetFavoriteList(userId int64) ([]*video.Video, error) {
-//	// 用户喜欢的视频ID列表
-//	videoIdList, err := like.GetFavoriteVideoList(userId)
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	for _, id := range videoIdList {
-//		etcd_discovery.VideoClient.
-//	}
-//	// 视频对应的发布者
-//	videosAuthor := GetVideosAuthor(userId, videoList)
-//
-//
-//
-//	return respVideoList, nil
-//}
+func GetFavoriteList(ctx context.Context, userId int64) ([]*video.Video, error) {
+	// 用户喜欢的视频ID列表
+	videoIdList, err := like.GetFavoriteVideoList(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	var videos []*video.Video
+	for _, id := range videoIdList {
+		info, err1 := etcd_discovery.VideoClient.GetVideoInfo(ctx, &video.VideoInfoRequest{
+			VideoId: id,
+		})
+		if err1 != nil {
+			return nil, err1
+		}
+		videos = append(videos, info.VideoInfo)
+	}
+	return videos, nil
+}
 
 func TotalFavoriteCount(userId int64) int32 {
 	resp, _ := etcd_discovery.VideoClient.GetPublishIds(context.Background(), &video.PublishIdsRequest{
