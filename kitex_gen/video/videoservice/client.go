@@ -16,6 +16,7 @@ type Client interface {
 	PublishVideoCount(ctx context.Context, Req *video.PublishVideoCountRequest, callOptions ...callopt.Option) (r *video.PublishVideoCountResponse, err error)
 	GetFeedList(ctx context.Context, Req *video.FeedRequest, callOptions ...callopt.Option) (r *video.FeedResponse, err error)
 	GetPublishIds(ctx context.Context, Req *video.PublishIdsRequest, callOptions ...callopt.Option) (r *video.PublishIdsResponse, err error)
+	GetVideoInfo(ctx context.Context, Req *video.VideoInfoRequest, callOptions ...callopt.Option) (r *video.VideoInfoResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -70,4 +71,9 @@ func (p *kVideoServiceClient) GetFeedList(ctx context.Context, Req *video.FeedRe
 func (p *kVideoServiceClient) GetPublishIds(ctx context.Context, Req *video.PublishIdsRequest, callOptions ...callopt.Option) (r *video.PublishIdsResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetPublishIds(ctx, Req)
+}
+
+func (p *kVideoServiceClient) GetVideoInfo(ctx context.Context, Req *video.VideoInfoRequest, callOptions ...callopt.Option) (r *video.VideoInfoResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetVideoInfo(ctx, Req)
 }
