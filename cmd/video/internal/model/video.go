@@ -18,12 +18,17 @@ type Video struct {
 
 // Author 用户返回模型
 type Author struct {
-	Id            int    `json:"id,omitempty"`
-	Name          string `json:"name,omitempty"`
-	FollowCount   int    `json:"follow_count,omitempty"`
-	FollowerCount int    `json:"follower_count,omitempty"`
-	IsFollow      bool   `json:"is_follow"`
-	Avatar        string `json:"avatar"`
+	Id              int    `json:"id,omitempty"`
+	Name            string `json:"name,omitempty"`
+	FollowCount     int    `json:"follow_count,omitempty"`
+	FollowerCount   int    `json:"follower_count,omitempty"`
+	IsFollow        bool   `json:"is_follow"`
+	Avatar          string `json:"avatar"`
+	WorkCount       int32  `json:"work_count"`
+	FavoriteCount   int32  `json:"favorite_count"`
+	BackgroundImage string `json:"background_image"`
+	Signature       string `json:"signature"`
+	TotalFavorite   int32  `json:"total_favorite"`
 }
 
 // RespVideo 喜爱的视频返回模型
@@ -52,12 +57,17 @@ type TheVideoInfo struct {
 
 // AuthorInfo 作者信息
 type AuthorInfo struct {
-	Id            int32  `json:"id"`
-	Name          string `json:"name"`
-	FollowCount   int    `json:"follow_count"`
-	FollowerCount int    `json:"follower_count"`
-	IsFollow      bool   `json:"is_follow"`
-	Avatar        string `json:"avatar"`
+	Id              int32  `json:"id"`
+	Name            string `json:"name"`
+	FollowCount     int    `json:"follow_count"`
+	FollowerCount   int    `json:"follower_count"`
+	IsFollow        bool   `json:"is_follow"`
+	Avatar          string `json:"avatar"`
+	WorkCount       int32  `json:"work_count"`
+	FavoriteCount   int32  `json:"favorite_count"`
+	BackgroundImage string `json:"background_image"`
+	Signature       string `json:"signature"`
+	TotalFavorite   int32  `json:"total_favorite"`
 }
 
 type GetVideoResponse struct {

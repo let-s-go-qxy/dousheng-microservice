@@ -1,8 +1,11 @@
 package service
 
 import (
+	"context"
 	"dousheng/cmd/video/internal/model"
 	"dousheng/conf"
+	"dousheng/kitex_gen/user"
+	"dousheng/pkg/etcd_discovery"
 	utils "dousheng/pkg/utils/file"
 	"fmt"
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -30,7 +33,15 @@ func GetVideoFeed(latestTime int64, userID int32) (nextTime int64, videoInfo []m
 	wg.Add(len(allVideoInfoData))
 
 	for index, videoInfoData := range allVideoInfoData {
-		var err error
+		userInfoResponse, err := etcd_discovery.UserClient.UserInfo(context.Background(), &user.UserInfoRequest{
+			UserId: int64(userID),
+			MyId:   int64(videoInfoData.UserID),
+		})
+
+		if err != nil {
+			klog.Error("调用UserInfo接口时发生了错误：" + err.Error())
+		}
+
 		go func(index int, videoInfo []model.TheVideoInfo, videoInfoData model.VideoInfo, userID int32) {
 			//var followerCount, followCount, commentCount, favoriteCount int
 			//
@@ -42,29 +53,42 @@ func GetVideoFeed(latestTime int64, userID int32) (nextTime int64, videoInfo []m
 			//isFavorite = like.IsLike(int(userID), int(videoInfoData.VideoID))
 			//avatarURL := user.GetAvatar(int(videoInfoData.UserID))
 
-			var followerCount, followCount, commentCount, favoriteCount int
+			videoAuthorPointer := userInfoResponse.User
+			videoAuthor := *videoAuthorPointer
+
+			var followerCount, followCount, commentCount, vedioFavoriteCount int
 			var isFollow, isFavorite bool
-			followerCount = 1
-			followCount = 1
-			commentCount = 1
-			favoriteCount = 1
-			isFollow = false
-			isFavorite = false
-			avatarURL := "www.baidu.com"
+			followerCount = int(videoAuthor.FollowerCount)
+			followCount = int(videoAuthor.FollowCount)
+			commentCount = 1       //TODO
+			vedioFavoriteCount = 1 //TODO
+			isFollow = videoAuthor.IsFollow
+			isFavorite = false //TODO
+			avatarURL := videoAuthor.Avatar
+			workCount := videoAuthor.WorkCount
+			favoriteCount := videoAuthor.FavoriteCount
+			backgroundImage := videoAuthor.BackgroundImage
+			signature := videoAuthor.Signature
+			totalFavorite := videoAuthor.TotalFavorite
 
 			videoInfo[index] = model.TheVideoInfo{
 				Id: videoInfoData.VideoID,
 				Author: model.AuthorInfo{
-					Id:            videoInfoData.UserID,
-					Name:          videoInfoData.Username,
-					FollowCount:   int(followCount),
-					FollowerCount: int(followerCount),
-					IsFollow:      isFollow,
-					Avatar:        avatarURL,
+					Id:              videoInfoData.UserID,
+					Name:            videoInfoData.Username,
+					FollowCount:     int(followCount),
+					FollowerCount:   int(followerCount),
+					IsFollow:        isFollow,
+					Avatar:          avatarURL,
+					WorkCount:       workCount,
+					FavoriteCount:   favoriteCount,
+					BackgroundImage: backgroundImage,
+					Signature:       signature,
+					TotalFavorite:   totalFavorite,
 				},
 				PlayUrl:       conf.OSSPreURL + videoInfoData.PlayURL + ".mp4",
 				CoverUrl:      conf.OSSPreURL + videoInfoData.CoverURL + ".jpg",
-				FavoriteCount: int(favoriteCount),
+				FavoriteCount: int(vedioFavoriteCount),
 				CommentCount:  int(commentCount),
 				IsFavorite:    isFavorite,
 				Title:         videoInfoData.Title,
@@ -147,6 +171,13 @@ func GetPublishList(userId int) (respVideoList []model.RespVideo, publishCount i
 	return
 }
 
+func GetPublishVideoCount(userId int) (publishCount int) {
+	var videoList []model.Video
+	videoList = model.GetPublishList(userId)
+	publishCount = len(videoList)
+	return publishCount
+}
+
 // 将author封装到video
 func PlusAuthor(userId int, videoList []model.Video) (respVideoList []model.RespVideo) {
 
@@ -161,12 +192,23 @@ func PlusAuthor(userId int, videoList []model.Video) (respVideoList []model.Resp
 		//author.IsFollow = model.IsFollow(userId, int(video.Author))
 		//author.Avatar = user.GetAvatar(author.Id)
 
-		author.Id = 1
-		author.Name = "111"
-		author.FollowCount = 1
-		author.FollowerCount = 1
-		author.IsFollow = false
-		author.Avatar = "www.baidu.com"
+		author.Id = int(video.Author)
+
+		userInfoResponse, err := etcd_discovery.UserClient.UserInfo(context.Background(), &user.UserInfoRequest{
+			UserId: int64(userId),
+			MyId:   int64(author.Id),
+		})
+
+		if err != nil {
+			klog.Error("调用UserInfo接口时发生了错误：" + err.Error())
+		}
+
+		videoAuthorPointer := userInfoResponse.User
+		videoAuthor := *videoAuthorPointer
+
+		author.FollowCount = int(videoAuthor.FollowCount)
+		author.FollowerCount = int(videoAuthor.FollowerCount)
+		copier.Copy(&author, &videoAuthor)
 
 		copier.Copy(&respVideo.Author, &author)
 		respVideo.Id = int(video.Id)

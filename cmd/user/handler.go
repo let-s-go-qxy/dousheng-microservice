@@ -55,8 +55,7 @@ func (s *UserServiceImpl) GetAvatar(ctx context.Context, req *user.UserAvatarReq
 
 // GetBackgroundImage implements the UserServiceImpl interface.
 func (s *UserServiceImpl) GetBackgroundImage(ctx context.Context, req *user.UserBackgroundImageRequest) (resp *user.UserBackgroundImageResponse, err error) {
-	resp = &user.UserBackgroundImageResponse{
-		BackgroundImage: service.GetBackgroundImage(req.GetUserId()),
-	}
-	return
+	resp = &user.UserBackgroundImageResponse{}
+	resp.BackgroundImage = service.GetBackgroundImage(req.UserId)
+	return resp, err
 }

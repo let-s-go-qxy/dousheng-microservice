@@ -18,6 +18,9 @@ import (
 func init() {
 	tracer.InitJaeger(g.ServiceVideoName)
 	etcd_discovery.InitUserRpc()
+	etcd_discovery.InitVideoRpc()
+	etcd_discovery.InitLikeRpc()
+	etcd_discovery.InitRelationRpc()
 	database.InitDB()
 	oss_init.OSSInit()
 }
