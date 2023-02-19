@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// 喜欢操作
+//喜欢操作
 type FavoriteActionRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -141,7 +141,7 @@ func (x *FavoriteActionResponse) GetStatusMsg() string {
 	return ""
 }
 
-// 喜欢列表
+//喜欢列表
 type FavoriteListRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -260,7 +260,7 @@ func (x *FavoriteListResponse) GetVideoList() []*video.Video {
 	return nil
 }
 
-// 喜欢总数
+//喜欢总数
 type TotalFavoriteRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -363,7 +363,7 @@ func (x *TotalFavoriteResponse) GetFavoriteCount() int32 {
 	return 0
 }
 
-// 视频点赞数
+//视频点赞数
 type FavoriteCountRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -458,7 +458,7 @@ func (x *FavoriteCountResponse) GetFavoriteCount() int32 {
 	return 0
 }
 
-// 视频是否点赞
+//视频是否点赞
 type IsFavoriteRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

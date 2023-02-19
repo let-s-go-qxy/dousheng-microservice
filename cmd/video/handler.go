@@ -100,12 +100,12 @@ func (s *VideoServiceImpl) GetFeedList(ctx context.Context, req *video.FeedReque
 
 // GetPublishIds implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) GetPublishIds(ctx context.Context, req *video.PublishIdsRequest) (resp *video.PublishIdsResponse, err error) {
-	// TODO: Your code here...
+	resp, err = videoService.GetPublishIds(ctx, req.GetUserId())
 	return
 }
 
 // GetVideoInfo implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) GetVideoInfo(ctx context.Context, req *video.VideoInfoRequest) (resp *video.VideoInfoResponse, err error) {
-	// TODO: Your code here...
+	resp, err = videoService.GetVideoInfo(ctx, req.GetVideoId())
 	return
 }
