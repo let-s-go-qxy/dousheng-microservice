@@ -4,7 +4,6 @@ import (
 	"context"
 	service "dousheng/cmd/like/internal/service"
 	like "dousheng/kitex_gen/like"
-	"errors"
 )
 
 // LikeServiceImpl implements the last service interface defined in the IDL.
@@ -22,7 +21,12 @@ func (s *LikeServiceImpl) FavoriteAction(ctx context.Context, req *like.Favorite
 
 // GetFavoriteList implements the LikeServiceImpl interface.
 func (s *LikeServiceImpl) GetFavoriteList(ctx context.Context, req *like.FavoriteListRequest) (resp *like.FavoriteListResponse, err error) {
-	err = errors.New("未完成")
+	resp = &like.FavoriteListResponse{}
+	resp.VideoList, err = service.GetFavoriteList(ctx, req.GetUserId())
+	if err != nil {
+		resp.StatusCode = 0
+		resp.StatusMsg = "ok"
+	}
 	return
 }
 
