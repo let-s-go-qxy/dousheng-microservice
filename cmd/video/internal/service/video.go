@@ -4,6 +4,8 @@ import (
 	"context"
 	"dousheng/cmd/video/internal/model"
 	"dousheng/conf"
+	"dousheng/kitex_gen/comment"
+	"dousheng/kitex_gen/like"
 	"dousheng/kitex_gen/user"
 	"dousheng/pkg/etcd_discovery"
 	utils "dousheng/pkg/utils/file"
@@ -34,24 +36,35 @@ func GetVideoFeed(latestTime int64, userID int32) (nextTime int64, videoInfo []m
 
 	for index, videoInfoData := range allVideoInfoData {
 		userInfoResponse, err := etcd_discovery.UserClient.UserInfo(context.Background(), &user.UserInfoRequest{
-			UserId: int64(userID),
-			MyId:   int64(videoInfoData.UserID),
+			MyId:   int64(userID),
+			UserId: int64(videoInfoData.UserID),
 		})
-
 		if err != nil {
 			klog.Error("调用UserInfo接口时发生了错误：" + err.Error())
 		}
 
+		commentCountResponse, err := etcd_discovery.CommentClient.CommentCount(context.Background(), &comment.CommentCountRequest{
+			VideoId: int64(videoInfoData.VideoID),
+		})
+		if err != nil {
+			klog.Error("调用CommentCount接口时发生了错误：" + err.Error())
+		}
+
+		favoriteCountResponse, err := etcd_discovery.LikeClient.FavoriteCount(context.Background(), &like.FavoriteCountRequest{
+			VideoId: int64(videoInfoData.VideoID),
+		})
+		if err != nil {
+			klog.Error("调用FavoriteCount接口时发生了错误：" + err.Error())
+		}
+
+		isFavoriteResponse, err := etcd_discovery.LikeClient.IsFavorite(context.Background(), &like.IsFavoriteRequest{
+			UserId:  int64(userID),
+			VideoId: int64(videoInfoData.VideoID),
+		})
+		if err != nil {
+			klog.Error("调用IsFavorite接口时发生了错误：" + err.Error())
+		}
 		go func(index int, videoInfo []model.TheVideoInfo, videoInfoData model.VideoInfo, userID int32) {
-			//var followerCount, followCount, commentCount, favoriteCount int
-			//
-			//var isFollow, isFavorite bool
-			//_, followCount, followerCount, _, isFollow, err = user.UserInfo(int(userID), int(videoInfoData.UserID))
-			//
-			//_, commentCount = comment.GetCommentList(int(videoInfoData.VideoID), int(userID))
-			//favoriteCount = like.VideoFavoriteCount(int(videoInfoData.VideoID))
-			//isFavorite = like.IsLike(int(userID), int(videoInfoData.VideoID))
-			//avatarURL := user.GetAvatar(int(videoInfoData.UserID))
 
 			videoAuthorPointer := userInfoResponse.User
 			videoAuthor := *videoAuthorPointer
@@ -60,10 +73,10 @@ func GetVideoFeed(latestTime int64, userID int32) (nextTime int64, videoInfo []m
 			var isFollow, isFavorite bool
 			followerCount = int(videoAuthor.FollowerCount)
 			followCount = int(videoAuthor.FollowCount)
-			commentCount = 1       //TODO
-			vedioFavoriteCount = 1 //TODO
+			commentCount = int(commentCountResponse.CommentCount)         //TODO
+			vedioFavoriteCount = int(favoriteCountResponse.FavoriteCount) //TODO
 			isFollow = videoAuthor.IsFollow
-			isFavorite = false //TODO
+			isFavorite = isFavoriteResponse.IsFavorite //TODO
 			avatarURL := videoAuthor.Avatar
 			workCount := videoAuthor.WorkCount
 			favoriteCount := videoAuthor.FavoriteCount
@@ -185,12 +198,6 @@ func PlusAuthor(userId int, videoList []model.Video) (respVideoList []model.Resp
 		respVideo := model.RespVideo{}
 		copier.Copy(&respVideo, &video)
 		author := model.Author{}
-		//author.Id = int(video.Author)
-		//author.Name = model.GetNameById(author.Id)
-		//author.FollowCount = int(model.GetFollowCount(int(video.Author)))
-		//author.FollowerCount = int(model.GetFollowerCount(int(video.Author)))
-		//author.IsFollow = model.IsFollow(userId, int(video.Author))
-		//author.Avatar = user.GetAvatar(author.Id)
 
 		author.Id = int(video.Author)
 
@@ -198,11 +205,31 @@ func PlusAuthor(userId int, videoList []model.Video) (respVideoList []model.Resp
 			UserId: int64(userId),
 			MyId:   int64(author.Id),
 		})
-
 		if err != nil {
 			klog.Error("调用UserInfo接口时发生了错误：" + err.Error())
 		}
 
+		commentCountResponse, err := etcd_discovery.CommentClient.CommentCount(context.Background(), &comment.CommentCountRequest{
+			VideoId: int64(video.Id),
+		})
+		if err != nil {
+			klog.Error("调用CommentCount接口时发生了错误：" + err.Error())
+		}
+
+		favoriteCountResponse, err := etcd_discovery.LikeClient.FavoriteCount(context.Background(), &like.FavoriteCountRequest{
+			VideoId: int64(video.Id),
+		})
+		if err != nil {
+			klog.Error("调用FavoriteCount接口时发生了错误：" + err.Error())
+		}
+
+		isFavoriteResponse, err := etcd_discovery.LikeClient.IsFavorite(context.Background(), &like.IsFavoriteRequest{
+			UserId:  int64(userId),
+			VideoId: int64(video.Id),
+		})
+		if err != nil {
+			klog.Error("调用IsFavorite接口时发生了错误：" + err.Error())
+		}
 		videoAuthorPointer := userInfoResponse.User
 		videoAuthor := *videoAuthorPointer
 
@@ -215,13 +242,10 @@ func PlusAuthor(userId int, videoList []model.Video) (respVideoList []model.Resp
 		respVideo.PlayUrl = conf.OSSPreURL + respVideo.PlayUrl + ".mp4"
 		respVideo.CoverUrl = conf.OSSPreURL + respVideo.CoverUrl + ".jpg"
 
-		//_, respVideo.CommentCount = comment.GetCommentList(int(respVideo.Id), userId)
-		//respVideo.FavoriteCount = like.VideoFavoriteCount(int(respVideo.Id))
-		//respVideo.IsFavorite = like.IsLike(int(userId), int(respVideo.Id))
-
-		respVideo.CommentCount = 1
-		respVideo.FavoriteCount = 1
-		respVideo.IsFavorite = false
+		respVideo.CommentCount = int(commentCountResponse.CommentCount)
+		respVideo.FavoriteCount = int(favoriteCountResponse.FavoriteCount)
+		klog.Info("respVideo.IsFavorite:", respVideo, "isFavoriteResponse.IsFavorite", isFavoriteResponse)
+		respVideo.IsFavorite = isFavoriteResponse.IsFavorite
 
 		respVideoList = append(respVideoList, respVideo)
 	}

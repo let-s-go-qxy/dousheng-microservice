@@ -97,3 +97,15 @@ func (s *VideoServiceImpl) GetFeedList(ctx context.Context, req *video.FeedReque
 	feedResponse.State = int32(state)
 	return feedResponse, err
 }
+
+// GetPublishIds implements the VideoServiceImpl interface.
+func (s *VideoServiceImpl) GetPublishIds(ctx context.Context, req *video.PublishIdsRequest) (resp *video.PublishIdsResponse, err error) {
+	// TODO: Your code here...
+	return
+}
+
+// GetVideoInfo implements the VideoServiceImpl interface.
+func (s *VideoServiceImpl) GetVideoInfo(ctx context.Context, req *video.VideoInfoRequest) (resp *video.VideoInfoResponse, err error) {
+	// TODO: Your code here...
+	return
+}
