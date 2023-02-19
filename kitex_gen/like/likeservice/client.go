@@ -13,7 +13,9 @@ import (
 type Client interface {
 	FavoriteAction(ctx context.Context, Req *like.FavoriteActionRequest, callOptions ...callopt.Option) (r *like.FavoriteActionResponse, err error)
 	GetFavoriteList(ctx context.Context, Req *like.FavoriteListRequest, callOptions ...callopt.Option) (r *like.FavoriteListResponse, err error)
+	TotalFavorite(ctx context.Context, Req *like.TotalFavoriteRequest, callOptions ...callopt.Option) (r *like.TotalFavoriteResponse, err error)
 	FavoriteCount(ctx context.Context, Req *like.FavoriteCountRequest, callOptions ...callopt.Option) (r *like.FavoriteCountResponse, err error)
+	IsFavorite(ctx context.Context, Req *like.IsFavoriteRequest, callOptions ...callopt.Option) (r *like.IsFavoriteResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -55,7 +57,17 @@ func (p *kLikeServiceClient) GetFavoriteList(ctx context.Context, Req *like.Favo
 	return p.kClient.GetFavoriteList(ctx, Req)
 }
 
+func (p *kLikeServiceClient) TotalFavorite(ctx context.Context, Req *like.TotalFavoriteRequest, callOptions ...callopt.Option) (r *like.TotalFavoriteResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.TotalFavorite(ctx, Req)
+}
+
 func (p *kLikeServiceClient) FavoriteCount(ctx context.Context, Req *like.FavoriteCountRequest, callOptions ...callopt.Option) (r *like.FavoriteCountResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.FavoriteCount(ctx, Req)
+}
+
+func (p *kLikeServiceClient) IsFavorite(ctx context.Context, Req *like.IsFavoriteRequest, callOptions ...callopt.Option) (r *like.IsFavoriteResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.IsFavorite(ctx, Req)
 }

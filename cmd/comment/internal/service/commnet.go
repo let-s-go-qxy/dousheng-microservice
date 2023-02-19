@@ -17,6 +17,7 @@ func GetCommentList(videoId int64, myId int64) (respCommentList []comment.Commen
 	for _, comments := range commentList {
 		respComment := comment.Comment{}
 		copier.Copy(respComment, comments)
+		respCommentList = append(respCommentList, respComment)
 	}
 
 	return
@@ -47,4 +48,9 @@ func CommentAction(videoId int64, actionType int32, contentText string, commentI
 		}
 	}
 	return com.Id, com.Content, com.CreateDate, err
+}
+
+func GetCommentCount(videoId int64) (commentCount int32) {
+	commentCount = int32(model.GetCommentCount(videoId))
+	return
 }

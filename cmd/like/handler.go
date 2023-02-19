@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	service "dousheng/cmd/like/internal/service"
 	like "dousheng/kitex_gen/like"
 	"errors"
 )
@@ -21,8 +22,25 @@ func (s *LikeServiceImpl) GetFavoriteList(ctx context.Context, req *like.Favorit
 	return
 }
 
+// TotalFavorite implements the LikeServiceImpl interface.
+func (s *LikeServiceImpl) TotalFavorite(ctx context.Context, req *like.TotalFavoriteRequest) (resp *like.TotalFavoriteResponse, err error) {
+	fWorks := service.FavoriteVideoCount(req.UserId)
+	tfd := service.TotalFavoriteCount(req.UserId)
+	resp.TotalFavorited = tfd
+	resp.FavoriteCount = fWorks
+	return
+}
+
 // FavoriteCount implements the LikeServiceImpl interface.
 func (s *LikeServiceImpl) FavoriteCount(ctx context.Context, req *like.FavoriteCountRequest) (resp *like.FavoriteCountResponse, err error) {
-	err = errors.New("未完成")
+	vfc := service.VideoFavoriteCount(req.VideoId)
+	resp.FavoriteCount = vfc
+	return
+}
+
+// IsFavorite implements the LikeServiceImpl interface.
+func (s *LikeServiceImpl) IsFavorite(ctx context.Context, req *like.IsFavoriteRequest) (resp *like.IsFavoriteResponse, err error) {
+	isf := service.IsLike(req.VideoId, req.UserId)
+	resp.IsFavorite = isf
 	return
 }

@@ -14,10 +14,15 @@ type Comment struct {
 }
 
 // FindCommentByVideo 根据视频id查询全部评论，并且仅返回cancel等于1的
-func FindCommentByVideo(id int64) []Comment {
+func FindCommentByVideo(videoId int64) []Comment {
 	comments := make([]Comment, 0)
-	g.MysqlDB.Where("video_id = ? AND cancel = 1 ", id).Order("create_time desc").Find(&comments)
+	g.MysqlDB.Where("video_id = ? AND cancel = 1 ", videoId).Order("create_time desc").Find(&comments)
 	return comments
+}
+
+func GetCommentCount(videoId int64) (count int64) {
+	g.MysqlDB.Model(&Comment{}).Where("video_id = ? AND cancel = ? ", videoId, 1).Count(&count)
+	return
 }
 
 // FindCommentById 根据评论的id查询返回对应评论

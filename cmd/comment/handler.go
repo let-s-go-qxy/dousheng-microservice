@@ -61,3 +61,11 @@ func (s *CommentServiceImpl) GetCommentList(ctx context.Context, req *comment.Co
 	resp.StatusMsg = "ok"
 	return
 }
+
+// CommentCount implements the CommentServiceImpl interface.
+func (s *CommentServiceImpl) CommentCount(ctx context.Context, req *comment.CommentCountRequest) (resp *comment.CommentCountResponse, err error) {
+
+	count := service.GetCommentCount(req.VideoId)
+	resp.CommentCount = count
+	return
+}

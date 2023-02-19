@@ -14,11 +14,12 @@ func GetMd5Str(str string) string {
 }
 
 // String2Int string数组转int数组
-func String2Int(strArr []string) []int {
-	res := make([]int, len(strArr))
+func String2Int(strArr []string) []int64 {
+	res := make([]int64, len(strArr))
 
 	for index, val := range strArr {
-		res[index], _ = strconv.Atoi(val)
+		num, _ := strconv.Atoi(val)
+		res[index] = int64(num)
 	}
 
 	return res
