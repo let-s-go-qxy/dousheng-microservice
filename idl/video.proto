@@ -44,7 +44,7 @@ message User {
 
 message PublishListRequest {
   int64 user_id = 1; // 用户id
-  string token = 2; // 用户鉴权token
+  int64 my_id = 2; // 登陆id
 }
 
 message PublishListResponse {

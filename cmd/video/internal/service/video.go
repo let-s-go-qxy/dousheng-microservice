@@ -173,14 +173,14 @@ func PublishVideo(userID int, title string, fileBytes []byte) (success bool) {
 }
 
 // 获取登录用户的视频发布列表
-func GetPublishList(userId int) (respVideoList []model.RespVideo, publishCount int, err error) {
+func GetPublishList(userId, myId int) (respVideoList []model.RespVideo, publishCount int, err error) {
 
 	//获取视频数组
 	var videoList []model.Video
 	videoList = model.GetPublishList(userId)
 
 	//利用封装函数
-	respVideoList = PlusAuthor(userId, videoList)
+	respVideoList = PlusAuthor(userId, myId, videoList)
 	publishCount = len(respVideoList)
 	return
 }
@@ -193,7 +193,7 @@ func GetPublishVideoCount(userId int) (publishCount int) {
 }
 
 // 将author封装到video
-func PlusAuthor(userId int, videoList []model.Video) (respVideoList []model.RespVideo) {
+func PlusAuthor(userId, myId int, videoList []model.Video) (respVideoList []model.RespVideo) {
 
 	for _, video := range videoList {
 		respVideo := model.RespVideo{}
@@ -204,7 +204,7 @@ func PlusAuthor(userId int, videoList []model.Video) (respVideoList []model.Resp
 
 		userInfoResponse, err := etcd_discovery.UserClient.UserInfo(context.Background(), &user.UserInfoRequest{
 			UserId: int64(userId),
-			MyId:   int64(author.Id),
+			MyId:   int64(myId),
 		})
 		if err != nil {
 			klog.Error("调用UserInfo接口时发生了错误：" + err.Error())

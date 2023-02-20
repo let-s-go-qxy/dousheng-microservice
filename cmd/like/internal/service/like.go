@@ -233,6 +233,10 @@ func VideoFavoriteCount(videoId int64) int32 {
 	return int32(len(userIdList))
 }
 
+func RefreshLikeCache() {
+	like.RefreshLikeCache()
+}
+
 // IsLike 根据userId查询用户是否喜欢Id为videoId的视频
 func IsLike(userId, videoId int64) (*like_gen.IsFavoriteResponse, error) {
 	//like.VideoId = videoId

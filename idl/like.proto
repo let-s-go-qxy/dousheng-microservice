@@ -60,6 +60,11 @@ message isFavoriteResponse{
   bool is_favorite = 1; // true-已点赞，false-未点赞
 }
 
+message RefreshLikeCacheRequest{
+}
+
+message RefreshLikeCacheResponse{
+}
 
 
 service LikeService{
@@ -68,4 +73,5 @@ service LikeService{
   rpc TotalFavorite(TotalFavoriteRequest) returns(TotalFavoriteResponse){}
   rpc FavoriteCount(FavoriteCountRequest) returns (FavoriteCountResponse){}
   rpc isFavorite(isFavoriteRequest) returns (isFavoriteResponse){}
+  rpc RefreshLikeCache(RefreshLikeCacheRequest) returns(RefreshLikeCacheResponse) {}
 }

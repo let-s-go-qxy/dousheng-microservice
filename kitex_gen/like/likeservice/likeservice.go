@@ -22,11 +22,12 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "LikeService"
 	handlerType := (*like.LikeService)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"FavoriteAction":  kitex.NewMethodInfo(favoriteActionHandler, newFavoriteActionArgs, newFavoriteActionResult, false),
-		"GetFavoriteList": kitex.NewMethodInfo(getFavoriteListHandler, newGetFavoriteListArgs, newGetFavoriteListResult, false),
-		"TotalFavorite":   kitex.NewMethodInfo(totalFavoriteHandler, newTotalFavoriteArgs, newTotalFavoriteResult, false),
-		"FavoriteCount":   kitex.NewMethodInfo(favoriteCountHandler, newFavoriteCountArgs, newFavoriteCountResult, false),
-		"isFavorite":      kitex.NewMethodInfo(isFavoriteHandler, newIsFavoriteArgs, newIsFavoriteResult, false),
+		"FavoriteAction":   kitex.NewMethodInfo(favoriteActionHandler, newFavoriteActionArgs, newFavoriteActionResult, false),
+		"GetFavoriteList":  kitex.NewMethodInfo(getFavoriteListHandler, newGetFavoriteListArgs, newGetFavoriteListResult, false),
+		"TotalFavorite":    kitex.NewMethodInfo(totalFavoriteHandler, newTotalFavoriteArgs, newTotalFavoriteResult, false),
+		"FavoriteCount":    kitex.NewMethodInfo(favoriteCountHandler, newFavoriteCountArgs, newFavoriteCountResult, false),
+		"isFavorite":       kitex.NewMethodInfo(isFavoriteHandler, newIsFavoriteArgs, newIsFavoriteResult, false),
+		"RefreshLikeCache": kitex.NewMethodInfo(refreshLikeCacheHandler, newRefreshLikeCacheArgs, newRefreshLikeCacheResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "like",
@@ -767,6 +768,151 @@ func (p *IsFavoriteResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
+func refreshLikeCacheHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(like.RefreshLikeCacheRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(like.LikeService).RefreshLikeCache(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *RefreshLikeCacheArgs:
+		success, err := handler.(like.LikeService).RefreshLikeCache(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*RefreshLikeCacheResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newRefreshLikeCacheArgs() interface{} {
+	return &RefreshLikeCacheArgs{}
+}
+
+func newRefreshLikeCacheResult() interface{} {
+	return &RefreshLikeCacheResult{}
+}
+
+type RefreshLikeCacheArgs struct {
+	Req *like.RefreshLikeCacheRequest
+}
+
+func (p *RefreshLikeCacheArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(like.RefreshLikeCacheRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *RefreshLikeCacheArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *RefreshLikeCacheArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *RefreshLikeCacheArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in RefreshLikeCacheArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *RefreshLikeCacheArgs) Unmarshal(in []byte) error {
+	msg := new(like.RefreshLikeCacheRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var RefreshLikeCacheArgs_Req_DEFAULT *like.RefreshLikeCacheRequest
+
+func (p *RefreshLikeCacheArgs) GetReq() *like.RefreshLikeCacheRequest {
+	if !p.IsSetReq() {
+		return RefreshLikeCacheArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *RefreshLikeCacheArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type RefreshLikeCacheResult struct {
+	Success *like.RefreshLikeCacheResponse
+}
+
+var RefreshLikeCacheResult_Success_DEFAULT *like.RefreshLikeCacheResponse
+
+func (p *RefreshLikeCacheResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(like.RefreshLikeCacheResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *RefreshLikeCacheResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *RefreshLikeCacheResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *RefreshLikeCacheResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in RefreshLikeCacheResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *RefreshLikeCacheResult) Unmarshal(in []byte) error {
+	msg := new(like.RefreshLikeCacheResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *RefreshLikeCacheResult) GetSuccess() *like.RefreshLikeCacheResponse {
+	if !p.IsSetSuccess() {
+		return RefreshLikeCacheResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *RefreshLikeCacheResult) SetSuccess(x interface{}) {
+	p.Success = x.(*like.RefreshLikeCacheResponse)
+}
+
+func (p *RefreshLikeCacheResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -822,6 +968,16 @@ func (p *kClient) IsFavorite(ctx context.Context, Req *like.IsFavoriteRequest) (
 	_args.Req = Req
 	var _result IsFavoriteResult
 	if err = p.c.Call(ctx, "isFavorite", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) RefreshLikeCache(ctx context.Context, Req *like.RefreshLikeCacheRequest) (r *like.RefreshLikeCacheResponse, err error) {
+	var _args RefreshLikeCacheArgs
+	_args.Req = Req
+	var _result RefreshLikeCacheResult
+	if err = p.c.Call(ctx, "RefreshLikeCache", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

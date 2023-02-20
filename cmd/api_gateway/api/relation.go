@@ -10,6 +10,7 @@ import (
 	"github.com/cloudwego/hertz/pkg/common/utils"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	"strconv"
+	"time"
 )
 
 type UserListResponse struct {
@@ -130,12 +131,16 @@ func GetFriendList(c context.Context, ctx *app.RequestContext) {
 	})
 	var list []RespMessage
 	for _, m := range allFriendsMessageListRsp.GetMessageList() {
+
+		t := time.Time{}
+		t, _ = time.ParseInLocation("2006-01-02T15:04:05Z07:00", m.GetCreateTime(), time.Local)
+
 		list = append(list, RespMessage{
 			Id:         int(m.GetId()),
 			ToId:       int(m.GetToId()),
 			FromId:     int(m.GetFromId()),
 			Content:    m.GetContent(),
-			CreateTime: m.GetCreateTime(),
+			CreateTime: strconv.Itoa(int(t.Unix())),
 		})
 	}
 	marshal, _ := json.Marshal(list)

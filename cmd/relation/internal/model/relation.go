@@ -48,8 +48,8 @@ func GetFriendsByUserId(userId int64) (arr []int64) {
 	for _, follow := range *follows {
 		var count int64
 		g.MysqlDB.Model(&Follow{}).
-			Where("user_id = ? AND cancel = ?", follow.FollowId, 1).
-			Where("follow_id = ? AND cancel = ?", userId, 1).Count(&count)
+			Where("user_id = ? AND follow_id = ? AND cancel = ?", follow.FollowId, userId, 1).
+			Count(&count)
 		if count > 0 {
 			arr = append(arr, follow.FollowId)
 		}

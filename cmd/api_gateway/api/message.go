@@ -51,7 +51,7 @@ func GetMessageList(c context.Context, ctx *app.RequestContext) {
 	messageChatRequest.ToUserId = int64(toId)
 
 	getMessageListResponse, err := etcd_discovery.MessageClient.GetMessageList(c, messageChatRequest)
-	messages := getMessageListResponse.MessageList
+	messages := getMessageListResponse.GetMessageList()
 	var msg RespMessage
 	allMessageList := []RespMessage{}
 	for _, msgPointer := range messages {

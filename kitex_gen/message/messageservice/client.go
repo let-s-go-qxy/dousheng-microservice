@@ -14,7 +14,7 @@ type Client interface {
 	GetMessageList(ctx context.Context, Req *message.MessageChatRequest, callOptions ...callopt.Option) (r *message.MessageChatResponse, err error)
 	GetMessageListByDB(ctx context.Context, Req *message.MessageChatRequest, callOptions ...callopt.Option) (r *message.MessageChatResponse, err error)
 	PostMessageAction(ctx context.Context, Req *message.MessageActionRequest, callOptions ...callopt.Option) (r *message.MessageActionResponse, err error)
-	GetLatestMessage(ctx context.Context, Req *message.MessageLastRequest, callOptions ...callopt.Option) (r *message.MessageLastResponse, err error)
+	GetLatestMessage(ctx context.Context, Req *message.MessageLatestRequest, callOptions ...callopt.Option) (r *message.MessageLatestResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -61,7 +61,7 @@ func (p *kMessageServiceClient) PostMessageAction(ctx context.Context, Req *mess
 	return p.kClient.PostMessageAction(ctx, Req)
 }
 
-func (p *kMessageServiceClient) GetLatestMessage(ctx context.Context, Req *message.MessageLastRequest, callOptions ...callopt.Option) (r *message.MessageLastResponse, err error) {
+func (p *kMessageServiceClient) GetLatestMessage(ctx context.Context, Req *message.MessageLatestRequest, callOptions ...callopt.Option) (r *message.MessageLatestResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetLatestMessage(ctx, Req)
 }

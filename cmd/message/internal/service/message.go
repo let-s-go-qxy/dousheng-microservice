@@ -13,6 +13,13 @@ import (
 	"time"
 )
 
+// GetMsgLatest 获取最新的聊天记录  msgType 0为接收的信息，1为发送的信息
+func GetMsgLatest(userId, myId int) (msg string, msgType int) {
+	msg, msgType = model.GetMsgLatest(userId, myId)
+	return
+}
+
+//GetMessageList 从MQ中获取队列中的消息进行消费
 func GetMessageList(fromID int) ([]mq.RespMessage, error) {
 	listMQ, err := model.GetMessageListMQ(fromID)
 	if err != nil {
@@ -53,6 +60,7 @@ func PostMessageAction(fromId int, toId int, content string, actionType int) (er
 }
 
 func GetMessageListByDB(c context.Context, fromId, toId int64) (resp *message.MessageChatResponse, err error) {
+	resp = &message.MessageChatResponse{}
 	list, err := model.GetMsgListByDB(fromId, toId)
 	if err != nil {
 		return nil, err

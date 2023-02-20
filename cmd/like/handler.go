@@ -53,3 +53,10 @@ func (s *LikeServiceImpl) IsFavorite(ctx context.Context, req *like.IsFavoriteRe
 	resp, err = service.IsLike(req.VideoId, req.UserId)
 	return
 }
+
+// RefreshLikeCache implements the LikeServiceImpl interface.
+func (s *LikeServiceImpl) RefreshLikeCache(ctx context.Context, req *like.RefreshLikeCacheRequest) (resp *like.RefreshLikeCacheResponse, err error) {
+	resp = &like.RefreshLikeCacheResponse{}
+	service.RefreshLikeCache()
+	return
+}

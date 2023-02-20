@@ -480,7 +480,7 @@ func getLatestMessageHandler(ctx context.Context, handler interface{}, arg, resu
 	switch s := arg.(type) {
 	case *streaming.Args:
 		st := s.Stream
-		req := new(message.MessageLastRequest)
+		req := new(message.MessageLatestRequest)
 		if err := st.RecvMsg(req); err != nil {
 			return err
 		}
@@ -510,12 +510,12 @@ func newGetLatestMessageResult() interface{} {
 }
 
 type GetLatestMessageArgs struct {
-	Req *message.MessageLastRequest
+	Req *message.MessageLatestRequest
 }
 
 func (p *GetLatestMessageArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetReq() {
-		p.Req = new(message.MessageLastRequest)
+		p.Req = new(message.MessageLatestRequest)
 	}
 	return p.Req.FastRead(buf, _type, number)
 }
@@ -542,7 +542,7 @@ func (p *GetLatestMessageArgs) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *GetLatestMessageArgs) Unmarshal(in []byte) error {
-	msg := new(message.MessageLastRequest)
+	msg := new(message.MessageLatestRequest)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -550,9 +550,9 @@ func (p *GetLatestMessageArgs) Unmarshal(in []byte) error {
 	return nil
 }
 
-var GetLatestMessageArgs_Req_DEFAULT *message.MessageLastRequest
+var GetLatestMessageArgs_Req_DEFAULT *message.MessageLatestRequest
 
-func (p *GetLatestMessageArgs) GetReq() *message.MessageLastRequest {
+func (p *GetLatestMessageArgs) GetReq() *message.MessageLatestRequest {
 	if !p.IsSetReq() {
 		return GetLatestMessageArgs_Req_DEFAULT
 	}
@@ -564,14 +564,14 @@ func (p *GetLatestMessageArgs) IsSetReq() bool {
 }
 
 type GetLatestMessageResult struct {
-	Success *message.MessageLastResponse
+	Success *message.MessageLatestResponse
 }
 
-var GetLatestMessageResult_Success_DEFAULT *message.MessageLastResponse
+var GetLatestMessageResult_Success_DEFAULT *message.MessageLatestResponse
 
 func (p *GetLatestMessageResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetSuccess() {
-		p.Success = new(message.MessageLastResponse)
+		p.Success = new(message.MessageLatestResponse)
 	}
 	return p.Success.FastRead(buf, _type, number)
 }
@@ -598,7 +598,7 @@ func (p *GetLatestMessageResult) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *GetLatestMessageResult) Unmarshal(in []byte) error {
-	msg := new(message.MessageLastResponse)
+	msg := new(message.MessageLatestResponse)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -606,7 +606,7 @@ func (p *GetLatestMessageResult) Unmarshal(in []byte) error {
 	return nil
 }
 
-func (p *GetLatestMessageResult) GetSuccess() *message.MessageLastResponse {
+func (p *GetLatestMessageResult) GetSuccess() *message.MessageLatestResponse {
 	if !p.IsSetSuccess() {
 		return GetLatestMessageResult_Success_DEFAULT
 	}
@@ -614,7 +614,7 @@ func (p *GetLatestMessageResult) GetSuccess() *message.MessageLastResponse {
 }
 
 func (p *GetLatestMessageResult) SetSuccess(x interface{}) {
-	p.Success = x.(*message.MessageLastResponse)
+	p.Success = x.(*message.MessageLatestResponse)
 }
 
 func (p *GetLatestMessageResult) IsSetSuccess() bool {
@@ -661,7 +661,7 @@ func (p *kClient) PostMessageAction(ctx context.Context, Req *message.MessageAct
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) GetLatestMessage(ctx context.Context, Req *message.MessageLastRequest) (r *message.MessageLastResponse, err error) {
+func (p *kClient) GetLatestMessage(ctx context.Context, Req *message.MessageLatestRequest) (r *message.MessageLatestResponse, err error) {
 	var _args GetLatestMessageArgs
 	_args.Req = Req
 	var _result GetLatestMessageResult

@@ -185,6 +185,12 @@ func PublishVideo(c context.Context, ctx *app.RequestContext) {
 // PublishList 发布列表
 func PublishList(c context.Context, ctx *app.RequestContext) {
 
+	userIDInterface, success := ctx.Get("user_id")
+	var myId int32
+	if success {
+		myId = int32(userIDInterface.(int64))
+	} // 若不存在，userID默认为0
+
 	userId, err := strconv.Atoi(ctx.Query("user_id"))
 	if err != nil {
 		klog.Error("用户ID错误")
@@ -192,6 +198,7 @@ func PublishList(c context.Context, ctx *app.RequestContext) {
 
 	publishListRequest := &video.PublishListRequest{}
 	publishListRequest.UserId = int64(userId)
+	publishListRequest.MyId = int64(myId)
 
 	publishListResp, err := etcd_discovery.VideoClient.PublishList(c, publishListRequest)
 	videoList := publishListResp.VideoList

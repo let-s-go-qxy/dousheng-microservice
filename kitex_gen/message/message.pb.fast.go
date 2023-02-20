@@ -252,7 +252,7 @@ func (x *MessageActionResponse) fastReadField2(buf []byte, _type int8) (offset i
 	return offset, err
 }
 
-func (x *MessageLastRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+func (x *MessageLatestRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
 	switch number {
 	case 1:
 		offset, err = x.fastReadField1(buf, _type)
@@ -274,23 +274,28 @@ func (x *MessageLastRequest) FastRead(buf []byte, _type int8, number int32) (off
 SkipFieldError:
 	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
 ReadFieldError:
-	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_MessageLastRequest[number], err)
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_MessageLatestRequest[number], err)
 }
 
-func (x *MessageLastRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+func (x *MessageLatestRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
 	x.MyId, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
-func (x *MessageLastRequest) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+func (x *MessageLatestRequest) fastReadField2(buf []byte, _type int8) (offset int, err error) {
 	x.UserId, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
-func (x *MessageLastResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+func (x *MessageLatestResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
 	switch number {
 	case 1:
 		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
 		if err != nil {
 			goto ReadFieldError
 		}
@@ -304,11 +309,16 @@ func (x *MessageLastResponse) FastRead(buf []byte, _type int8, number int32) (of
 SkipFieldError:
 	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
 ReadFieldError:
-	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_MessageLastResponse[number], err)
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_MessageLatestResponse[number], err)
 }
 
-func (x *MessageLastResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+func (x *MessageLatestResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
 	x.Content, offset, err = fastpb.ReadString(buf, _type)
+	return offset, err
+}
+
+func (x *MessageLatestResponse) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+	x.MsgType, offset, err = fastpb.ReadInt32(buf, _type)
 	return offset, err
 }
 
@@ -493,7 +503,7 @@ func (x *MessageActionResponse) fastWriteField2(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *MessageLastRequest) FastWrite(buf []byte) (offset int) {
+func (x *MessageLatestRequest) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
 	}
@@ -502,7 +512,7 @@ func (x *MessageLastRequest) FastWrite(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *MessageLastRequest) fastWriteField1(buf []byte) (offset int) {
+func (x *MessageLatestRequest) fastWriteField1(buf []byte) (offset int) {
 	if x.MyId == 0 {
 		return offset
 	}
@@ -510,7 +520,7 @@ func (x *MessageLastRequest) fastWriteField1(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *MessageLastRequest) fastWriteField2(buf []byte) (offset int) {
+func (x *MessageLatestRequest) fastWriteField2(buf []byte) (offset int) {
 	if x.UserId == 0 {
 		return offset
 	}
@@ -518,19 +528,28 @@ func (x *MessageLastRequest) fastWriteField2(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *MessageLastResponse) FastWrite(buf []byte) (offset int) {
+func (x *MessageLatestResponse) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
 	}
 	offset += x.fastWriteField1(buf[offset:])
+	offset += x.fastWriteField2(buf[offset:])
 	return offset
 }
 
-func (x *MessageLastResponse) fastWriteField1(buf []byte) (offset int) {
+func (x *MessageLatestResponse) fastWriteField1(buf []byte) (offset int) {
 	if x.Content == "" {
 		return offset
 	}
 	offset += fastpb.WriteString(buf[offset:], 1, x.Content)
+	return offset
+}
+
+func (x *MessageLatestResponse) fastWriteField2(buf []byte) (offset int) {
+	if x.MsgType == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt32(buf[offset:], 2, x.MsgType)
 	return offset
 }
 
@@ -715,7 +734,7 @@ func (x *MessageActionResponse) sizeField2() (n int) {
 	return n
 }
 
-func (x *MessageLastRequest) Size() (n int) {
+func (x *MessageLatestRequest) Size() (n int) {
 	if x == nil {
 		return n
 	}
@@ -724,7 +743,7 @@ func (x *MessageLastRequest) Size() (n int) {
 	return n
 }
 
-func (x *MessageLastRequest) sizeField1() (n int) {
+func (x *MessageLatestRequest) sizeField1() (n int) {
 	if x.MyId == 0 {
 		return n
 	}
@@ -732,7 +751,7 @@ func (x *MessageLastRequest) sizeField1() (n int) {
 	return n
 }
 
-func (x *MessageLastRequest) sizeField2() (n int) {
+func (x *MessageLatestRequest) sizeField2() (n int) {
 	if x.UserId == 0 {
 		return n
 	}
@@ -740,19 +759,28 @@ func (x *MessageLastRequest) sizeField2() (n int) {
 	return n
 }
 
-func (x *MessageLastResponse) Size() (n int) {
+func (x *MessageLatestResponse) Size() (n int) {
 	if x == nil {
 		return n
 	}
 	n += x.sizeField1()
+	n += x.sizeField2()
 	return n
 }
 
-func (x *MessageLastResponse) sizeField1() (n int) {
+func (x *MessageLatestResponse) sizeField1() (n int) {
 	if x.Content == "" {
 		return n
 	}
 	n += fastpb.SizeString(1, x.Content)
+	return n
+}
+
+func (x *MessageLatestResponse) sizeField2() (n int) {
+	if x.MsgType == 0 {
+		return n
+	}
+	n += fastpb.SizeInt32(2, x.MsgType)
 	return n
 }
 
@@ -787,11 +815,12 @@ var fieldIDToName_MessageActionResponse = map[int32]string{
 	2: "StatusMsg",
 }
 
-var fieldIDToName_MessageLastRequest = map[int32]string{
+var fieldIDToName_MessageLatestRequest = map[int32]string{
 	1: "MyId",
 	2: "UserId",
 }
 
-var fieldIDToName_MessageLastResponse = map[int32]string{
+var fieldIDToName_MessageLatestResponse = map[int32]string{
 	1: "Content",
+	2: "MsgType",
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	like "dousheng/kitex_gen/like/likeservice"
+	"dousheng/pkg/cronTask"
 	"dousheng/pkg/database"
 	"dousheng/pkg/etcd_discovery"
 	g "dousheng/pkg/global"
@@ -19,6 +20,7 @@ func init() {
 	etcd_discovery.InitUserRpc()
 	etcd_discovery.InitVideoRpc()
 	database.InitDB()
+	cronTask.CronTaskSetUp()
 }
 
 func main() {

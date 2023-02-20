@@ -36,17 +36,18 @@ message MessageActionResponse {
 }
 
 // 获取最后一次聊天记录，model 层 my_id -> user_id 和 user_id 到 my_id 都得查一下
-message MessageLastRequest {
+message MessageLatestRequest {
   int64 my_id = 1;
   int64 user_id = 2;
 }
-message MessageLastResponse {
+message MessageLatestResponse {
   string content = 1;
+  int32 msg_type = 2;
 }
 
 service MessageService {
   rpc GetMessageList (MessageChatRequest) returns (MessageChatResponse) {}
   rpc GetMessageListByDB (MessageChatRequest) returns (MessageChatResponse) {}
   rpc PostMessageAction (MessageActionRequest) returns (MessageActionResponse) {}
-  rpc GetLatestMessage (MessageLastRequest) returns (MessageLastResponse) {}
+  rpc GetLatestMessage (MessageLatestRequest) returns (MessageLatestResponse) {}
 }

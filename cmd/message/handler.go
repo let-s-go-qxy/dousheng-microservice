@@ -6,7 +6,6 @@ import (
 	message "dousheng/kitex_gen/message"
 	g "dousheng/pkg/global"
 	"github.com/jinzhu/copier"
-	"github.com/pkg/errors"
 )
 
 // MessageServiceImpl implements the last service interface defined in the IDL.
@@ -49,13 +48,17 @@ func (s *MessageServiceImpl) PostMessageAction(ctx context.Context, req *message
 	return messageResponse, err
 }
 
-// GetLatestMessage implements the MessageServiceImpl interface.
-func (s *MessageServiceImpl) GetLatestMessage(ctx context.Context, req *message.MessageLastRequest) (resp *message.MessageLastResponse, err error) {
-	err = errors.New("GetLatestMessage 未完成")
-	return
-}
-
 // GetMessageListByDB implements the MessageServiceImpl interface.
 func (s *MessageServiceImpl) GetMessageListByDB(ctx context.Context, req *message.MessageChatRequest) (resp *message.MessageChatResponse, err error) {
 	return messageService.GetMessageListByDB(ctx, req.GetUserId(), req.GetToUserId())
+}
+
+// GetLatestMessage implements the MessageServiceImpl interface.
+func (s *MessageServiceImpl) GetLatestMessage(ctx context.Context, req *message.MessageLatestRequest) (resp *message.MessageLatestResponse, err error) {
+	msg, msgType := messageService.GetMsgLatest(int(req.GetUserId()), int(req.GetMyId()))
+	resp = &message.MessageLatestResponse{
+		Content: msg,
+		MsgType: int32(msgType),
+	}
+	return
 }
