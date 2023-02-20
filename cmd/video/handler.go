@@ -33,7 +33,7 @@ func (s *VideoServiceImpl) PublishVideo(ctx context.Context, req *video.PublishA
 
 // PublishList implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) PublishList(ctx context.Context, req *video.PublishListRequest) (resp *video.PublishListResponse, err error) {
-	publishList, _, err := videoService.GetPublishList(int(req.UserId))
+	publishList, _, err := videoService.GetPublishList(int(req.UserId), int(req.MyId))
 
 	var publishVideoListResp []*video.Video
 

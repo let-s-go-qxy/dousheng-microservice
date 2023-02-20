@@ -51,7 +51,7 @@ func (s *CommentServiceImpl) GetCommentList(ctx context.Context, req *comment.Co
 	}
 	commentList := service.GetCommentList(req.VideoId, req.VideoId)
 	for _, c := range commentList {
-		resp.CommentList = append(resp.CommentList, &comment.Comment{
+		resp.CommentList = append(resp.GetCommentList(), &comment.Comment{
 			Id:         c.Id,
 			User:       info.User,
 			Content:    c.Content,

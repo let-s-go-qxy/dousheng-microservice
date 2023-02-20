@@ -16,6 +16,7 @@ type Client interface {
 	TotalFavorite(ctx context.Context, Req *like.TotalFavoriteRequest, callOptions ...callopt.Option) (r *like.TotalFavoriteResponse, err error)
 	FavoriteCount(ctx context.Context, Req *like.FavoriteCountRequest, callOptions ...callopt.Option) (r *like.FavoriteCountResponse, err error)
 	IsFavorite(ctx context.Context, Req *like.IsFavoriteRequest, callOptions ...callopt.Option) (r *like.IsFavoriteResponse, err error)
+	RefreshLikeCache(ctx context.Context, Req *like.RefreshLikeCacheRequest, callOptions ...callopt.Option) (r *like.RefreshLikeCacheResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -70,4 +71,9 @@ func (p *kLikeServiceClient) FavoriteCount(ctx context.Context, Req *like.Favori
 func (p *kLikeServiceClient) IsFavorite(ctx context.Context, Req *like.IsFavoriteRequest, callOptions ...callopt.Option) (r *like.IsFavoriteResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.IsFavorite(ctx, Req)
+}
+
+func (p *kLikeServiceClient) RefreshLikeCache(ctx context.Context, Req *like.RefreshLikeCacheRequest, callOptions ...callopt.Option) (r *like.RefreshLikeCacheResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.RefreshLikeCache(ctx, Req)
 }

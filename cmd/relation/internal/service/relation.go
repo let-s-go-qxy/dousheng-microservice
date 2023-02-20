@@ -7,7 +7,7 @@ import (
 	"dousheng/kitex_gen/relation"
 	"dousheng/kitex_gen/user"
 	"dousheng/pkg/etcd_discovery"
-	"github.com/cloudwego/hertz/pkg/common/hlog"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"sort"
 )
 
@@ -63,6 +63,7 @@ func GetFriendList(ctx context.Context, userId int64, myId int64) (*relation.Rel
 	friends := new(relation.RelationFriendListResponse)
 	friends.UserList = make([]*relation.FriendUser, 0)
 	for _, id := range ids {
+		//得到myID对应的所有朋友的用户信息并封装到resp的User对象中
 		resp, err := etcd_discovery.UserClient.UserInfo(ctx, &user.UserInfoRequest{
 			UserId: id,
 			MyId:   myId,
@@ -70,12 +71,12 @@ func GetFriendList(ctx context.Context, userId int64, myId int64) (*relation.Rel
 		if err != nil {
 			return nil, err
 		}
-		resp2, err := etcd_discovery.MessageClient.GetLatestMessage(ctx, &message.MessageLastRequest{
+		resp2, err := etcd_discovery.MessageClient.GetLatestMessage(ctx, &message.MessageLatestRequest{
 			MyId:   myId,
 			UserId: id,
 		})
 		if err != nil {
-			resp2 = &message.MessageLastResponse{Content: "这里齐迪还没加上"}
+			klog.Error("GetLatestMessage时发生了错误：" + err.Error())
 		}
 		friends.UserList = append(friends.UserList, &relation.FriendUser{
 			Id:            resp.User.Id,
@@ -84,8 +85,8 @@ func GetFriendList(ctx context.Context, userId int64, myId int64) (*relation.Rel
 			FollowerCount: resp.User.FollowerCount,
 			IsFollow:      resp.User.IsFollow,
 			Avatar:        resp.User.Avatar,
-			Message:       resp2.Content,
-			MsgType:       0,
+			Message:       resp2.GetContent(),
+			MsgType:       int64(resp2.GetMsgType()),
 		})
 	}
 	return friends, nil
@@ -137,6 +138,7 @@ func (m MyList) Swap(i, j int) {
 func GetFriendMessageList(ctx context.Context, userId int64) (*relation.RelationFriendsMessageListResponse, error) {
 	ids := model.GetFriendsByUserId(userId)
 	messageList := &relation.RelationFriendsMessageListResponse{}
+	var allList MyList
 	for _, friendId := range ids {
 		chat, err := etcd_discovery.MessageClient.GetMessageListByDB(ctx, &message.MessageChatRequest{
 			UserId:   userId,
@@ -149,12 +151,15 @@ func GetFriendMessageList(ctx context.Context, userId int64) (*relation.Relation
 			UserId:   friendId,
 			ToUserId: userId,
 		})
-		hlog.Info("chat2:", chat2.MessageList)
-		chat.MessageList = append(chat.MessageList, chat2.MessageList...)
-		var myList MyList = chat.MessageList
+		//klog.Info("chat2:", chat2.MessageList)
+		var myList MyList
+		myList = append(chat.GetMessageList(), chat2.GetMessageList()...)
 		sort.Sort(myList)
-		messageList.MessageList = myList
-		hlog.Info("排序后list: ", myList)
+		allList = append(allList, myList...)
+
+	}
+	messageList = &relation.RelationFriendsMessageListResponse{
+		MessageList: allList,
 	}
 	return messageList, nil
 }

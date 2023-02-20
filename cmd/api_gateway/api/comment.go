@@ -31,7 +31,7 @@ func GetCommentList(c context.Context, ctx *app.RequestContext) {
 	}
 
 	resp, _ := etcd_discovery.CommentClient.GetCommentList(c, req)
-	commentList := resp.CommentList
+	commentList := resp.GetCommentList()
 	for _, comment := range commentList {
 		comment.CreateDate = comment.CreateDate[5:10]
 	}

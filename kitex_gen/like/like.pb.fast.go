@@ -348,6 +348,32 @@ func (x *IsFavoriteResponse) fastReadField1(buf []byte, _type int8) (offset int,
 	return offset, err
 }
 
+func (x *RefreshLikeCacheRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+}
+
+func (x *RefreshLikeCacheResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+}
+
 func (x *FavoriteActionRequest) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
@@ -579,6 +605,20 @@ func (x *IsFavoriteResponse) fastWriteField1(buf []byte) (offset int) {
 		return offset
 	}
 	offset += fastpb.WriteBool(buf[offset:], 1, x.IsFavorite)
+	return offset
+}
+
+func (x *RefreshLikeCacheRequest) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	return offset
+}
+
+func (x *RefreshLikeCacheResponse) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
 	return offset
 }
 
@@ -816,6 +856,20 @@ func (x *IsFavoriteResponse) sizeField1() (n int) {
 	return n
 }
 
+func (x *RefreshLikeCacheRequest) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	return n
+}
+
+func (x *RefreshLikeCacheResponse) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	return n
+}
+
 var fieldIDToName_FavoriteActionRequest = map[int32]string{
 	1: "UserId",
 	2: "VideoId",
@@ -863,5 +917,9 @@ var fieldIDToName_IsFavoriteRequest = map[int32]string{
 var fieldIDToName_IsFavoriteResponse = map[int32]string{
 	1: "IsFavorite",
 }
+
+var fieldIDToName_RefreshLikeCacheRequest = map[int32]string{}
+
+var fieldIDToName_RefreshLikeCacheResponse = map[int32]string{}
 
 var _ = video.File_video_proto
