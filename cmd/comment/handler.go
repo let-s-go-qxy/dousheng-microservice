@@ -41,16 +41,15 @@ func (s *CommentServiceImpl) PostCommentAction(ctx context.Context, req *comment
 func (s *CommentServiceImpl) GetCommentList(ctx context.Context, req *comment.CommentListRequest) (resp *comment.CommentListResponse, err error) {
 	resp = &comment.CommentListResponse{}
 	info := &user.UserInfoResponse{}
-
-	info, err = etcd_discovery.UserClient.UserInfo(ctx, &user.UserInfoRequest{
-		UserId: req.UserId,
-		MyId:   req.UserId,
-	})
-	if err != nil {
-		return
-	}
 	commentList := service.GetCommentList(req.VideoId, req.VideoId)
 	for _, c := range commentList {
+		info, err = etcd_discovery.UserClient.UserInfo(ctx, &user.UserInfoRequest{
+			UserId: c.User.Id,
+			MyId:   req.UserId,
+		})
+		if err != nil {
+			return
+		}
 		resp.CommentList = append(resp.GetCommentList(), &comment.Comment{
 			Id:         c.Id,
 			User:       info.User,
