@@ -5,7 +5,6 @@ import (
 	"dousheng/kitex_gen/message"
 	"dousheng/pkg/etcd_discovery"
 	g "dousheng/pkg/global"
-	utils2 "dousheng/pkg/utils"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
@@ -59,6 +58,8 @@ func GetMessageList(c context.Context, ctx *app.RequestContext) {
 	for _, msgPointer := range messages {
 		m := *msgPointer
 		copier.Copy(&msg, &m)
+		msg.ToId = int(m.ToId)
+		msg.FromId = int(m.FromId)
 		allMessageList = append(allMessageList, msg)
 	}
 	messageList := []RespMessage{}
@@ -80,7 +81,7 @@ func GetMessageList(c context.Context, ctx *app.RequestContext) {
 
 	//marshal, _ := json.Marshal(respMessageList)
 	//fmt.Println(string(marshal))
-	ctx.JSON(consts.StatusOK, utils2.ConvertStruct(resp, nil))
+	ctx.JSON(consts.StatusOK, resp)
 
 }
 
@@ -112,6 +113,6 @@ func PostMessageAction(c context.Context, ctx *app.RequestContext) {
 	}
 
 	resp := Response{StatusCode: g.StatusCodeOk, StatusMsg: "发送消息成功"}
-	ctx.JSON(consts.StatusOK, utils2.ConvertStruct(resp, nil))
+	ctx.JSON(consts.StatusOK, resp)
 
 }
