@@ -5,7 +5,9 @@ import (
 	"dousheng/kitex_gen/message"
 	"dousheng/pkg/etcd_discovery"
 	g "dousheng/pkg/global"
+	utils2 "dousheng/pkg/utils"
 	"github.com/cloudwego/hertz/pkg/app"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	"github.com/jinzhu/copier"
 	"strconv"
@@ -66,7 +68,7 @@ func GetMessageList(c context.Context, ctx *app.RequestContext) {
 		}
 	}
 	if err != nil {
-		//g.Logger.Infof("GetRabbitMQMessageList时发生了错误！")
+		hlog.Error("GetRabbitMQMessageList时发生了错误！")
 	}
 	//messageList, _ := m.GetMessageList(toId, fromId)
 	respMessageList := make([]MergeMessage, 0)
@@ -78,7 +80,7 @@ func GetMessageList(c context.Context, ctx *app.RequestContext) {
 
 	//marshal, _ := json.Marshal(respMessageList)
 	//fmt.Println(string(marshal))
-	ctx.JSON(consts.StatusOK, resp)
+	ctx.JSON(consts.StatusOK, utils2.ConvertStruct(resp, nil))
 
 }
 
@@ -110,6 +112,6 @@ func PostMessageAction(c context.Context, ctx *app.RequestContext) {
 	}
 
 	resp := Response{StatusCode: g.StatusCodeOk, StatusMsg: "发送消息成功"}
-	ctx.JSON(consts.StatusOK, resp)
+	ctx.JSON(consts.StatusOK, utils2.ConvertStruct(resp, nil))
 
 }

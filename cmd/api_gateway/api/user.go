@@ -5,9 +5,9 @@ import (
 	userService "dousheng/kitex_gen/user"
 	"dousheng/pkg/etcd_discovery"
 	g "dousheng/pkg/global"
+	utils2 "dousheng/pkg/utils"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
-	"github.com/jinzhu/copier"
 	"strconv"
 )
 
@@ -39,14 +39,7 @@ func UserInfo(c context.Context, ctx *app.RequestContext) {
 		})
 		return
 	}
-	userInfo := &User{}
-	copier.Copy(userInfo, resp.User)
-	ctx.JSON(consts.StatusOK, UserResponse{
-		Response: Response{
-			StatusCode: resp.GetStatusCode(),
-			StatusMsg:  resp.GetStatusMsg(),
-		}, User: *userInfo,
-	})
+	ctx.JSON(consts.StatusOK, utils2.ConvertStruct(resp, nil))
 }
 
 func UserLogin(c context.Context, ctx *app.RequestContext) {
@@ -62,13 +55,7 @@ func UserLogin(c context.Context, ctx *app.RequestContext) {
 		})
 		return
 	}
-	ctx.JSON(consts.StatusOK, UserLoginResponse{
-		Response: Response{
-			StatusCode: 0,
-		},
-		UserId: resp.GetUserId(),
-		Token:  resp.GetToken(),
-	})
+	ctx.JSON(consts.StatusOK, utils2.ConvertStruct(resp, nil))
 }
 
 func UserRegister(c context.Context, ctx *app.RequestContext) {
@@ -86,11 +73,5 @@ func UserRegister(c context.Context, ctx *app.RequestContext) {
 		})
 		return
 	}
-	ctx.JSON(consts.StatusOK, UserLoginResponse{
-		Response: Response{
-			StatusCode: 0,
-		},
-		UserId: resp.GetUserId(),
-		Token:  resp.GetToken(),
-	})
+	ctx.JSON(consts.StatusOK, utils2.ConvertStruct(resp, nil))
 }

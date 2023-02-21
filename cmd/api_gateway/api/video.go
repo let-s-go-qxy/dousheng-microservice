@@ -5,6 +5,7 @@ import (
 	"dousheng/kitex_gen/video"
 	"dousheng/pkg/etcd_discovery"
 	g "dousheng/pkg/global"
+	utils2 "dousheng/pkg/utils"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -74,51 +75,52 @@ func GetFeedList(c context.Context, ctx *app.RequestContext) {
 	if err != nil {
 		klog.Error("GetFeedList时发生了错误：" + err.Error())
 	}
-	nextTime := getFeedListResp.NextTime
-	videoInfoList := getFeedListResp.VideoList
-	state := getFeedListResp.State
-	//nextTime, videoInfo, state := video.GetVideoFeed(latestTime, userID)
-
-	var videoInfoListResp []TheVideoInfo
-	var videoInfoResp TheVideoInfo
-	for _, videoInfo := range videoInfoList {
-
-		v := *videoInfo
-		videoInfoResp.ID = int32(v.Id)
-		copier.Copy(&videoInfoResp, &v)
-
-		vAuthor := *v.Author
-		videoInfoResp.Author.ID = int32(vAuthor.Id)
-		videoInfoResp.Author.FollowCount = int(vAuthor.FollowCount)
-		videoInfoResp.Author.FollowerCount = int(vAuthor.FollowerCount)
-
-		videoInfoListResp = append(videoInfoListResp, videoInfoResp)
-	}
-
-	if state == g.FeedStatusNull {
-		ctx.JSON(http.StatusOK, &GetVideoResponse{
-			Response: g.Response{
-				StatusCode: g.StatusCodeFail,
-				StatusMsg:  g.HasNoVideoMsg,
-			}, NextTime: latestTime,
-		})
-	} else if state == g.FeedStatusError {
-		ctx.JSON(http.StatusOK, &GetVideoResponse{
-			Response: g.Response{
-				StatusCode: g.StatusCodeFail,
-				StatusMsg:  g.GetVideoInfoErrorMsg,
-			}, NextTime: latestTime,
-		})
-	} else if state == g.FeedStatusOK {
-
-		ctx.JSON(http.StatusOK, &GetVideoResponse{
-			Response: g.Response{
-				StatusCode: g.StatusCodeOk,
-				StatusMsg:  g.GetVideoInfoSuccessMsg,
-			}, NextTime: int64(nextTime),
-			VideoList: videoInfoListResp,
-		})
-	}
+	ctx.JSON(consts.StatusOK, utils2.ConvertStruct(getFeedListResp, nil))
+	//nextTime := getFeedListResp.NextTime
+	//videoInfoList := getFeedListResp.VideoList
+	//state := getFeedListResp.State
+	////nextTime, videoInfo, state := video.GetVideoFeed(latestTime, userID)
+	//
+	//var videoInfoListResp []TheVideoInfo
+	//var videoInfoResp TheVideoInfo
+	//for _, videoInfo := range videoInfoList {
+	//
+	//	v := *videoInfo
+	//	videoInfoResp.ID = int32(v.Id)
+	//	copier.Copy(&videoInfoResp, &v)
+	//
+	//	vAuthor := *v.Author
+	//	videoInfoResp.Author.ID = int32(vAuthor.Id)
+	//	videoInfoResp.Author.FollowCount = int(vAuthor.FollowCount)
+	//	videoInfoResp.Author.FollowerCount = int(vAuthor.FollowerCount)
+	//
+	//	videoInfoListResp = append(videoInfoListResp, videoInfoResp)
+	//}
+	//
+	//if state == g.FeedStatusNull {
+	//	ctx.JSON(http.StatusOK, &GetVideoResponse{
+	//		Response: g.Response{
+	//			StatusCode: g.StatusCodeFail,
+	//			StatusMsg:  g.HasNoVideoMsg,
+	//		}, NextTime: latestTime,
+	//	})
+	//} else if state == g.FeedStatusError {
+	//	ctx.JSON(http.StatusOK, &GetVideoResponse{
+	//		Response: g.Response{
+	//			StatusCode: g.StatusCodeFail,
+	//			StatusMsg:  g.GetVideoInfoErrorMsg,
+	//		}, NextTime: latestTime,
+	//	})
+	//} else if state == g.FeedStatusOK {
+	//
+	//	ctx.JSON(http.StatusOK, &GetVideoResponse{
+	//		Response: g.Response{
+	//			StatusCode: g.StatusCodeOk,
+	//			StatusMsg:  g.GetVideoInfoSuccessMsg,
+	//		}, NextTime: int64(nextTime),
+	//		VideoList:   videoInfoListResp,
+	//	})
+	//}
 }
 
 func PublishVideo(c context.Context, ctx *app.RequestContext) {
@@ -167,19 +169,21 @@ func PublishVideo(c context.Context, ctx *app.RequestContext) {
 
 	publishVideoResponse, err := etcd_discovery.VideoClient.PublishVideo(c, publishVideoReq)
 
-	if publishVideoResponse.StatusCode == g.StatusOk {
-		ctx.JSON(http.StatusOK,
-			g.Response{
-				StatusCode: g.StatusOk,
-				StatusMsg:  g.PublishVideoSuccessMsg,
-			})
-	} else {
-		ctx.JSON(http.StatusOK,
-			g.Response{
-				StatusCode: g.StatusCodeFail,
-				StatusMsg:  g.PublishVideoFailedMsg,
-			})
-	}
+	ctx.JSON(consts.StatusOK, utils2.ConvertStruct(publishVideoResponse, nil))
+
+	//if publishVideoResponse.StatusCode == g.StatusOk {
+	//	ctx.JSON(http.StatusOK,
+	//		g.Response{
+	//			StatusCode: g.StatusOk,
+	//			StatusMsg:  g.PublishVideoSuccessMsg,
+	//		})
+	//} else {
+	//	ctx.JSON(http.StatusOK,
+	//		g.Response{
+	//			StatusCode: g.StatusCodeFail,
+	//			StatusMsg:  g.PublishVideoFailedMsg,
+	//		})
+	//}
 }
 
 // PublishList 发布列表
@@ -214,5 +218,5 @@ func PublishList(c context.Context, ctx *app.RequestContext) {
 	resp := VideoListResponse{Response: Response{
 		StatusCode: g.StatusCodeOk, StatusMsg: "成功!!"},
 		VideoList: publishVideoListResp}
-	ctx.JSON(consts.StatusOK, resp)
+	ctx.JSON(consts.StatusOK, utils2.ConvertStruct(resp, nil))
 }

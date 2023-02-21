@@ -91,5 +91,5 @@ func PostCommentAction(c context.Context, ctx *app.RequestContext) {
 		})
 	}
 
-	ctx.JSON(consts.StatusOK, resp)
+	ctx.JSON(consts.StatusOK, utils2.ConvertStruct(resp, nil))
 }

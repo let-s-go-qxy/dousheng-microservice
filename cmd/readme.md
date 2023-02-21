@@ -16,7 +16,7 @@ kitex -module dousheng -I ../../idl/ -use dousheng/kitex_gen  -service relations
 5. sh build.sh   这里不出错会出现 ouput 文件夹
 6. sh output/bootstrap.sh 
 
-
-
+### 火焰图
+go tool pprof -http :8080 localhost:9000/debug/pprof/profile?seconds=30
 
 

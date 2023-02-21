@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"reflect"
 	"strings"
 )
@@ -21,13 +22,18 @@ var BaseType = map[string]bool{
 	"bool":   true,
 }
 
-// Traversal 生成对应结构体忽略 json omitempty 的 map[string]interface，本质是复制结构体
+// ConvertStruct 生成对应结构体忽略 json omitempty 的 map[string]interface，本质是复制结构体
 // tips: 1.如果传入的是切片请给一个切片地址方便回传 2.注意给值的时候结构体内指针和切片不要给nil
 func ConvertStruct(theStruct interface{}, slice1 *[]interface{}) map[string]interface{} {
 	res := map[string]interface{}{}
 	obj := reflect.Value{}
 	// 解引用，同时考虑当前的theStruct是不是已经是reflect.Value了
 	if reflect.ValueOf(theStruct).Kind().String() == "ptr" {
+		// 防止空值，但是这里应该不从我这处理，此处为兜底
+		if reflect.ValueOf(theStruct).IsNil() {
+			fmt.Println("[error]------------->", "传值为空")
+			return res
+		}
 		if reflect.ValueOf(theStruct).Type().String() == "reflect.Value" {
 			obj = theStruct.(reflect.Value).Elem()
 		} else {
