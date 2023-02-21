@@ -76,7 +76,7 @@ func UserRegister(name, password string) (userId int64, token string, err error)
 		err = errors.New("创建用户失败: " + err.Error())
 		return
 	}
-	userId = int64(user.Id)
+	userId = user.Id
 
 	//注册成功时自动生成一张用户头像到阿里OSS云端
 	success := file.UploadAvatar(int(userId))

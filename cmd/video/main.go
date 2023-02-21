@@ -17,12 +17,7 @@ import (
 
 func init() {
 	tracer.InitJaeger(g.ServiceVideoName)
-	etcd_discovery.InitUserRpc()
-	etcd_discovery.InitVideoRpc()
-	etcd_discovery.InitRelationRpc()
-	etcd_discovery.InitMessageRpc()
-	etcd_discovery.InitLikeRpc()
-	etcd_discovery.InitCommentRpc()
+	initRpc()
 	database.InitDB()
 	oss_init.OSSInit()
 }
@@ -34,14 +29,23 @@ func main() {
 		log.Println(err.Error())
 	}
 	svr := video.NewServer(new(VideoServiceImpl),
-		server.WithServiceAddr(addr),                          // 定义端口
-		server.WithSuite(opentracing.NewDefaultServerSuite()), // 链路监听
-		server.WithMuxTransport(),                             // 多路复用
+		server.WithServiceAddr(addr),                                                            // 定义端口
+		server.WithSuite(opentracing.NewDefaultServerSuite()),                                   // 链路监听
+		server.WithMuxTransport(),                                                               // 多路复用
 		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: g.ServiceVideoName}), // TODO 写自己的服务名
-		server.WithRegistry(r), // 注册服务
+		server.WithRegistry(r),                                                                  // 注册服务
 	)
 	err = svr.Run()
 	if err != nil {
 		log.Println(err.Error())
 	}
+}
+
+func initRpc() {
+	etcd_discovery.InitUserRpc()
+	etcd_discovery.InitVideoRpc()
+	etcd_discovery.InitRelationRpc()
+	etcd_discovery.InitMessageRpc()
+	etcd_discovery.InitLikeRpc()
+	etcd_discovery.InitCommentRpc()
 }

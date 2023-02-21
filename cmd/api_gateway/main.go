@@ -15,6 +15,7 @@ import (
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	"github.com/hertz-contrib/pprof"
 	"log"
 	"time"
 )
@@ -26,7 +27,26 @@ func init() {
 	cronTask.CronTaskSetUp()
 }
 
+// pprof
+func counter() {
+	slice := make([]int, 0)
+	c := 1
+	for i := 0; i < 100000; i++ {
+		c = i + 1 + 2 + 3 + 4 + 5
+		slice = append(slice, c)
+	}
+}
+
+// pprof
+func workForever() {
+	for {
+		go counter()
+		time.Sleep(1 * time.Second)
+	}
+}
+
 func main() {
+	go workForever() // pprof
 	flag.Parse()
 	readTimeout, err := time.ParseDuration("1m")
 	if err != nil {
@@ -58,5 +78,6 @@ func main() {
 	h.NoMethod(func(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusOK, "no method")
 	})
+	pprof.Register(h)
 	h.Spin()
 }

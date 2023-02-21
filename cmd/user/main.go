@@ -5,6 +5,7 @@ import (
 	"dousheng/pkg/database"
 	"dousheng/pkg/etcd_discovery"
 	g "dousheng/pkg/global"
+	"dousheng/pkg/oss_init"
 	"dousheng/pkg/tracer"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
@@ -20,6 +21,7 @@ func init() {
 	etcd_discovery.InitRelationRpc()
 	etcd_discovery.InitVideoRpc()
 	database.InitDB()
+	oss_init.OSSInit()
 }
 
 func main() {

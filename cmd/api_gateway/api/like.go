@@ -4,6 +4,7 @@ import (
 	"context"
 	"dousheng/kitex_gen/like"
 	"dousheng/pkg/etcd_discovery"
+	utils2 "dousheng/pkg/utils"
 	"dousheng/pkg/utils/msg"
 	"strconv"
 
@@ -32,7 +33,7 @@ func GetFavoriteList(c context.Context, ctx *app.RequestContext) {
 	respVideoList := make([]Video, len(videoList))
 	copier.Copy(&respVideoList, &videoList)
 	favoriteListResponse := FavoriteListResponse{StatusCode: 0, StatusMsg: "返回成功", VideoList: respVideoList}
-	ctx.JSON(consts.StatusOK, favoriteListResponse)
+	ctx.JSON(consts.StatusOK, utils2.ConvertStruct(favoriteListResponse, nil))
 }
 
 // FavoriteAction 点赞和取消点赞操作

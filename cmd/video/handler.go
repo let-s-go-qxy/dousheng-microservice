@@ -70,7 +70,8 @@ func (s *VideoServiceImpl) GetFeedList(ctx context.Context, req *video.FeedReque
 	userId := req.UserId
 	nextTime, videoInfoList, state := videoService.GetVideoFeed(int64(latestTime), int32(userId))
 
-	var videoListResp []*video.Video
+	// 防止出现空指针
+	videoListResp := make([]*video.Video, 0)
 
 	for _, videoInfo := range videoInfoList {
 		v := video.Video{}
