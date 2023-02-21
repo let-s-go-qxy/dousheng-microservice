@@ -9,12 +9,12 @@ import (
 
 // 常量
 const (
-	FeedStatusOK                = 1
-	FeedStatusError             = -1
-	FeedStatusNull              = 0
-	CancelFavoriteAction        = 0 //取消点赞
+	FeedStatusOK    = 1
+	FeedStatusError = -1
+	FeedStatusNull  = 0
+	//CancelFavoriteAction        = 0 //取消点赞
 	FavoriteAction              = 1 //点赞
-	RequestCancelFavoriteAction = 2
+	RequestCancelFavoriteAction = 2 //取消点赞
 )
 
 // 状态码

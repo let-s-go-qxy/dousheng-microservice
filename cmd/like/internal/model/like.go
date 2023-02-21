@@ -57,7 +57,7 @@ func (like *Like) RefreshLikeCache() {
 		msg := strings.Split(value, ":")
 		userId, _ := strconv.Atoi(msg[0])
 		videoId, _ := strconv.Atoi(msg[1])
-		like.UpdateLike(int64(userId), int64(videoId), g.CancelFavoriteAction)
+		like.UpdateLike(int64(userId), int64(videoId), g.RequestCancelFavoriteAction)
 	}
 }
 
