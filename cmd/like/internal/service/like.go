@@ -195,8 +195,7 @@ func GetFavoriteList(ctx context.Context, userId int64) ([]*video.Video, error) 
 	if err != nil {
 		return nil, err
 	}
-
-	var videos []*video.Video
+	videos := []*video.Video{}
 	for _, id := range videoIdList {
 		info, err1 := etcd_discovery.VideoClient.GetVideoInfo(ctx, &video.VideoInfoRequest{
 			VideoId: id,

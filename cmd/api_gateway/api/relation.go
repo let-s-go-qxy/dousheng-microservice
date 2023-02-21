@@ -5,6 +5,7 @@ import (
 	"dousheng/kitex_gen/relation"
 	"dousheng/pkg/etcd_discovery"
 	"dousheng/pkg/mq"
+	utils2 "dousheng/pkg/utils"
 	"encoding/json"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/utils"
@@ -78,11 +79,7 @@ func GetFollowList(c context.Context, ctx *app.RequestContext) {
 		})
 		return
 	}
-	ctx.JSON(consts.StatusOK, utils.H{
-		"status_code": 0,
-		"status_msg":  "ok",
-		"user_list":   resp.GetUserList(),
-	})
+	ctx.JSON(consts.StatusOK, utils2.ConvertStruct(resp, nil))
 }
 
 // GetFollowerList 获取粉丝列表
@@ -111,11 +108,7 @@ func GetFollowerList(c context.Context, ctx *app.RequestContext) {
 		})
 		return
 	}
-	ctx.JSON(consts.StatusOK, utils.H{
-		"status_code": 0,
-		"status_msg":  "ok",
-		"user_list":   resp.GetUserList(),
-	})
+	ctx.JSON(consts.StatusOK, utils2.ConvertStruct(resp, nil))
 }
 
 // GetFriendList 获取好友列表 同时获取最新的聊天记录
@@ -165,9 +158,5 @@ func GetFriendList(c context.Context, ctx *app.RequestContext) {
 		})
 		return
 	}
-	ctx.JSON(consts.StatusOK, utils.H{
-		"status_code": 0,
-		"status_msg":  "ok",
-		"user_list":   resp.GetUserList(),
-	})
+	ctx.JSON(consts.StatusOK, utils2.ConvertStruct(resp, nil))
 }

@@ -76,7 +76,7 @@ func UserRegister(name, password string) (userId int64, token string, err error)
 		err = errors.New("创建用户失败: " + err.Error())
 		return
 	}
-	userId = int64(user.Id)
+	userId = user.Id
 
 	//注册成功时自动生成一张用户头像到阿里OSS云端
 	success := file.UploadAvatar(int(userId))
@@ -147,14 +147,14 @@ func UserInfo(myId int64, userId int64) (userInfo user.User, err error) {
 
 // GetAvatar 获取用户头像
 func GetAvatar(userID int64) string {
-	strUserID := strconv.Itoa(int(userID) % 10)
+	strUserID := strconv.Itoa(int(userID))
 	avatarURL := conf.OSSAvatarPreURL + strUserID + "_avatar.jpg"
 	return avatarURL
 }
 
 // GetBackgroundImage 获取用户背景图
 func GetBackgroundImage(userID int64) string {
-	strUserID := strconv.Itoa(int(userID) % 10)
+	strUserID := strconv.Itoa(int(userID))
 	backgroundURL := conf.OSSBackgroundPreURL + strUserID + "_background.jpg"
 	return backgroundURL
 }

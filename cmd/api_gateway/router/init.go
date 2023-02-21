@@ -30,13 +30,13 @@ func InitRouter(h *server.Hertz) {
 	publicGroup.GET("/publish/list/", api.PublishList) //发布列表
 	loggedGroup.GET("/favorite/list/", api.GetFavoriteList)
 	publicGroup.GET("/comment/list/", middleware.ParseToken(), api.GetCommentList) // 查看视频评论列表
-	//loggedGroup.POST("/comment/action/", api.PostCommentAction) // 修改视频评论
-	loggedGroup.POST("/relation/action/", api.RelationAction)        //
-	loggedGroup.GET("/relation/follow/list/", api.GetFollowList)     //
-	loggedGroup.GET("/relation/follower/list/", api.GetFollowerList) //
-	loggedGroup.GET("/relation/friend/list/", api.GetFriendList)     //
-	loggedGroup.GET("/message/chat/", api.GetMessageList)            //
-	loggedGroup.POST("/message/action/", api.PostMessageAction)      //
+	loggedGroup.POST("/comment/action/", api.PostCommentAction)                    // 修改视频评论
+	loggedGroup.POST("/relation/action/", api.RelationAction)                      //
+	loggedGroup.GET("/relation/follow/list/", api.GetFollowList)                   //
+	loggedGroup.GET("/relation/follower/list/", api.GetFollowerList)               //
+	loggedGroup.GET("/relation/friend/list/", api.GetFriendList)                   //
+	loggedGroup.GET("/message/chat/", api.GetMessageList)                          //
+	loggedGroup.POST("/message/action/", api.PostMessageAction)                    //
 	publicGroup.Group("/error", func(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusOK, "err")
 	})

@@ -23,9 +23,11 @@ func GetFollowList(ctx context.Context, userId int64, myId int64) (*relation.Rel
 		if err != nil {
 			return nil, err
 		}
+		// 多余字段不返回了
 		followUsers.UserList = append(followUsers.UserList, &user.User{
 			Id:            resp.User.Id,
 			Name:          resp.User.Name,
+			Avatar:        resp.User.Avatar,
 			FollowCount:   resp.User.FollowCount,
 			FollowerCount: resp.User.FollowerCount,
 			IsFollow:      resp.User.IsFollow,
@@ -49,6 +51,7 @@ func GetFollowerList(ctx context.Context, userId int64, myId int64) (*relation.R
 		followerUsers.UserList = append(followerUsers.UserList, &user.User{
 			Id:            resp.User.Id,
 			Name:          resp.User.Name,
+			Avatar:        resp.User.Avatar,
 			FollowCount:   resp.User.FollowCount,
 			FollowerCount: resp.User.FollowerCount,
 			IsFollow:      resp.User.IsFollow,
