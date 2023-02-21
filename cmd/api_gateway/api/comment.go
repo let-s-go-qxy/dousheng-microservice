@@ -3,8 +3,10 @@ package api
 import (
 	"context"
 	"dousheng/kitex_gen/comment"
+	"dousheng/kitex_gen/user"
 	"dousheng/pkg/etcd_discovery"
 	g "dousheng/pkg/global"
+	utils2 "dousheng/pkg/utils"
 	"strconv"
 
 	"github.com/cloudwego/hertz/pkg/app"
@@ -29,13 +31,37 @@ func GetCommentList(c context.Context, ctx *app.RequestContext) {
 		UserId:  int64(userId),
 		VideoId: int64(vid),
 	}
-
-	resp, _ := etcd_discovery.CommentClient.GetCommentList(c, req)
+	// 防止空指针
+	resp := &comment.CommentListResponse{
+		StatusCode: 0,
+		StatusMsg:  "",
+		CommentList: []*comment.Comment{
+			{
+				Id: 0,
+				User: &user.User{
+					Id:              0,
+					Name:            "",
+					FollowCount:     0,
+					FollowerCount:   0,
+					IsFollow:        false,
+					WorkCount:       0,
+					BackgroundImage: "",
+					Signature:       "",
+					TotalFavorite:   0,
+					FavoriteCount:   0,
+					Avatar:          "",
+				},
+				Content:    "",
+				CreateDate: "",
+			},
+		},
+	}
+	resp, _ = etcd_discovery.CommentClient.GetCommentList(c, req)
 	commentList := resp.GetCommentList()
 	for _, comment := range commentList {
 		comment.CreateDate = comment.CreateDate[5:10]
 	}
-	ctx.JSON(consts.StatusOK, resp)
+	ctx.JSON(consts.StatusOK, utils2.ConvertStruct(resp, nil))
 }
 
 // PostCommentAction 对视频下的评论进行发表或者删除
