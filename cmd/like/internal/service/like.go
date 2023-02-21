@@ -212,11 +212,11 @@ func TotalFavoriteCount(userId int64) int32 {
 	resp, _ := etcd_discovery.VideoClient.GetPublishIds(context.Background(), &video.PublishIdsRequest{
 		UserId: userId,
 	})
-	ids := []int64{}
-	for _, id := range resp.GetIds() {
-		ids = append(ids, id)
+	var videoIds []int64
+	for _, reqVideo := range resp.Ids {
+		videoIds = append(videoIds, reqVideo)
 	}
-	tfc := like.TotalFavorite(ids)
+	tfc := like.TotalFavorite(videoIds)
 	return int32(tfc)
 }
 
