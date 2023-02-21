@@ -44,7 +44,7 @@ func (s *CommentServiceImpl) GetCommentList(ctx context.Context, req *comment.Co
 	commentList := service.GetCommentList(req.VideoId, req.VideoId)
 	for _, c := range commentList {
 		info, err = etcd_discovery.UserClient.UserInfo(ctx, &user.UserInfoRequest{
-			UserId: c.User.Id,
+			UserId: c.UserId,
 			MyId:   req.UserId,
 		})
 		if err != nil {

@@ -12,7 +12,6 @@ import (
 
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
-	"github.com/jinzhu/copier"
 )
 
 // GetFavoriteList 获取喜爱视频列表
@@ -29,11 +28,11 @@ func GetFavoriteList(c context.Context, ctx *app.RequestContext) {
 
 	//videoList, _ := like.GetFavoriteList(strUserId)
 	resp, _ := etcd_discovery.LikeClient.GetFavoriteList(c, req)
-	videoList := resp.VideoList
-	respVideoList := make([]Video, len(videoList))
-	copier.Copy(&respVideoList, &videoList)
-	favoriteListResponse := FavoriteListResponse{StatusCode: 0, StatusMsg: "返回成功", VideoList: respVideoList}
-	ctx.JSON(consts.StatusOK, utils2.ConvertStruct(favoriteListResponse, nil))
+	//videoList := resp.VideoList
+	//respVideoList := make([]Video, len(videoList))
+	//copier.Copy(&respVideoList, &videoList)
+	//favoriteListResponse := FavoriteListResponse{StatusCode: 0, StatusMsg: "返回成功", VideoList: respVideoList}
+	ctx.JSON(consts.StatusOK, utils2.ConvertStruct(resp, nil))
 }
 
 // FavoriteAction 点赞和取消点赞操作
