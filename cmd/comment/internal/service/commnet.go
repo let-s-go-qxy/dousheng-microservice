@@ -7,7 +7,7 @@ import (
 )
 
 // GetCommentList 查选该视频下的所有评论
-func GetCommentList(videoId int64, myId int64) (respCommentList []model.Comment) {
+func GetCommentList(videoId int64) (respCommentList []comment.Comment) {
 
 	// 调用model层comment的sql查询语句，根据视频id查询对应id的视频评论
 	commentList := model.FindCommentByVideo(videoId)

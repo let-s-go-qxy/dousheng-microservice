@@ -12,8 +12,8 @@ const (
 )
 
 const (
-	LikeFavoriteActionFail = "点赞失败"
-	LikeFavoriteActionSuccess
+	LikeFavoriteActionFail    = "点赞失败"
+	LikeFavoriteActionSuccess = "点赞成功"
 )
 
 // JWT

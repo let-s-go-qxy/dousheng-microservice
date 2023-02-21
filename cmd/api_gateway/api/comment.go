@@ -75,7 +75,7 @@ func PostCommentAction(c context.Context, ctx *app.RequestContext) {
 	commentId, _ := strconv.Atoi(ctx.Query("comment_id"))
 
 	req := &comment.CommentActionRequest{
-		UserId:      int64(userId),
+		UserId:      userId,
 		VideoId:     int64(videoId),
 		ActionType:  int32(actionType),
 		CommentText: commentText,
