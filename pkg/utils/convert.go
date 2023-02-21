@@ -31,7 +31,7 @@ func ConvertStruct(theStruct interface{}, slice1 *[]interface{}) map[string]inte
 	if reflect.ValueOf(theStruct).Kind().String() == "ptr" {
 		// 防止空值，但是这里应该不从我这处理，此处为兜底
 		if reflect.ValueOf(theStruct).IsNil() {
-			fmt.Println("[error]------------->", "传值为空")
+			fmt.Println("[error]===========", "传值为空")
 			return res
 		}
 		if reflect.ValueOf(theStruct).Type().String() == "reflect.Value" {

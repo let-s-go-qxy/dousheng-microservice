@@ -147,14 +147,14 @@ func UserInfo(myId int64, userId int64) (userInfo user.User, err error) {
 
 // GetAvatar 获取用户头像
 func GetAvatar(userID int64) string {
-	strUserID := strconv.Itoa(int(userID) % 10)
+	strUserID := strconv.Itoa(int(userID))
 	avatarURL := conf.OSSAvatarPreURL + strUserID + "_avatar.jpg"
 	return avatarURL
 }
 
 // GetBackgroundImage 获取用户背景图
 func GetBackgroundImage(userID int64) string {
-	strUserID := strconv.Itoa(int(userID) % 10)
+	strUserID := strconv.Itoa(int(userID))
 	backgroundURL := conf.OSSBackgroundPreURL + strUserID + "_background.jpg"
 	return backgroundURL
 }
