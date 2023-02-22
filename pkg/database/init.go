@@ -41,17 +41,20 @@ type Redis struct {
 	DbVideoLike int    `yaml:"dbVideoLike"`
 }
 
+// 初始化user/video数据库
+func InitSpecificDB() {
+	m, _ := ParseYaml()
+	m.Port = "3308" // 写数据库
+	g.WriteMysqlDB = SpecificDBSetup(m)
+	m.Port = "3309" // 读数据库
+	g.ReadMysqlDB = SpecificDBSetup(m)
+}
+
 // InitDB 初始化数据库相关
 func InitDB() {
 	m, r := ParseYaml()
 	MysqlDBSetup(m)
 	RedisSetup(r)
-}
-
-// InitMysql 如果用不到redis，使用这个方法只连接mysql
-func InitMysql() {
-	m, _ := ParseYaml()
-	MysqlDBSetup(m)
 }
 
 // ParseYaml 解析yaml
@@ -156,4 +159,39 @@ func RedisSetup(r Redis) {
 	g.DbVideoLike = videoLikeDb
 	//g.DbVideoLike.FlushAll(g.RedisContext)
 	fmt.Println("initialize videoLike redis client successfully")
+}
+
+func SpecificDBSetup(m Mysql) *gorm.DB {
+	newLogger := logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer（日志输出的目标，前缀和日志包含的内容——译者注）
+		logger.Config{
+			SlowThreshold:             time.Second, // 慢 SQL 阈值
+			LogLevel:                  logger.Info, // 日志级别
+			IgnoreRecordNotFoundError: true,        // 忽略ErrRecordNotFound（记录未找到）错误
+			Colorful:                  true,        // 彩色打印
+		},
+	)
+	db, err := gorm.Open(mysql.Open(fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s&parseTime=True&loc=Australia%%2FMelbourne",
+		m.Username,
+		m.Password,
+		m.Addr,
+		m.Port,
+		m.Db,
+		m.Charset)), &gorm.Config{
+		Logger: newLogger,
+	})
+	if err != nil {
+		panic(err)
+	}
+	sqlDB, _ := db.DB()
+	sqlDB.SetConnMaxIdleTime(10 * time.Second)
+	sqlDB.SetConnMaxLifetime(100 * time.Second)
+	sqlDB.SetMaxIdleConns(10)
+	sqlDB.SetMaxOpenConns(100)
+	err = sqlDB.Ping()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("initialize mysql db successfully")
+	return db
 }

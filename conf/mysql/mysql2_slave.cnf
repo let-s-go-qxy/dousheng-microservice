@@ -1,0 +1,14 @@
+[mysqld]
+server_id=2
+log-bin=mysql-bin
+# relay-log配置中继日志
+relay-log=mysql-relay-bin
+# 只可以读，注意这里的只读只限制普通用户，超级用户如root还是可以写的
+read-only=1
+# 同步的数据库，这里我们也可以不需要，因为主数据库已经指明了需要同步的数据库
+replicate-do-db=dousheng
+# 不同步的数据库 这里如果主从都没有指明需要同步的数据库，需要使用下面的配置
+# replicate-ignore-db=mysql
+# replicate-ignore-db=sys
+# replicate-ignore-db=information_schema
+# replicate-ignore-db=performance_schema

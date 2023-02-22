@@ -15,12 +15,12 @@ type User struct {
 // CreateUser 增加用户
 func CreateUser(user *User) (db *gorm.DB, err error) {
 	var count int64
-	db = g.MysqlDB.Model(&User{}).Where("name = ?", user.Name).Count(&count)
+	db = g.WriteMysqlDB.Model(&User{}).Where("name = ?", user.Name).Count(&count)
 	if count > 0 {
 		err = g.ErrDbCreateUniqueKeyRepeatedly
 		return
 	}
-	db = g.MysqlDB.Create(user)
+	db = g.WriteMysqlDB.Create(user)
 	err = db.Error
 	return
 }
@@ -28,15 +28,15 @@ func CreateUser(user *User) (db *gorm.DB, err error) {
 // GetUser 通过名称和user_id查询记录 limit 1
 func GetUser(user *User) (err error) {
 	if user.Name != "" {
-		err = g.MysqlDB.First(user, "name = ?", user.Name).Error
+		err = g.ReadMysqlDB.First(user, "name = ?", user.Name).Error
 		return
 	}
-	err = g.MysqlDB.First(user, "id = ?", user.Id).Error
+	err = g.ReadMysqlDB.First(user, "id = ?", user.Id).Error
 	return
 }
 
 func GetNameById(userId int) string {
 	var user User
-	g.MysqlDB.Where("id = ?", userId).Take(&user)
+	g.ReadMysqlDB.Where("id = ?", userId).Take(&user)
 	return user.Name
 }

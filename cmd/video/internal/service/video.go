@@ -83,7 +83,7 @@ func GetVideoFeed(latestTime int64, userID int32) (nextTime int64, videoInfo []m
 			favoriteCount := videoAuthor.GetFavoriteCount()
 			backgroundImage := videoAuthor.BackgroundImage
 			signature := videoAuthor.Signature
-			totalFavorite := videoAuthor.GetTotalFavorite()
+			totalFavorite := videoAuthor.GetTotalFavorited()
 
 			videoInfo[index] = model.TheVideoInfo{
 				Id: videoInfoData.VideoID,

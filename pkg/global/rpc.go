@@ -7,7 +7,7 @@ const (
 // 微服务常量
 const (
 	ApiGatewayName    = "gateway"
-	ApiGatewayAddress = "192.168.0.11:9000"
+	ApiGatewayAddress = "192.168.196.147:9000"
 
 	ServiceUserName    = "userservice"
 	ServiceUserAddress = "127.0.0.1:8082"

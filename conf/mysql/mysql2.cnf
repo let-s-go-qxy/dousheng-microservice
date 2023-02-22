@@ -1,0 +1,16 @@
+[mysqld]
+server_id=1
+# 要生成二进制日志文件 主服务器一定要开启
+log-bin=mysql-bin
+#控制binlog日志文件保留时间，超过保留时间的binlog日志会被自动删除
+expire_logs_days=30
+# 记录进日志的数据库，不配的话就是记录所有库
+binlog-do-db=dousheng
+# 不记录进日志的数据库
+binlog-ignore-db=mysql
+binlog-ignore-db=information_schema
+binlog-ignore-db=performation_schema
+binlog-ignore-db=sys
+# 其他需要的配置位置 无特殊需要不用
+# !includedir /etc/mysql/conf.d/
+# !includedir /etc/mysql/mysql.conf.d/

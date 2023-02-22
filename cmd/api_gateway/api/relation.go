@@ -118,7 +118,6 @@ func GetFriendList(c context.Context, ctx *app.RequestContext) {
 		UserId: myId.(int64),
 		MyId:   myId.(int64),
 	})
-
 	allFriendsMessageListRsp, _ := etcd_discovery.RelationClient.GetFriendsMessageList(c, &relation.RelationFriendsMessageListRequest{
 		UserId: myId.(int64),
 	})

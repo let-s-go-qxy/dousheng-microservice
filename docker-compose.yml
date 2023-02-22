@@ -27,20 +27,43 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: admin
       RABBITMQ_DEFAULT_PASS: Qd20010701.
-  mysql_compose:
+  mysql1:
     image: mysql:8.0.32
-    container_name: mysql_compose
+    container_name: mysql1
     ports:
       - 3307:3306
     volumes:
-#      - /docker/mysql/data:/var/lib/mysql
-      - ./conf/mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
+      - /docker/mysql/data1:/var/lib/mysql
+      - ./conf/mysql/mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
     environment:
       MYSQL_ROOT_PASSWORD: "123456"
+  mysql2:
+    image: mysql:8.0.32
+    container_name: mysql2
+    ports:
+      - 3308:3306
+    volumes:
+      - ./docker/mysql/data2:/var/lib/mysql
+      - ./conf/mysql/mysql2.cnf:/etc/mysql/my.cnf
+    environment:
+      MYSQL_ROOT_PASSWORD: "123456"
+  mysql2_slave:
+    image: mysql:8.0.32
+    container_name: mysql2_slave
+    ports:
+      - 3309:3306
+    volumes:
+      - ./docker/mysql/data2_slave:/var/lib/mysql
+      - ./conf/mysql/mysql2_slave.cnf:/etc/mysql/my.cnf
+    environment:
+      MYSQL_ROOT_PASSWORD: "123456"
+    depends_on:
+      - "mysql2"
   redis:
     image: redis:6.2.6-alpine # 指定服务镜像，最好是与之前下载的redis配置文件保持一致
     container_name: my_redis # 容器名称
     restart: always # 重启方式
+    command: redis-server --requirepass 123456
     environment:
       - TZ=Asia/Shanghai # 设置时区
     volumes:

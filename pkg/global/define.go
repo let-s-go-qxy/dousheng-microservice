@@ -31,6 +31,8 @@ const (
 var (
 	OssBucket    *oss.Bucket
 	MysqlDB      *gorm.DB
+	WriteMysqlDB *gorm.DB
+	ReadMysqlDB  *gorm.DB
 	RedisContext = context.Background()
 	DbVerify     *redis.Client
 	DbUserLike   *redis.Client

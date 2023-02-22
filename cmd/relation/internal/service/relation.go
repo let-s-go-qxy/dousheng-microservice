@@ -7,6 +7,7 @@ import (
 	"dousheng/kitex_gen/relation"
 	"dousheng/kitex_gen/user"
 	"dousheng/pkg/etcd_discovery"
+	"fmt"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"sort"
 )
@@ -72,6 +73,7 @@ func GetFriendList(ctx context.Context, userId int64, myId int64) (*relation.Rel
 			MyId:   myId,
 		})
 		if err != nil {
+			fmt.Println("err:", err)
 			return nil, err
 		}
 		resp2, err := etcd_discovery.MessageClient.GetLatestMessage(ctx, &message.MessageLatestRequest{

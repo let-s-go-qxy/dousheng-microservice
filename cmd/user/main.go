@@ -20,7 +20,7 @@ func init() {
 	etcd_discovery.InitLikeRpc()
 	etcd_discovery.InitRelationRpc()
 	etcd_discovery.InitVideoRpc()
-	database.InitDB()
+	database.InitSpecificDB()
 	oss_init.OSSInit()
 }
 

@@ -3,6 +3,7 @@ package like
 import (
 	"context"
 	repository "dousheng/cmd/like/internal/model"
+	"dousheng/conf"
 	like_gen "dousheng/kitex_gen/like"
 	"dousheng/kitex_gen/video"
 	"dousheng/pkg/etcd_discovery"
@@ -207,6 +208,8 @@ func GetFavoriteList(ctx context.Context, userId int64) ([]*video.Video, error) 
 				return nil, err1
 			}
 		} else {
+			info.VideoInfo.CoverUrl = conf.OSSPreURL + info.VideoInfo.CoverUrl + ".jpg"
+			info.VideoInfo.PlayUrl = conf.OSSPreURL + info.VideoInfo.PlayUrl + ".mp4"
 			videos = append(videos, info.VideoInfo)
 		}
 	}

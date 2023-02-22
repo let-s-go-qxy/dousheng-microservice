@@ -109,7 +109,7 @@ func (*VideoDaoStruct) PublishVideo(userID int, title string, videoNumID string)
 		Title:       title,
 		PublishTime: time.Now().Unix(),
 	}
-	g.MysqlDB.Table("videos").Debug().Create(&video)
+	g.WriteMysqlDB.Table("videos").Debug().Create(&video)
 	return true
 
 }
@@ -117,7 +117,7 @@ func (*VideoDaoStruct) PublishVideo(userID int, title string, videoNumID string)
 // 通过用户id查询video数组
 func GetPublishList(userId int) (videoList []Video) {
 
-	g.MysqlDB.Table("videos").
+	g.ReadMysqlDB.Table("videos").
 		Where("author_id= ? ", userId).
 		Scan(&videoList)
 
@@ -128,7 +128,7 @@ func (*VideoDaoStruct) GetVideoFeed(latestTime int32) ([]VideoInfo, bool) {
 
 	var result []VideoInfo
 
-	g.MysqlDB.Debug().Raw("SELECT `users`.`id` AS `UserID`,`users`.`name` AS `Username`, `videos`.`id` AS `VideoID`,"+
+	g.ReadMysqlDB.Debug().Raw("SELECT `users`.`id` AS `UserID`,`users`.`name` AS `Username`, `videos`.`id` AS `VideoID`,"+
 		"`videos`.`play_url`, `videos`.`cover_url`,`videos`.`publish_time` AS `Time`,`videos`.`title` "+
 		"FROM `videos` INNER JOIN `users` ON `users`.`id` = `videos`.`author_id` "+
 		"WHERE `videos`.`publish_time` < ? ORDER BY `videos`.`publish_time` DESC LIMIT 10", latestTime).Scan(&result)
@@ -141,7 +141,7 @@ func (*VideoDaoStruct) GetVideoFeed(latestTime int32) ([]VideoInfo, bool) {
 
 func FindVideoIds(userId int64) (ids []int64) {
 	videos := []Video{{Id: int32(userId)}}
-	g.MysqlDB.Select("id").Find(&videos)
+	g.ReadMysqlDB.Select("id").Find(&videos)
 	for _, video := range videos {
 		ids = append(ids, int64(video.Id))
 	}
@@ -152,6 +152,6 @@ func FindVideoById(videoId int64) (Video, error) {
 	video := &Video{
 		Id: int32(videoId),
 	}
-	err := g.MysqlDB.First(&video).Error
+	err := g.ReadMysqlDB.First(&video).Error
 	return *video, err
 }

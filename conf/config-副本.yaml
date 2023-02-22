@@ -1,0 +1,21 @@
+database:
+  mysql:
+    addr: 43.139.166.41
+    port: 3306
+    username: jc
+    password: '197920'
+    db: tiktok
+    charset: utf8mb4
+    interpolateParams: false # 提高性能
+  redis:
+    addr: 43.139.166.41
+    port: 6379
+    password: '197920'
+    dbVerify: 1
+    dbUserLike: 2
+    dbVideoLike: 3
+
+auth:
+  jwt:
+    secretKey: MSR2pH^N6dqqQ5Ns5x!eD2YWVpwzmb3@8RzphRFbEkRwLEra86v3LCB%PvGx$a$L
+    expiresTime: 604800

@@ -24,3 +24,5 @@ conf/config.yaml
 conf/ossRelated.go
 default.etcd/
 localStorage/
+docker/mysql/
+docker/redis/

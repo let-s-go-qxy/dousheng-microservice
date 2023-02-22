@@ -3,6 +3,7 @@ package model
 import (
 	g "dousheng/pkg/global"
 	"dousheng/pkg/utils"
+	"fmt"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"gorm.io/gorm"
 	"strconv"
@@ -201,6 +202,7 @@ func (like *Like) TotalFavorite(videoID []int64) (count int64) {
 	var c int64
 	for _, id := range videoID {
 		g.MysqlDB.Model(&Like{}).Where("video_id = ? AND cancel = ? ", id, 1).Count(&c)
+		fmt.Println(id, "获赞:", c)
 		count += c
 	}
 	return
