@@ -260,7 +260,7 @@ func GetPublishIds(c context.Context, userID int64) (resp *video.PublishIdsRespo
 }
 
 // GetVideoInfo  获取视频详情
-func GetVideoInfo(c context.Context, videoId int64) (resp *video.VideoInfoResponse, err error) {
+func GetVideoInfo(c context.Context, videoId int64, myId int64) (resp *video.VideoInfoResponse, err error) {
 	userInfo := &video.User{}
 	videoInfo, err := model.FindVideoById(videoId)
 	if err != nil {
@@ -268,10 +268,10 @@ func GetVideoInfo(c context.Context, videoId int64) (resp *video.VideoInfoRespon
 	}
 	userInfo2, err := etcd_discovery.UserClient.UserInfo(c, &user.UserInfoRequest{
 		UserId: int64(videoInfo.Author),
-		MyId:   0,
+		MyId:   myId,
 	})
 	isLikeResp, err := etcd_discovery.LikeClient.IsFavorite(c, &like.IsFavoriteRequest{
-		UserId:  int64(videoInfo.Author),
+		UserId:  myId,
 		VideoId: videoId,
 	})
 	favoriteCountResp, err := etcd_discovery.LikeClient.FavoriteCount(c, &like.FavoriteCountRequest{
@@ -280,7 +280,7 @@ func GetVideoInfo(c context.Context, videoId int64) (resp *video.VideoInfoRespon
 	if err != nil {
 		return
 	}
-	copier.Copy(userInfo, userInfo2)
+	copier.Copy(userInfo, userInfo2.User)
 	return &video.VideoInfoResponse{
 		VideoInfo: &video.Video{
 			Id:            int64(videoInfo.Id),

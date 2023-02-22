@@ -219,13 +219,14 @@ func GetFavoriteList(userId int64) (respVideos []*video.Video, err error) {
 	//根据视频id数组获取视频列表
 	for _, id := range videoIdList {
 		videoInfo, err1 := etcd_discovery.VideoClient.GetVideoInfo(context.Background(), &video.VideoInfoRequest{
+			UserId:  userId,
 			VideoId: id,
 		})
-		fmt.Print(id)
+		fmt.Println(id)
 		if err1 != nil {
 			// 特殊情况，用户喜欢过删除的视频
 			if !(strings.Contains(err1.Error(), "biz error") && strings.Contains(err1.Error(), "record not found")) {
-				return nil, err1
+				fmt.Print("111")
 			}
 		} else {
 			respVideos = append(respVideos, videoInfo.VideoInfo)

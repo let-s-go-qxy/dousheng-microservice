@@ -21,12 +21,13 @@ func (s *LikeServiceImpl) FavoriteAction(ctx context.Context, req *like.Favorite
 
 // GetFavoriteList implements the LikeServiceImpl interface.
 func (s *LikeServiceImpl) GetFavoriteList(ctx context.Context, req *like.FavoriteListRequest) (resp *like.FavoriteListResponse, err error) {
-
-	resp.VideoList, err = service.GetFavoriteList(req.GetUserId())
+	resp = &like.FavoriteListResponse{}
+	resp.VideoList, err = service.GetFavoriteList(req.UserId)
 	if err != nil {
 		resp.StatusCode = 0
 		resp.StatusMsg = "ok"
 	}
+
 	return
 }
 
