@@ -1,8 +1,8 @@
 package main
 
 import (
+	service "dousheng/cmd/like/internal/service"
 	like "dousheng/kitex_gen/like/likeservice"
-	"dousheng/pkg/cronTask"
 	"dousheng/pkg/database"
 	"dousheng/pkg/etcd_discovery"
 	g "dousheng/pkg/global"
@@ -20,7 +20,7 @@ func init() {
 	etcd_discovery.InitUserRpc()
 	etcd_discovery.InitVideoRpc()
 	database.InitDB()
-	cronTask.CronTaskSetUp()
+	service.CronTaskSetUp() // 定时刷新
 }
 
 func main() {

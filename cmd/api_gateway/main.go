@@ -4,7 +4,6 @@ import (
 	"context"
 	"dousheng/cmd/api_gateway/router"
 	"dousheng/cmd/api_gateway/rpc"
-	"dousheng/pkg/cronTask"
 	"dousheng/pkg/database"
 	g "dousheng/pkg/global"
 	"dousheng/pkg/tracer"
@@ -24,7 +23,6 @@ func init() {
 	tracer.InitJaeger(g.ApiGatewayName)
 	rpc.InitRPC()
 	database.InitDB()
-	cronTask.CronTaskSetUp()
 }
 
 // pprof

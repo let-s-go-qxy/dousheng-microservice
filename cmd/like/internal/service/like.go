@@ -10,6 +10,7 @@ import (
 	"errors"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"strconv"
+	"strings"
 
 	"time"
 )
@@ -201,9 +202,13 @@ func GetFavoriteList(ctx context.Context, userId int64) ([]*video.Video, error) 
 			VideoId: id,
 		})
 		if err1 != nil {
-			return nil, err1
+			// 特殊情况，用户喜欢过删除的视频
+			if !(strings.Contains(err1.Error(), "biz error") && strings.Contains(err1.Error(), "record not found")) {
+				return nil, err1
+			}
+		} else {
+			videos = append(videos, info.VideoInfo)
 		}
-		videos = append(videos, info.VideoInfo)
 	}
 	return videos, nil
 }

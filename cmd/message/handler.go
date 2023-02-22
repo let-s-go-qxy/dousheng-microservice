@@ -20,6 +20,9 @@ func (s *MessageServiceImpl) GetMessageList(ctx context.Context, req *message.Me
 	for _, respMessage := range allMessageListMQ {
 		item := message.Message{}
 		copier.Copy(&item, &respMessage)
+		item.Id = int64(respMessage.Id)
+		item.ToId = int64(respMessage.ToId)
+		item.FromId = int64(respMessage.FromId)
 		allMessageList = append(allMessageList, &item)
 	}
 	response := &message.MessageChatResponse{}
