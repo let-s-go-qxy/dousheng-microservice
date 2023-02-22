@@ -218,5 +218,5 @@ func PublishList(c context.Context, ctx *app.RequestContext) {
 	resp := VideoListResponse{Response: Response{
 		StatusCode: g.StatusCodeOk, StatusMsg: "成功!!"},
 		VideoList: publishVideoListResp}
-	ctx.JSON(consts.StatusOK, utils2.ConvertStruct(resp, nil))
+	ctx.JSON(consts.StatusOK, resp)
 }
