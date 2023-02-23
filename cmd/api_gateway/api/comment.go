@@ -47,7 +47,7 @@ func GetCommentList(c context.Context, ctx *app.RequestContext) {
 					WorkCount:       0,
 					BackgroundImage: "",
 					Signature:       "",
-					TotalFavorite:   0,
+					TotalFavorited:  0,
 					FavoriteCount:   0,
 					Avatar:          "",
 				},
