@@ -26,7 +26,7 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		"GetFavoriteList":  kitex.NewMethodInfo(getFavoriteListHandler, newGetFavoriteListArgs, newGetFavoriteListResult, false),
 		"TotalFavorite":    kitex.NewMethodInfo(totalFavoriteHandler, newTotalFavoriteArgs, newTotalFavoriteResult, false),
 		"FavoriteCount":    kitex.NewMethodInfo(favoriteCountHandler, newFavoriteCountArgs, newFavoriteCountResult, false),
-		"isFavorite":       kitex.NewMethodInfo(isFavoriteHandler, newIsFavoriteArgs, newIsFavoriteResult, false),
+		"IsFavorite":       kitex.NewMethodInfo(isFavoriteHandler, newIsFavoriteArgs, newIsFavoriteResult, false),
 		"RefreshLikeCache": kitex.NewMethodInfo(refreshLikeCacheHandler, newRefreshLikeCacheArgs, newRefreshLikeCacheResult, false),
 	}
 	extra := map[string]interface{}{
@@ -967,7 +967,7 @@ func (p *kClient) IsFavorite(ctx context.Context, Req *like.IsFavoriteRequest) (
 	var _args IsFavoriteArgs
 	_args.Req = Req
 	var _result IsFavoriteResult
-	if err = p.c.Call(ctx, "isFavorite", &_args, &_result); err != nil {
+	if err = p.c.Call(ctx, "IsFavorite", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

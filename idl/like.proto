@@ -51,12 +51,12 @@ message FavoriteCountResponse{
 }
 
 //视频是否点赞
-message isFavoriteRequest{
+message IsFavoriteRequest{
   int64 user_id = 1; // 用户id
   int64 video_id = 2; // 视频id
 }
 
-message isFavoriteResponse{
+message IsFavoriteResponse{
   bool is_favorite = 1; // true-已点赞，false-未点赞
 }
 
@@ -72,6 +72,6 @@ service LikeService{
   rpc GetFavoriteList(FavoriteListRequest) returns (FavoriteListResponse){}
   rpc TotalFavorite(TotalFavoriteRequest) returns(TotalFavoriteResponse){}
   rpc FavoriteCount(FavoriteCountRequest) returns (FavoriteCountResponse){}
-  rpc isFavorite(isFavoriteRequest) returns (isFavoriteResponse){}
+  rpc IsFavorite(IsFavoriteRequest) returns (IsFavoriteResponse){}
   rpc RefreshLikeCache(RefreshLikeCacheRequest) returns(RefreshLikeCacheResponse) {}
 }

@@ -222,11 +222,12 @@ func GetFavoriteList(userId int64) (respVideos []*video.Video, err error) {
 			UserId:  userId,
 			VideoId: id,
 		})
-		fmt.Println(id)
+		//fmt.Println(id)
 		if err1 != nil {
 			// 特殊情况，用户喜欢过删除的视频
+			fmt.Print("record not found")
 			if !(strings.Contains(err1.Error(), "biz error") && strings.Contains(err1.Error(), "record not found")) {
-				fmt.Print("111")
+				//fmt.Print("111")
 			}
 		} else {
 			respVideos = append(respVideos, videoInfo.VideoInfo)
@@ -293,7 +294,7 @@ func RefreshLikeCache() {
 func IsLike(userId, videoId int64) (*like_gen.IsFavoriteResponse, error) {
 	//like.VideoId = videoId
 	isLike, err := like.IsLike(userId, videoId)
-	//fmt.Println(userId, videoId, b)
+	//fmt.Println(userId, videoId, isLike)
 	return &like_gen.IsFavoriteResponse{
 		IsFavorite: isLike,
 	}, err

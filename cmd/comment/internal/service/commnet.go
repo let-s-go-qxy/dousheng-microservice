@@ -3,7 +3,6 @@ package service
 import (
 	"dousheng/cmd/comment/internal/model"
 	"errors"
-	"fmt"
 	"time"
 )
 
@@ -45,6 +44,6 @@ func CommentAction(videoId int64, actionType int32, contentText string, commentI
 
 func GetCommentCount(videoId int64) (commentCount int32) {
 	commentCount = int32(model.GetCommentCount(videoId))
-	fmt.Print(commentCount)
+	//fmt.Print(commentCount)
 	return
 }

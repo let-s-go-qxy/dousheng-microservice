@@ -280,6 +280,12 @@ func GetVideoInfo(c context.Context, videoId int64, myId int64) (resp *video.Vid
 	if err != nil {
 		return
 	}
+	commentCountResponse, err := etcd_discovery.CommentClient.CommentCount(context.Background(), &comment.CommentCountRequest{
+		VideoId: videoId,
+	})
+	if err != nil {
+		klog.Error("调用CommentCount接口时发生了错误：" + err.Error())
+	}
 	copier.Copy(userInfo, userInfo2.User)
 	return &video.VideoInfoResponse{
 		VideoInfo: &video.Video{
@@ -288,7 +294,7 @@ func GetVideoInfo(c context.Context, videoId int64, myId int64) (resp *video.Vid
 			PlayUrl:       videoInfo.PlayUrl,
 			CoverUrl:      videoInfo.CoverUrl,
 			FavoriteCount: favoriteCountResp.GetFavoriteCount(),
-			CommentCount:  0, // 不用就不给了
+			CommentCount:  commentCountResponse.GetCommentCount(),
 			IsFavorite:    isLikeResp.GetIsFavorite(),
 			Title:         videoInfo.Title,
 		},
