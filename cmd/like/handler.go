@@ -51,7 +51,8 @@ func (s *LikeServiceImpl) FavoriteCount(ctx context.Context, req *like.FavoriteC
 
 // IsFavorite implements the LikeServiceImpl interface.
 func (s *LikeServiceImpl) IsFavorite(ctx context.Context, req *like.IsFavoriteRequest) (resp *like.IsFavoriteResponse, err error) {
-	resp, err = service.IsLike(req.VideoId, req.UserId)
+	resp = &like.IsFavoriteResponse{}
+	resp, err = service.IsLike(req.UserId, req.VideoId)
 	return
 }
 
