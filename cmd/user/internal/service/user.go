@@ -141,7 +141,7 @@ func UserInfo(myId int64, userId int64) (userInfo user.User, err error) {
 	userInfo.IsFollow = resp3.GetIsFollow()
 	userInfo.WorkCount = resp4.GetPublishVideoCount()
 	userInfo.FavoriteCount = resp5.GetFavoriteCount()
-	userInfo.TotalFavorite = resp5.GetTotalFavorited()
+	userInfo.TotalFavorited = resp5.GetTotalFavorited()
 	return
 }
 

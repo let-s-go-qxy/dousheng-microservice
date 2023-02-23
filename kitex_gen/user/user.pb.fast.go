@@ -123,7 +123,7 @@ func (x *User) fastReadField8(buf []byte, _type int8) (offset int, err error) {
 }
 
 func (x *User) fastReadField9(buf []byte, _type int8) (offset int, err error) {
-	x.TotalFavorite, offset, err = fastpb.ReadInt32(buf, _type)
+	x.TotalFavorited, offset, err = fastpb.ReadInt32(buf, _type)
 	return offset, err
 }
 
@@ -585,10 +585,10 @@ func (x *User) fastWriteField8(buf []byte) (offset int) {
 }
 
 func (x *User) fastWriteField9(buf []byte) (offset int) {
-	if x.TotalFavorite == 0 {
+	if x.TotalFavorited == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt32(buf[offset:], 9, x.TotalFavorite)
+	offset += fastpb.WriteInt32(buf[offset:], 9, x.TotalFavorited)
 	return offset
 }
 
@@ -950,10 +950,10 @@ func (x *User) sizeField8() (n int) {
 }
 
 func (x *User) sizeField9() (n int) {
-	if x.TotalFavorite == 0 {
+	if x.TotalFavorited == 0 {
 		return n
 	}
-	n += fastpb.SizeInt32(9, x.TotalFavorite)
+	n += fastpb.SizeInt32(9, x.TotalFavorited)
 	return n
 }
 
@@ -1241,7 +1241,7 @@ var fieldIDToName_User = map[int32]string{
 	6:  "WorkCount",
 	7:  "BackgroundImage",
 	8:  "Signature",
-	9:  "TotalFavorite",
+	9:  "TotalFavorited",
 	10: "FavoriteCount",
 	11: "Avatar",
 }

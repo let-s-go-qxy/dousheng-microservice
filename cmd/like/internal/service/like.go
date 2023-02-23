@@ -230,6 +230,8 @@ func GetFavoriteList(userId int64) (respVideos []*video.Video, err error) {
 				//fmt.Print("111")
 			}
 		} else {
+			videoInfo.VideoInfo.PlayUrl = conf.OSSPreURL + videoInfo.VideoInfo.PlayUrl + ".mp4"
+			videoInfo.VideoInfo.CoverUrl = conf.OSSPreURL + videoInfo.VideoInfo.CoverUrl + ".jpg"
 			respVideos = append(respVideos, videoInfo.VideoInfo)
 		}
 	}
