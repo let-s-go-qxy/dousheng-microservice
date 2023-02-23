@@ -3,11 +3,13 @@ package like
 import (
 	"context"
 	repository "dousheng/cmd/like/internal/model"
+	"dousheng/conf"
 	like_gen "dousheng/kitex_gen/like"
 	"dousheng/kitex_gen/video"
 	"dousheng/pkg/etcd_discovery"
 	g "dousheng/pkg/global"
 	"errors"
+	"fmt"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"strconv"
 	"strings"
@@ -189,29 +191,75 @@ func FavoriteAction(userId int64, videoId int64, action int32) error {
 	return nil
 }
 
+// GetVideoListByIdList 根据视频ID列表查询视频列表,按照点赞时间顺序
+func GetVideoListByIdList(videoIdList []int64) (videoList []*video.Video) {
+
+	for _, videoId := range videoIdList {
+		respVideo := video.Video{}
+
+		video, _ := etcd_discovery.VideoClient.GetVideoInfo(context.Background(), &video.VideoInfoRequest{
+			VideoId: videoId,
+		})
+
+		respVideo.CoverUrl = conf.OSSPreURL + respVideo.CoverUrl + ".jpg"
+		respVideo.PlayUrl = conf.OSSPreURL + respVideo.PlayUrl + ".mp4"
+		videoList = append(videoList, video.VideoInfo)
+	}
+	return
+}
+
 // GetFavoriteList 根据用户ID查询用户的喜欢视频列表
-func GetFavoriteList(ctx context.Context, userId int64) ([]*video.Video, error) {
+func GetFavoriteList(userId int64) (respVideos []*video.Video, err error) {
 	// 用户喜欢的视频ID列表
 	videoIdList, err := like.GetFavoriteVideoList(userId)
 	if err != nil {
 		return nil, err
 	}
-	videos := []*video.Video{}
+
+	//根据视频id数组获取视频列表
 	for _, id := range videoIdList {
-		info, err1 := etcd_discovery.VideoClient.GetVideoInfo(ctx, &video.VideoInfoRequest{
+		videoInfo, err1 := etcd_discovery.VideoClient.GetVideoInfo(context.Background(), &video.VideoInfoRequest{
+			UserId:  userId,
 			VideoId: id,
 		})
+		fmt.Println(id)
 		if err1 != nil {
 			// 特殊情况，用户喜欢过删除的视频
 			if !(strings.Contains(err1.Error(), "biz error") && strings.Contains(err1.Error(), "record not found")) {
-				return nil, err1
+				fmt.Print("111")
 			}
 		} else {
-			videos = append(videos, info.VideoInfo)
+			respVideos = append(respVideos, videoInfo.VideoInfo)
 		}
 	}
-	return videos, nil
+
+	//for _, video := range videos {
+	//	userInfo, _ := etcd_discovery.UserClient.UserInfo(context.Background(), &user.UserInfoRequest{
+	//		UserId: 0,
+	//		MyId:   video.Author.Id,
+	//	})
+	//	//respUser = userInfo.User
+	//	//video.Author = respUser
+	//	copier.Copy(video.Author, userInfo.User)
+	//	respVideos = append(respVideos, video)
+	//}
+
+	return
 }
+
+//func GetVideosAuthor(userId int, videoList []repository.Video) (videosAuthor map[int]repository.Author) {
+//	videosAuthor = map[int]repository.Author{}
+//	for _, video := range videoList {
+//		author := repository.Author{}
+//		author.Id = int(video.Author)
+//		author.Name = repository.GetNameById(author.Id)
+//		author.FollowCount = int(repository.GetFollowCount(int(video.Author)))
+//		author.FollowerCount = int(repository.GetFollowerCount(int(video.Author)))
+//		author.IsFollow = repository.IsFollow(userId, int(video.Author))
+//		videosAuthor[int(video.Id)] = author
+//	}
+//	return
+//}
 
 func TotalFavoriteCount(userId int64) int32 {
 	resp, _ := etcd_discovery.VideoClient.GetPublishIds(context.Background(), &video.PublishIdsRequest{

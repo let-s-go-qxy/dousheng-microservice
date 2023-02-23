@@ -623,6 +623,11 @@ func (x *VideoInfoRequest) FastRead(buf []byte, _type int8, number int32) (offse
 		if err != nil {
 			goto ReadFieldError
 		}
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
 	default:
 		offset, err = fastpb.Skip(buf, _type, number)
 		if err != nil {
@@ -637,6 +642,11 @@ ReadFieldError:
 }
 
 func (x *VideoInfoRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.UserId, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *VideoInfoRequest) fastReadField2(buf []byte, _type int8) (offset int, err error) {
 	x.VideoId, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
@@ -1129,14 +1139,23 @@ func (x *VideoInfoRequest) FastWrite(buf []byte) (offset int) {
 		return offset
 	}
 	offset += x.fastWriteField1(buf[offset:])
+	offset += x.fastWriteField2(buf[offset:])
 	return offset
 }
 
 func (x *VideoInfoRequest) fastWriteField1(buf []byte) (offset int) {
+	if x.UserId == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.UserId)
+	return offset
+}
+
+func (x *VideoInfoRequest) fastWriteField2(buf []byte) (offset int) {
 	if x.VideoId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 1, x.VideoId)
+	offset += fastpb.WriteInt64(buf[offset:], 2, x.VideoId)
 	return offset
 }
 
@@ -1614,14 +1633,23 @@ func (x *VideoInfoRequest) Size() (n int) {
 		return n
 	}
 	n += x.sizeField1()
+	n += x.sizeField2()
 	return n
 }
 
 func (x *VideoInfoRequest) sizeField1() (n int) {
+	if x.UserId == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(1, x.UserId)
+	return n
+}
+
+func (x *VideoInfoRequest) sizeField2() (n int) {
 	if x.VideoId == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(1, x.VideoId)
+	n += fastpb.SizeInt64(2, x.VideoId)
 	return n
 }
 
@@ -1718,7 +1746,8 @@ var fieldIDToName_PublishIdsResponse = map[int32]string{
 }
 
 var fieldIDToName_VideoInfoRequest = map[int32]string{
-	1: "VideoId",
+	1: "UserId",
+	2: "VideoId",
 }
 
 var fieldIDToName_VideoInfoResponse = map[int32]string{

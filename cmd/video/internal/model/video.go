@@ -114,7 +114,7 @@ func (*VideoDaoStruct) PublishVideo(userID int, title string, videoNumID string)
 
 }
 
-// 通过用户id查询video数组
+// GetPublishList 通过用户id查询video数组
 func GetPublishList(userId int) (videoList []Video) {
 
 	g.MysqlDB.Table("videos").
@@ -146,6 +146,11 @@ func FindVideoIds(userId int64) (ids []int64) {
 		ids = append(ids, int64(video.Id))
 	}
 	return
+	//videoList:=GetPublishList(int(userId))
+	//for _, video := range videoList {
+	//	ids = append(ids, int64(video.Id))
+	//}
+	//return
 }
 
 func FindVideoById(videoId int64) (Video, error) {
@@ -154,4 +159,6 @@ func FindVideoById(videoId int64) (Video, error) {
 	}
 	err := g.MysqlDB.First(&video).Error
 	return *video, err
+	//g.MysqlDB.Where("id = ?",videoId).Find(&video)
+	//return
 }

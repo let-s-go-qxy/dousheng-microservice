@@ -107,6 +107,6 @@ func (s *VideoServiceImpl) GetPublishIds(ctx context.Context, req *video.Publish
 
 // GetVideoInfo implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) GetVideoInfo(ctx context.Context, req *video.VideoInfoRequest) (resp *video.VideoInfoResponse, err error) {
-	resp, err = videoService.GetVideoInfo(ctx, req.GetVideoId())
+	resp, err = videoService.GetVideoInfo(ctx, req.GetVideoId(), req.GetUserId())
 	return
 }
