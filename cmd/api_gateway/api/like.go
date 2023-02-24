@@ -26,7 +26,6 @@ func GetFavoriteList(c context.Context, ctx *app.RequestContext) {
 		MyId:   int64(strUserId),
 	}
 
-	//videoList, _ := like.GetFavoriteList(strUserId)
 	resp, _ := etcd_discovery.LikeClient.GetFavoriteList(c, req)
 	//videoList := resp.VideoList
 	//respVideoList := make([]Video, len(videoList))
@@ -55,6 +54,7 @@ func FavoriteAction(c context.Context, ctx *app.RequestContext) {
 				msg.LikeFavoriteActionSuccess})
 	} else {
 		ctx.JSON(consts.StatusOK, Response{1,
-			msg.LikeFavoriteActionFail})
+			err.Error(),
+		})
 	}
 }

@@ -19,6 +19,7 @@ func init() {
 	tracer.InitJaeger(g.ServiceVideoName)
 	initRpc()
 	database.InitSpecificDB()
+	database.InitVideoRedis()
 	oss_init.OSSInit()
 }
 

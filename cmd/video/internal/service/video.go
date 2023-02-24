@@ -16,7 +16,6 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
-	"sync"
 )
 
 func GetVideoFeed(latestTime int64, userID int32) (nextTime int64, videoInfo []model.TheVideoInfo, state int) {
@@ -32,10 +31,12 @@ func GetVideoFeed(latestTime int64, userID int32) (nextTime int64, videoInfo []m
 	nextTime = int64(allVideoInfoData[len(allVideoInfoData)-1].Time)
 	videoInfo = make([]model.TheVideoInfo, len(allVideoInfoData))
 
-	wg := sync.WaitGroup{}
-	wg.Add(len(allVideoInfoData))
-
 	for index, videoInfoData := range allVideoInfoData {
+		res := model.GetVideoCache(videoInfoData.VideoID)
+		if res != nil {
+			videoInfo[index] = *res
+			continue
+		}
 		userInfoResponse, err := etcd_discovery.UserClient.UserInfo(context.Background(), &user.UserInfoRequest{
 			MyId:   int64(userID),
 			UserId: int64(videoInfoData.UserID),
@@ -43,7 +44,6 @@ func GetVideoFeed(latestTime int64, userID int32) (nextTime int64, videoInfo []m
 		if err != nil {
 			klog.Error("调用UserInfo接口时发生了错误：" + err.Error())
 		}
-
 		commentCountResponse, err := etcd_discovery.CommentClient.CommentCount(context.Background(), &comment.CommentCountRequest{
 			VideoId: int64(videoInfoData.VideoID),
 		})
@@ -65,7 +65,7 @@ func GetVideoFeed(latestTime int64, userID int32) (nextTime int64, videoInfo []m
 		if err != nil {
 			klog.Error("调用IsFavorite接口时发生了错误：" + err.Error())
 		}
-		go func(index int, videoInfo []model.TheVideoInfo, videoInfoData model.VideoInfo, userID int32) {
+		func(index int, videoInfo []model.TheVideoInfo, videoInfoData model.VideoInfo, userID int32) {
 
 			videoAuthorPointer := userInfoResponse.User
 			videoAuthor := *videoAuthorPointer
@@ -85,7 +85,7 @@ func GetVideoFeed(latestTime int64, userID int32) (nextTime int64, videoInfo []m
 			signature := videoAuthor.Signature
 			totalFavorite := videoAuthor.GetTotalFavorited()
 
-			videoInfo[index] = model.TheVideoInfo{
+			pVideo := model.TheVideoInfo{
 				Id: videoInfoData.VideoID,
 				Author: model.AuthorInfo{
 					Id:              videoInfoData.UserID,
@@ -107,14 +107,14 @@ func GetVideoFeed(latestTime int64, userID int32) (nextTime int64, videoInfo []m
 				IsFavorite:    isFavorite,
 				Title:         videoInfoData.Title,
 			}
-			wg.Done()
+			videoInfo[index] = pVideo
+			model.CacheVideo(pVideo)
 		}(index, videoInfo, videoInfoData, userID)
 		if err != nil {
 			klog.Error("获取视频信息失败，出错了！")
 			return nextTime, videoInfo, -1
 		}
 	}
-	wg.Wait()
 	return nextTime, videoInfo, 1
 }
 

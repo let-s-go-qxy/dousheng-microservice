@@ -1,10 +1,12 @@
 package model
 
 import (
+	"dousheng/cmd/message/num"
 	g "dousheng/pkg/global"
 	"dousheng/pkg/mq"
 	m "dousheng/pkg/mq"
 	"github.com/cloudwego/kitex/pkg/klog"
+	"sync/atomic"
 )
 
 type Message struct {
@@ -69,4 +71,9 @@ func GetMsgListByDB(fromID, toID int64) ([]Message, error) {
 	messages := make([]Message, 0)
 	err := g.MysqlDB.Order("create_time").Find(&messages, "from_id = ? AND to_id = ?", fromID, toID).Error
 	return messages, err
+}
+
+func PostMessageOne(data Message) error {
+	atomic.AddInt32(&num.ORMNum, 1)
+	return g.MysqlDB.Model(&Message{}).Create(&data).Error
 }

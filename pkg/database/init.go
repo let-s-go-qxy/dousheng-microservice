@@ -50,6 +50,12 @@ func InitSpecificDB() {
 	g.ReadMysqlDB = SpecificDBSetup(m)
 }
 
+// InitVideoRedis 启动视频相关的redis，这里先复用
+func InitVideoRedis() {
+	_, r := ParseYaml()
+	RedisSetup(r)
+}
+
 // InitDB 初始化数据库相关
 func InitDB() {
 	m, r := ParseYaml()
@@ -81,10 +87,10 @@ func MysqlDBSetup(m Mysql) {
 	newLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer（日志输出的目标，前缀和日志包含的内容——译者注）
 		logger.Config{
-			SlowThreshold:             time.Second, // 慢 SQL 阈值
-			LogLevel:                  logger.Info, // 日志级别
-			IgnoreRecordNotFoundError: true,        // 忽略ErrRecordNotFound（记录未找到）错误
-			Colorful:                  true,        // 彩色打印
+			SlowThreshold:             time.Second,  // 慢 SQL 阈值
+			LogLevel:                  logger.Error, // 日志级别
+			IgnoreRecordNotFoundError: true,         // 忽略ErrRecordNotFound（记录未找到）错误
+			Colorful:                  true,         // 彩色打印
 		},
 	)
 	db, err := gorm.Open(mysql.Open(fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s&parseTime=True&loc=Australia%%2FMelbourne",

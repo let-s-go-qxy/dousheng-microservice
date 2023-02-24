@@ -11,11 +11,13 @@ type LikeServiceImpl struct{}
 
 // FavoriteAction implements the LikeServiceImpl interface.
 func (s *LikeServiceImpl) FavoriteAction(ctx context.Context, req *like.FavoriteActionRequest) (resp *like.FavoriteActionResponse, err error) {
+	resp = &like.FavoriteActionResponse{}
 	err = service.FavoriteAction(req.GetUserId(), req.GetVideoId(), req.GetActionType())
 	if err != nil {
-		resp.StatusCode = 0
-		resp.StatusMsg = "ok"
+		return
 	}
+	resp.StatusCode = 0
+	resp.StatusMsg = "ok"
 	return
 }
 
@@ -24,9 +26,10 @@ func (s *LikeServiceImpl) GetFavoriteList(ctx context.Context, req *like.Favorit
 	resp = &like.FavoriteListResponse{}
 	resp.VideoList, err = service.GetFavoriteList(ctx, req.GetUserId())
 	if err != nil {
-		resp.StatusCode = 0
-		resp.StatusMsg = "ok"
+		return
 	}
+	resp.StatusCode = 0
+	resp.StatusMsg = "ok"
 	return
 }
 

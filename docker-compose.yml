@@ -71,3 +71,38 @@ services:
     ports: # 映射端口
       - "6380:6379"
     privileged: true # 使用该参数，container内的root拥有真正的root权限。否则，container内的root只是外部的一个普通用户权限
+  rmqnamesrv:
+    image: foxiswho/rocketmq:server
+    container_name: rmqnamesrv
+    ports:
+      - 9876:9876
+    volumes:
+      - ./docker/rocketMQ/data/logs:/opt/logs
+      - ./docker/rocketMQ/data/store:/opt/store
+    command: sh mqnamesrv
+  rmqbroker:
+    image: foxiswho/rocketmq:broker
+    container_name: rmqbroker
+    ports:
+      - 10909:10909
+      - 10911:10911
+    volumes:
+      - ./docker/rocketMQ/data/logs:/opt/logs
+      - ./docker/rocketMQ/data/store:/opt/store
+      - ./docker/rocketMQ/broker.conf:/etc/rocketmq/broker.conf
+    environment:
+      NAMESRV_ADDR: "rmqnamesrv:9876"
+      JAVA_OPTS: " -Duser.home=/opt"
+      JAVA_OPT_EXT: "-server -Xms128m -Xmx128m -Xmn64m"
+    command: mqbroker -c /etc/rocketmq/broker.conf
+    depends_on:
+      - rmqnamesrv
+#  rmqconsole:
+#    image: apacherocketmq/rocketmq-dashboard:latest
+#    container_name: rmqconsole
+#    ports:
+#      - 8888:8080
+#    environment:
+#      JAVA_OPTS: "-Xms128m -Xmx128m -Xmn64m -Drocketmq.namesrv.addr=rmqnamesrv:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false"
+#    depends_on:
+#      - rmqnamesrv

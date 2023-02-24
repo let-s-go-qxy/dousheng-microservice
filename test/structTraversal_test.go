@@ -150,7 +150,7 @@ func TestTraversal(t *testing.T) {
 					WorkCount:       2,
 					BackgroundImage: "img",
 					Signature:       "",
-					TotalFavorite:   1,
+					TotalFavorited:  1,
 					FavoriteCount:   0,
 					Avatar:          "",
 				},

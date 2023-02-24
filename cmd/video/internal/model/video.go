@@ -2,6 +2,9 @@ package model
 
 import (
 	g "dousheng/pkg/global"
+	"encoding/json"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -140,8 +143,8 @@ func (*VideoDaoStruct) GetVideoFeed(latestTime int32) ([]VideoInfo, bool) {
 }
 
 func FindVideoIds(userId int64) (ids []int64) {
-	videos := []Video{{Id: int32(userId)}}
-	g.ReadMysqlDB.Select("id").Find(&videos)
+	videos := []Video{}
+	g.ReadMysqlDB.Select("id").Find(&videos, "author_id = ?", userId)
 	for _, video := range videos {
 		ids = append(ids, int64(video.Id))
 	}
@@ -154,4 +157,32 @@ func FindVideoById(videoId int64) (Video, error) {
 	}
 	err := g.ReadMysqlDB.First(&video).Error
 	return *video, err
+}
+
+func GetVideoCache(videoId int32) *TheVideoInfo {
+	result, err := g.DbVerify.Get(g.RedisContext, strconv.Itoa(int(videoId))).Result()
+	if err != nil {
+		hlog.Error("GetVideoCache err: ", err.Error())
+		return nil
+	}
+	theVideoInfo := &TheVideoInfo{}
+	err = json.Unmarshal([]byte(result), theVideoInfo)
+	if err != nil {
+		return nil
+	}
+	return theVideoInfo
+}
+
+// CacheVideo 判断是否是热门视频并存储
+func CacheVideo(video TheVideoInfo) {
+	// TODO 这里判断热门视频的策略有待优化，目前判断之前访问过100次就算是热门视频
+	g.DbVerify.Incr(g.RedisContext, strconv.Itoa(int(video.Id))+"count")
+	var val string
+	val, _ = g.DbVerify.Get(g.RedisContext, strconv.Itoa(int(video.Id))+"count").Result()
+	count, _ := strconv.Atoi(val)
+	if count > 100 {
+		bits, _ := json.Marshal(video)
+		g.DbVerify.Set(g.RedisContext, strconv.Itoa(int(video.Id)), string(bits), time.Minute*100)
+		g.DbVerify.Set(g.RedisContext, strconv.Itoa(int(video.Id))+"count", "0", time.Minute*10)
+	}
 }

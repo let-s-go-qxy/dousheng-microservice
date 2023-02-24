@@ -205,6 +205,15 @@ func PublishList(c context.Context, ctx *app.RequestContext) {
 	publishListRequest.MyId = int64(myId)
 
 	publishListResp, err := etcd_discovery.VideoClient.PublishList(c, publishListRequest)
+	if publishListResp == nil {
+		publishListResp = &video.PublishListResponse{
+			StatusCode: 0,
+			StatusMsg:  "ok",
+			VideoList:  make([]*video.Video, 0),
+		}
+		ctx.JSON(consts.StatusOK, utils2.ConvertStruct(publishListResp, nil))
+		return
+	}
 	videoList := publishListResp.VideoList
 
 	var publishVideoListResp []Video

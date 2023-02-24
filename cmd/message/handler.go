@@ -35,7 +35,7 @@ func (s *MessageServiceImpl) GetMessageList(ctx context.Context, req *message.Me
 // PostMessageAction implements the MessageServiceImpl interface.
 func (s *MessageServiceImpl) PostMessageAction(ctx context.Context, req *message.MessageActionRequest) (resp *message.MessageActionResponse, err error) {
 
-	err = messageService.PostMessageAction(int(req.UserId), int(req.ToUserId), req.Content, int(req.ActionType))
+	err = messageService.PostMessageActionWithMQ(int(req.UserId), int(req.ToUserId), req.Content, int(req.ActionType))
 	if err != nil {
 		messageResponse := &message.MessageActionResponse{
 			StatusCode: g.StatusCodeFail,

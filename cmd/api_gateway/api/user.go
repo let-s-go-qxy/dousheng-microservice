@@ -24,10 +24,10 @@ type UserResponse struct {
 
 func UserInfo(c context.Context, ctx *app.RequestContext) {
 	userId, _ := strconv.Atoi(ctx.Query("user_id"))
-	myID, _ := strconv.Atoi(ctx.Query("user_id"))
+	myID, _ := ctx.Get("user_id")
 	req := &userService.UserInfoRequest{
 		UserId: int64(userId),
-		MyId:   int64(myID),
+		MyId:   myID.(int64),
 	}
 	resp, err := etcd_discovery.UserClient.UserInfo(c, req)
 	if err != nil {
